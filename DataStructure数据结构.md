@@ -84,31 +84,7 @@ int Sequential_Search2(int *a int n,int key)
 
 数组是一种具体的存储数据的方式，它可以用来实现线性表，但不是只能用来表示线性表，还可以表示树，也可以表示图。。。
 
-### 值、地址、引用传递
 
-void ex2(int *px,int *py){
-
-​	//交换地址上的值
-
-}
-
-void main(){
-
-​		ex2(&a,&b)
-
-}
-
-void ex3(int &x,int &y){
-
-​		temp = x; x=y; y=temp;//直接用x y代替a b
-
-}
-
-void main(){
-
-​		ex3(a,b)//调用方法与值传递相同
-
-}
 
 ## 栈和队列
 
