@@ -104,9 +104,6 @@ doubling 3db quadrup 6dB increasing 8 times 9dB
 4）减小无线通信中发射和接受天线的尺寸。
 
 
-
-
-
 <img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20211130100917047.png" alt="image-20211130100917047" style="zoom:80%;" />
 
 PAM相当于抽样过程， PCM相当于整合了 抽样，量化，编码。
