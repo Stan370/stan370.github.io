@@ -37,8 +37,6 @@ doubling 3db quadrup 6dB increasing 8 times 9dB
 
 **例如：30dB 1000times of previous
 
- 
-
 **又例如：56 dB = 20dB + 30 dB + 6 dB = 10 \* 30 \* 2 = 600 倍**
 
 ## Purpose
