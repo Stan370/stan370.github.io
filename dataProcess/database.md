@@ -25,3 +25,4 @@ B+树相对于B树有一些自己的优势，可以归结为下面几点。
 所有的查询都要查找到叶子节点，查询性能是稳定的，而B树，每个节点都可以查找到数据，所以不稳定。
 所有的叶子节点形成了一个有序链表，更加便于查找。
 <img width="580" alt="image" src="https://user-images.githubusercontent.com/56168768/149303760-5fed673a-958f-4f51-a7eb-23cdcdd98ea2.png">
+
