@@ -1,25 +1,41 @@
-x	
-
-#  
+​	
 
 # JAVAWEB
 
 ![这里写图片描述](https://img-blog.csdn.net/20180430163324407?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3p0MTU3MzI2MjU4Nzg=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
-**JSP**可以被看做一个特殊的Servlet，只不过是对Servlet的扩展，只要是JSP可以完成的，servlet也可以完成。jsp页面最终被转换为servlet来运行，因此处理请求实际上是编译后的servlet。
-不同点：
-1.servlet的实现方式是在java中嵌入html代码，编写和修改html非常不便，因此适合做流程控制、业务处理；JSP的实现方式是在html中嵌入java代码，适合页面展示。
-2.servlet中没有内置对象，JSP中的内置对象都是必须通过HttpServletRequest对象，HttpServletResponce、HttpServlet对象得到。
+## Spring
 
-- JavaEE提供了javax.servlet.http包中提供了HttpServletRequest和HttpServletResponse接口，这两个接口是继承于javax.servlet包中的ServletRequest和ServletResponse接口。
+Spring 框架中用到了哪些设计模式？
+关于下面一些设计模式的详细介绍，可以看笔主前段时间的原创文章《面试官:“谈谈Spring中都用到了那些设计模式?”。》 。
 
-**请求转发和重定向的区别** request.getRequestDispatcher()
-请求转发和重定向的区别也是非常重要的知识点！！！
+工厂设计模式 : Spring使用工厂模式通过 BeanFactory、ApplicationContext 创建 bean 对象。
+代理设计模式 : Spring AOP 功能的实现。
+单例设计模式 : Spring 中的 Bean 默认都是单例的。
+模板方法模式 : Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。
+包装器设计模式 : 我们的项目需要连接多个数据库，而且不同的客户在每次访问中根据需要会去访问不同的数据库。这种模式让我们可以根据客户的需求能够动态切换不同的数据源。
+观察者模式: Spring 事件驱动模型就是观察者模式很经典的一个应用。
+适配器模式 :Spring AOP 的增强或通知(Advice)使用到了适配器模式、spring MVC 中也是用到了适配器模式适配Controller。
 
-请求转发是一个请求一次响应，而重定向是两次请求两次响应。
-请求转发地址不变化，而重定向会显示后一个请求的地址。这是因为请求转发是服务器的行为，是由容器控制的转向，整个过程处于同一个请求中，因此客户端浏览器不会显示转向后的地址；但重定向是客户端的行为，重新发送了请求，整个过程不在同一个请求中，因此客户端浏览器会显示跳转后的地址。
-请求转发只能转发到本项目其它Servlet，而重定向不只能重定向到本项目的其它Servlet，还能定向到其它项目。
-请求转发是服务端行为，只需给出转发的Servlet路径，而重定向需要给出requestURI，既包含项目名。
+
+
+### Ajax
+
+  JQuery和BootStrap是前端开发的两个重要框架，其中JQuery主要提供JavaScript框架，而BootStrap提供CSS排版框架。在SpringBoot开发中，引入JQuery和BootStrap有两种方法。[AJAX——核心XMLHttpRequest对象](http://blog.csdn.net/liujiahan629629/article/details/17126727)，而JQuery也对Ajax异步操作进行了封装，这里看一下几种常用的方式。 $.ajax，$.post， $.get， $.getJSON。
+
+Ajax（Asynchronous JavaScript And XML）是一种异步交互模式，实现异步页面刷新。JQuery自带Ajax功能，可以基于JQuery实现Ajax。XMLHttpRequest(XHR) 用于在后台与服务器交换数据。这意味着可以在不重新加载整个网页的情况下，对网页的某部分进行更新。
+
+| open(*method*,*url*,*async*) | 规定请求的类型、URL 以及是否异步处理请求。*method*：请求的类型；GET 或 POST*url*：文件在服务器上的位置*async*：true（异步）或 false（同步） |
+| ---------------------------- | ------------------------------------------------------------ |
+| send(*string*)               |                                                              |
+
+每当 readyState 改变时，就会触发 onreadystatechange 事件。
+
+readyState 属性存有 XMLHttpRequest 的状态信息
+
+```xmlhttp.onreadystatechange=function() {    ```
+
+```if (xmlhttp.readyState==4 && xmlhttp.status==200)    {        document.getElementById("myDiv").innerHTML=xmlhttp.responseText;    } }```
 
 #### Serialization
 
@@ -39,9 +55,26 @@ x
 
 N threads over M cores: 1. N<=M 真并行处理 2. N>M pseudo parallel    只有runnable到running时才会占用cpu时间片
 
+<img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20220316151315111.png" alt="image-20220316151315111" style="zoom:67%;" />
+
+线程是并行的最小单位，一个线程实现一个功能
+
+### 守护线程
+
+在Java中有两类线程：User Thread(用户线程)、Daemon Thread(守护线程) 
+
 #### Atomicity
 
 cannot be interrupted, and once it starts is always completes.
+
+JLS定义了线程对主存的操作指令：lock，unlock，read，load，use，assign，store，write。这些行为是不可分解的`原子操作`，在使用上相互依赖，read-load从主内存复制变量到当前工作内存，use-assign执行代码改变共享变量值，store-write用工作内存数据刷新主存相关内容。
+
+- read（读取）：作用于主内存变量，把一个变量值从主内存传到线程的工作内存中，以便随后的load动作使用；
+- load（载入）：作用于工作内存的变量，它把read操作从主内存中得到的变量值**放入工作内存的变量副本中**。
+- use（使用）：作用于工作内存的变量，把工作内存中的一个变量值**传递给执行引擎**，每当虚拟机遇到一个需要使用变量的值的字节码指令时将会执行这个操作。
+- assign（赋值）：作用于工作内存的变量，它把一个**从执行引擎接收到的值赋值给工作内存的变量**，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作。
+- store（存储）：**作用于工作内存的变量**，**把工作内存中的一个变量的值传送到主内存中**，以便随后的write的操作。
+- write（写入）：**作用于主内存的变量**，它把store操作从工作内存中一个变量的值传送到主内存的变量中。
 
 **采用继承Thread类方式：**
 **（1）优点：编写简单，直接使用this便可访问当前线程，无需使用Thread.currentThread()方法。**
@@ -58,11 +91,15 @@ cannot be interrupted, and once it starts is always completes.
 
 每当使用 Java 命令执行一个类时，实际上都会启动一个 JVM，**每一个JVM实际上就是在操作系统中启动一个线程**，Java 本身具备了垃圾的收集机制。所以在 Java 运行时至少会启动两个线程，一个是 main 线程，另外一个是垃圾收集线程。<img src="https://img2018.cnblogs.com/blog/1655301/201909/1655301-20190928151648653-69670221.png" alt="img" style="zoom: 80%;" />
 
+**OS: 假如线程正在运行中，程序向硬盘发送访问请求然后等待，这时CPU空转，所以线程进入阻塞状态，CPU执行其他线程。**
+
+
+
+
+
 sleep相当于让线程睡眠，交出CPU，让CPU去执行其他的任务。但是有一点要非常注意，sleep方法不会释放锁，
 
-直接调用interrupt方法不能中断正在运行中的线程。
-
-但是如果配合isInterrupted()能够中断正在运行的线程，因为调用interrupt方法相当于将中断标志位置为true
+直接调用interrupt方法不能中断正在运行中的线程。但是如果配合isInterrupted()能够中断正在运行的线程，因为调用interrupt方法相当于将中断标志位置为true
 
 <img src="https://images2015.cnblogs.com/blog/682616/201611/682616-20161115184256092-1439402886.jpg" alt="img" style="zoom: 67%;" />
 
@@ -142,29 +179,72 @@ public void run() {
 
 一个while循环中使用Thread.interrupted()作为条件,则在循环中断之后,您不知道是否终止,因为Thread.interrupted()返回true或其他一些条件已更改或一个休息声明跑了所以在这种情况下,使用Thread.currentThread().isInterrupted()真的是你唯一的选择.
 
-### Safety
+### synchronized和Lock
 
 Java中存在两种锁机制：synchronized和Lock，Lock接口及其实现类是JDK5增加的内容
 
-数据同步需要依赖锁，那锁的同步又依赖谁？synchronized给出的答案是在**软件层面依赖JVM，而Lock给出的方案是在硬件层面依赖特殊的CPU指令**，synrhronized关键字简洁、清晰、语义明确，因此即使有了Lock接口，使用的还是非常广泛。其应用层的语义是可以把任何一个非null对象作为"锁"，当synchronized作用在方法上时，锁住的便是对象实例（this）；当作用在静态方法时锁住的便是对象对应的Class实例，因为 Class数据存在于永久带，因此静态方法锁相当于该类的一个全局锁；当synchronized作用于某一个对象实例时，锁住的便是对应的代码块。在HotSpot JVM实现中，锁有个专门的名字：对象监视器。
+**synchronized:**  Java的关键字，在jvm层面上                 **Lock:** 是一个接口
 
-使用synchronized完，系统会自动让线程释放对锁的占用；而Lock则必须要用户去手动释放锁，如果没有主动释放锁，就有可能导致出现死锁现象。
+**用法**
 
-synchronized的缺陷
+**synchronized:** 在需要同步的对象中加入此控制，synchronized可以加在方法上，也可以加在特定代码块中，括号中表示需要锁的对象。
 
-Case 1 ：
+**Lock:** 一般使用ReentrantLock类做为锁。在加锁和解锁处需要通过lock()和unlock()显示指出。所以一般会在finally块中写unlock()以防死锁。
 
-　　在使用synchronized关键字的情形下，假如占有锁的线程由于要等待IO或者其他原因（比如调用sleep方法）被阻塞了，但是又没有释放锁，那么其他线程就只能一直等待，别无他法。这会极大影响程序执行效率。因此，就需要有一种机制可以不让等待的线程一直无期限地等待下去（比如只等待一定的时间 (解决方案：tryLock(long time, TimeUnit unit)) 或者 能够响应中断 (解决方案：lockInterruptibly())），这种情况可以通过 Lock 解决。
+**锁的释放**
 
-Case 2 ：
+**synchronized:** 1、以获取锁的线程执行完同步代码，释放锁 2、线程执行发生异常，jvm会让线程释放锁。在发生异常时候会自动释放占有的锁，因此不会出现死锁
 
-　　我们知道，当多个线程读写文件时，读操作和写操作会发生冲突现象，写操作和写操作也会发生冲突现象，但是读操作和读操作不会发生冲突现象。但是如果采用synchronized关键字实现同步的话，就会导致一个问题，即当多个线程都只是进行读操作时，也只有一个线程在可以进行读操作，其他线程只能等待锁的释放而无法进行读操作。因此，需要一种机制来使得当多个线程都只是进行读操作时，线程之间不会发生冲突。同样地，Lock也可以解决这种情况 (解决方案：ReentrantReadWriteLock) 。
+**Lock:** 在finally中必须释放锁，不然容易造成线程死锁。必须手动unlock来释放锁，可能引起死锁的发生
 
-Case 3 ：
+**锁的获取**
 
-　　我们可以通过Lock得知线程有没有成功获取到锁 (解决方案：ReentrantLock) ，但这个是synchronized无法办到的。
+**synchronized:** 假设A线程获得锁，B线程等待。如果A线程阻塞，B线程会一直等待
 
-#### synchronized
+**Lock:** 分情况而定，Lock有多个锁获取的方式，大致就是可以尝试获得锁，线程可以不用一直等待(可以通过tryLock判断有没有锁)
+
+**锁的状态**
+
+**synchronized:** 无法判断                           **Lock:** 可以判断
+
+**性能**
+
+**synchronized:** 少量同步
+
+**Lock:** 大量同步
+
+- Lock可以提高多个线程进行读操作的效率。（可以通过readwritelock实现读写分离）
+- 在资源竞争不是很激烈的情况下，Synchronized的性能要优于ReetrantLock，但是在资源竞争很激烈的情况下，Synchronized的性能会下降几十倍，但是ReetrantLock的性能能维持常态；
+- ReentrantLock提供了多样化的同步，比如有时间限制的同步，可以被Interrupt的同步（synchronized的同步是不能Interrupt的）等。在资源竞争不激烈的情形下，性能稍微比synchronized差点点。但是当同步非常激烈的时候，synchronized的性能一下子能下降好几十倍。而ReentrantLock确还能维持常态。公平锁机制。什么叫公平锁呢？也就是在锁上等待时间最长的线程将获得锁的使用权。通俗的理解就是谁排队时间最长谁先执行获取锁。
+
+**锁的类型**
+
+**synchronized:**  可重入 不可中断 非公平
+
+**Lock:** 可重入 可判断 可公平（两者皆可）
+
+**调度**
+
+**synchronized:** 使用Object对象本身的wait 、notify、notifyAll调度机制
+
+**Lock:** 可以使用Condition进行线程之间的调度
+
+**底层实现**
+
+**synchronized:** 底层使用指令码方式来控制锁的，映射成字节码指令就是增加来两个指令：monitorenter和monitorexit。当线程执行遇到[monitorenter指令](https://www.zhihu.com/search?q=monitorenter指令&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"article"%2C"sourceId"%3A"180469207"})时会尝试获取内置锁，如果获取锁则锁计数器+1，如果没有获取锁则阻塞；当遇到monitorexit指令时锁计数器-1，如果计数器为0则释放锁。
+
+**Lock:** 底层是CAS乐观锁，依赖AbstractQueuedSynchronizer类，把所有的[请求线程](https://www.zhihu.com/search?q=请求线程&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"article"%2C"sourceId"%3A"180469207"})构成一个CLH队列。而对该队列的操作均通过Lock-Free（CAS）操作。
+
+独占锁是一种悲观锁，synchronized就是一种独占锁；它假设最坏的情况，并且只有在确保其它线程不会造成干扰的情况下执行，会导致其它所有需要锁的线程挂起直到持有锁的线程释放锁。
+
+所谓乐观锁就是每次不加锁,假设没有冲突而去完成某项操作;如果发生冲突了那就去重试，直到成功为止。
+
+CAS(Compare And Swap)是一种有名的无锁算法。CAS算法是乐观锁的一种实现。CAS有3个操作数，内存值V，旧的预期值A，要修改的新值B。当且仅当预期值A和内存值V相同时，将内存值V修改为B并返回true，否则返回false。
+
+注:synchronized和ReentrantLock都是悲观锁。
+
+注:什么时候使用悲观锁效率更高、什么使用使用乐观锁效率更高，要根据实际情况来判断选择。
+
 
 1. synchronized修饰一个代码块，被修饰的代码块称为同步语句块，其作用的范围是大括号{}括起来的代码，作用的对象是调用这个代码块的对象；    														this.notifyAll()会自动执行 解锁对象
 
@@ -180,12 +260,28 @@ Case 3 ：
 
 当一个线程访问对象的一个synchronized(this)同步代码块时，另一个线程仍然可以访问该对象中的非synchronized(this)同步代码块。
 
+### 线程池
+
+线程池顾名思义就是事先创建若干个可执行的线程放入一个池中（容器），需要的时候从池中获取线程不用自行创建，使用完毕不需要销毁线程而是放回池中，从而减少创建和销毁线程对象的开销。任何池化技术都是减低资源消耗，例如我们常用的 数据库连接池。
+
+第2个问题： 为什么要用线程池？
+
+1降低资源消耗          2提高响应速度        3提高线程的可管理性
+
+（减少分配和释放现成的开销和控制线程数量），向下进一步解为什么要用多线程（可以并发工作），以及什么是线程（OS对任务执行的抽象），OS大概是如何调度的等（抢占式/协作式等）。
+
+而向上就能可以理解如何去管理一组资源（用列表/集合/树），如何去“borrow”和“return”一个资源（锁/CAS），线程的创建释放策略（比如固定数量，定义最小最大数量，根据请求负载和某种算法做自适应等），还有一些设计模式上的考虑（池的实现可以切换而不改变接口；核心代码可以抽象为管理“池”而不仅仅是线程池；能够模拟为异步不阻塞的操作等），以及一些性能上的考量。
+
+
+
+
+
 #### Deadlock,starvation,race conditon
 
 A *deadlock* is a state in which each member of a group of actions, is waiting for some other member to release a lock. A *livelock* on the other hand is almost similar to a deadlock, except that the states of the processes involved in a livelock constantly keep on changing with regard to one another, none progressing. Thus Livelock is a special case of resource starvation, as stated from the general definition, the process is not progressing.
 
 **Starvation:**
-饥饿是一个与活锁和死锁密切相关的问题。在**动态**系统中，对资源的请求不断发生。因此，需要一些策略来决定谁何时获得资源。这个过程是合理的，可能会导致一些进程永远不会得到服务，即使它们没有死锁。 导致队列增长两次然后它 // 可以消费，从而导致计算不足 } 
+饥饿是一个与活锁和死锁密切相关的问题。在**动态**系统中，对资源的请求不断发生。因此，需要一些策略来决定谁何时获得资源。这个过程是合理的，**可能会导致一些进程永远不会得到服务**，即使它们没有死锁。 导致队列增长两次然后它  可以消费，从而导致计算不足 } 
 
 当“贪婪”线程使共享资源长时间不可用时，就会发生饥饿。例如，假设一个对象提供了一个通常需要很长时间才能返回的同步方法。如果一个线程频繁调用这个方法，其他同样需要频繁同步访问同一对象的线程也会经常被阻塞。
 
@@ -218,7 +314,9 @@ isAlive()<join()常用            3ways to terminate a thread:
 
 ##### volatile
 
-Java提供了volatile关键字来**保证可见性**。当一个共享变量被volatile修饰时，它会保证修改的值会**立即**被更新到**主存**，当有其他线程需要读取时，它会去内存中读取新值。关闭缓存，但 (++,--)运算符不是原子性的*不能用volatile（原子性：即一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。Java内存模型只保证了基本读取和赋值是原子性操作，如果要实现更大范围操作的原子性，可以通过synchronized和Lock来实现。）*
+Java提供了volatile关键字来**保证可见性**。当一个共享变量被volatile修饰时，它会保证修改的值会**立即**被更新到**主存**，当有其他线程需要读取时，它会去内存中读取新值。关闭缓存，但 (++,--)运算符不是原子性的不能用volatile（原子性：即一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。**Java内存模型只保证了基本读取和赋值是原子性操作，如果要实现更大范围操作的原子性，可以通过synchronized和Lock来实现。**）
+
+内存屏障（[memory barrier](http://en.wikipedia.org/wiki/Memory_barrier)）和volatile什么关系？上面的虚拟机指令里面有提到，如果你的字段是volatile，Java内存模型将在写操作后插入一个写屏障指令，在读操作前插入一个读屏障指令。这意味着如果你对一个volatile字段进行写操作，你必须知道：1、一旦你完成写入，任何访问这个字段的线程将会得到最新的值。2、在你写入前，会保证所有之前发生的事已经发生，并且任何更新过的数据值也是可见的，因为内存屏障会把之前的写入值都刷新到缓存。
 
 volatile 在并发情况下是线程不安全的，意味着**其他线程拿到的值可能不是最新的**。eg. a++     b= a+1
 
@@ -289,25 +387,6 @@ HttpSession session = request.getSession();
 
 ### 语法
 
-#### 属性
-
-- The `href` attribute of `<a>` specifies the URL of the page the link goes to
-- The `src` attribute of `<img>` specifies the path to the image to be displayed
-- The `width` and `height` attributes of `<img>` provide size information for images
-- The `alt` attribute of `<img>` provides an alternate text for an image
-- The `style` attribute is used to add styles to an element, such as color, font, size, and more
-- The `lang` attribute of the `<html>` tag declares the language of the Web page
-
-​	在 HTML 中，<br> 标签没有结束标签。
-
-在 XHTML 中，<br>标签必须被正确地关闭，比如这样：<br />。
-
-段落：当页面显示时，浏览器将自动删除任何多余的空格和行：
-
-HTML标签可以标识文字、动画、超链接等网页对	象，也可以包含属性，设置标签的各种功能。
-
-一个name可以同时对应多个控件，比如checkbox和radio，而id必须是全文档中唯一的.
-
 #### Link
 
 - Use the `target` attribute to define where to open the linked document打开新窗口
@@ -375,6 +454,7 @@ HTML标签可以标识文字、动画、超链接等网页对	象，也可以包
 
 <style>
 body{
+
 
 
 
@@ -573,23 +653,34 @@ out.print("</body></html>");
 
 **HTTP2.0 focus on reduce payload time. Using SPDY multiplex,universal encryption,server push**
 
-### session tracking
+### session  cookie
 
-Session直接翻译成中文比较困难，一般都译成**时域**。在[计算机专业](https://baike.baidu.com/item/计算机专业/10586245)术语中，Session是指一个终端用户与交互系统进行通信的时间间隔，通常指从注册进入系统到注销退出系统之间所经过的时间。以及如果需要的话，可能还有一定的操作空间。
+**两种用于保持HTTP连接状态的技术就应运而生了，一个是Cookie，而另一个则是Session**
 
-需要注意的是，一个Session的概念需要包括特定的客户端，特定的[服务器](https://baike.baidu.com/item/服务器)端以及不中断的操作时间。A用户和C服务器建立连接时所处的Session同B用户和C服务器建立连接时所处的Session是两个不同的Session。
+除了可以将用户信息通过 Cookie 存储在用户浏览器中，也可以利用 Session 存储在服务器端，存储在服务器端的信息更加安全。
+
+Session 可以存储在服务器上的文件、数据库或者内存中。也可以将 Session 存储在 Redis 这种内存型数据库中，效率会更高。
+
+Session是指一个终端用户与交互系统进行通信的时间间隔，通常指从注册进入系统到注销退出系统之间所经过的时间。以及如果需要的话，可能还有一定的操作空间。需要注意的是，一个Session的概念需要包括特定的客户端，特定的[服务器](https://baike.baidu.com/item/服务器)端以及不中断的操作时间。A用户和C服务器建立连接时所处的Session同B用户和C服务器建立连接时所处的Session是两个不同的Session。
 
  session：同一次会话有效（只要浏览器不关，都属于同一次会话，无论是重定向还是请求转发，都有效；关闭或切换浏览器后无效；），session是存在于服务器端的，所以如果使用重定向的方式跳转，可以利用session来获取数据（并不是重定向传了数据，而是获取了服务器端的数据）
 
-session的工作原理：HttpSession
+使用 Session **维护用户登录状态**的过程如下：
 
-（1）当一个session第一次被启用时，一个独一的标识被存储于本地的cookie中。
+1.用户进行登录时，用户提交包含用户名和密码的表单，放入 HTTP 请求报文中；
+2.服务器验证该用户名和密码，如果正确则把用户信息存储到 Redis 中，它在 Redis 中的 Key 称为 Session ID；
+3.服务器返回的响应报文的 Set-Cookie 首部字段包含了这个 Session ID，客户端收到响应报文之后将该 Cookie 值存入浏览器中；
+4.客户端之后对同一个服务器进行请求时会包含该 Cookie 值，服务器收到之后提取出 Session ID，从 Redis 中取出用户信息，继续之前的业务操作。
+应该注意 Session ID 的安全性问题，不能让它被恶意攻击者轻易获取，那么就不能产生一个容易被猜到的 Session ID 值。此外，还需要经常重新生成 Session ID。在对安全性要求极高的场景下，例如转账等操作，除了使用 Session 管理用户状态之外，还需要对用户进行重新验证，比如重新输入密码，或者使用短信验证码等方式。
 
-（2）首先使用session_start()函数，[PHP](https://baike.baidu.com/item/PHP/9337)从session仓库中加载已经存储的session变量。
+**Cookie 与 Session 选择**
+Cookie 只能存储 ASCII 码字符串，而 Session 则可以存储任何类型的数据，因此在考虑数据复杂性时首选 Session；
+Cookie 存储在浏览器中，容易被恶意查看。如果非要将一些隐私数据存在 Cookie 中，可以将 Cookie 值进行加密，然后在服务器进行解密；
+对于大型网站，如果用户所有的信息都存储在 Session 中，那么开销是非常大的，因此不建议将所有的用户信息都存储到 Session 中。解决方法：JWT（json web **token**)		诞生于服务器，保存在浏览器header.payload.signature
 
-（3）当执行PHP脚本时，通过使用session_register()函数注册session变量。
+**服务端执行 Session 机制时候会生成 Session 的 id 值，这个 id 值会发送给客户端，客户端每次请求都会把这个 id 值放到 http 请求的头部发送给服务端，而这个 id 值在客户端会保存下来，保存的容器就是 Cookie，因此当我们完全禁掉浏览器的Cookie的时候，服务端的Session也会不能正常使用。**
 
-（4）当PHP脚本执行结束时，未被销毁的session变量会被自动保存在本地一定路径下的session库中，这个路径可以通过php.[ini文件](https://baike.baidu.com/item/ini文件/9718973)中的session.save_path指定，下次浏览网页时可以加载使用。
+
 
 #### status code 
 
@@ -631,9 +722,24 @@ res.sendError(SC_NOT_FOUND);           **res.setStatus(res.SC_NO_CONTENT) 204 st
 
 3. **直接转发方式（Forward）**，**客户端和浏览器只发出一次请求**，Servlet、HTML、JSP或其它信息资源，由第二个信息资源响应该请求，在请求对象request中，保存的对象对于每个信息资源是共享的。
 
-   　　**间接转发方式（Redirect）**实际是**两次HTTP请求**，服务器端在响应第一次请求的时候，让浏览器再向另外一个URL发出请求，从而达到转发的目的。
+   **间接转发方式（Redirect）**实际是**两次HTTP请求**，服务器端在响应第一次请求的时候，让浏览器再向另外一个URL发出请求，从而达到转发的目的。
 
-   
+   **JSP**可以被看做一个特殊的Servlet，只不过是对Servlet的扩展，只要是JSP可以完成的，servlet也可以完成。jsp页面最终被转换为servlet来运行，因此处理请求实际上是编译后的servlet。
+不同点：
+1.servlet的实现方式是在java中嵌入html代码，编写和修改html非常不便，因此适合做流程控制、业务处理；JSP的实现方式是在html中嵌入java代码，适合页面展示。
+2.servlet中没有内置对象，JSP中的内置对象都是必须通过HttpServletRequest对象，HttpServletResponce、HttpServlet对象得到。
+
+- JavaEE提供了javax.servlet.http包中提供了HttpServletRequest和HttpServletResponse接口，这两个接口是继承于javax.servlet包中的ServletRequest和ServletResponse接口。
+
+**请求转发和重定向的区别** request.getRequestDispatcher()
+请求转发和重定向的区别也是非常重要的知识点！！！
+
+请求转发是一个请求一次响应，而重定向是两次请求两次响应。
+请求转发地址不变化，而重定向会显示后一个请求的地址。这是因为请求转发是服务器的行为，是由容器控制的转向，整个过程处于同一个请求中，因此客户端浏览器不会显示转向后的地址；但重定向是客户端的行为，重新发送了请求，整个过程不在同一个请求中，因此客户端浏览器会显示跳转后的地址。
+请求转发只能转发到本项目其它Servlet，而重定向不只能重定向到本项目的其它Servlet，还能定向到其它项目。
+请求转发是服务端行为，只需给出转发的Servlet路径，而重定向需要给出requestURI，既包含项目名。
+
+#### 
 
  **从效率来说：1）forword效率高，而redirect效率低**
 
@@ -734,6 +840,16 @@ Simple java classes for storing and accessing information. 面向对象A bean **
 
 其中，根据具体情况，scope 的值可以是 **page，request，session 或 application**。id值可任意只要不和同一 JSP 文件中其它 <jsp:useBean> 中 id 值一样就行了。
 
+3.Session是用户全局变量，在整个会话期间都有效。只要页面不关闭就一直有效（或者直到用户一直未活动导致会话过期，默认session过期时间为30分钟，或调用HttpSession的invalidate()方法）。存放在HttpSession对象中 
+
+4.application是程序全局变量，对每个用户每个页面都有效。存放在ServletContext对象中。它的存活时间是最长的，如果不进行手工删除，它们就一直可以使用 
+
+总结：当数据只需要在下一个forward有用时，用request就够了；
+         若数据不只是在下一个forward有用时，就用session。
+         上下文，环境信息之类的，用application。
+
+
+
 ## MVC
 
 ![img](https://bkimg.cdn.bcebos.com/pic/ac6eddc451da81cb26660e7e5066d01608243184?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U4MA==,g_7,xp_5,yp_5/format,f_auto)
@@ -741,6 +857,41 @@ Simple java classes for storing and accessing information. 面向对象A bean **
 
 
 <img src="https://developer.mozilla.org/en-US/docs/Glossary/MVC/model-view-controller-light-blue.png" alt="Diagram to show the different parts of the mvc architecture." style="zoom: 33%;" />
+
+**渲染**页面方面，大概有三种方式：
+
+1. 后端渲染 + 后端路由 
+2. 前后端分离 + 前端渲染 
+3. 前后端分离 + 前端渲染 + 前端路由
+
+## 前后端分离
+
+只要你的Html网页的内容是在服务器端生成的，这就是服务器端渲染的方式。你用[Openresty+lua](https://www.zhihu.com/search?q=Openresty%2Blua&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A"444793972"})没问题。
+
+**只要你的网页是在浏览器端，内容是通过接口从后端拿到的纯数据，这就是前后端分离**。在前后端分离的方式，浏览器和服务端传递的是数据，而在服务器端渲染的过程中，传递的是Html网页。
+
+1 [数据量](https://www.zhihu.com/search?q=数据量&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A"444793972"})：前后端分离中传递数据，所以传输量会小。
+
+​                 服务器端渲染，会传输更大的数据，而且，会有很多内容是重复的。
+
+2 体验：前后端多了一个渲染数据的过程，服务器端省去了这个过程。这也是一直被提到的首屏渲染的问题。
+
+
+
+3 解耦：前后端分离中，传输的是数据（只能由前端发送ajax请求，后端接受到ajax请求后，通过response返回数据，数据可以是规定数据结构，比如文本，json，xml，html 等，由前端ajax接受，但是如果html 文件不在项目中，需要jsonp跨域请求)）全部交给前端来处理，后端只负责提供数据。
+
+​             服务器端渲染中，传输的是Html，后端传给前端的Model，通常是通过Hidden的Input来处理，或者是直接用模板技术生成（JSP，Velocity，freemak）等。
+
+​             数据和展现并未分离，在过去，这被称之为套页面。
+
+4 控制：网页之间有各种跳转交互，在前后端分离中，跳转的页面控制，全部是由前端来决定。跟后端完全没有关系。在服务器端渲染的方式中，大部分是由后端来决定，少部分是由前端来决定
+
+5 SEO：前后端分离的方式，通常的载体是SPA，所以拿到的是没有数据的空壳子，很多搜索引擎，不支持SPA方式的SEO。
+
+- 客户端渲染不利于 SEO 搜索引擎优化
+- 服务端渲染是可以被爬虫抓取到的，客户端异步渲染是很难被爬虫抓取到的
+
+
 
 
 
@@ -752,11 +903,74 @@ jdk(develop kit)包含jre包含jvm；JRE是java运行时的环境，包含jvm和
 
 Race Condition（也叫做资源竞争），是多线程编程中比较头疼的问题。特别是Java多线程模型当中，经常会因为多个线程同时访问相同的共享数据，而造成数据的不一致性。为了解决这个问题，通常来说需要加上同步标志“synchronized”，来保证数据的串行访问。但是“synchronized”是个性能杀手，过多的使用会导致性能下降，特别是扩展性下降，使得你的系统不能使用多个CPU资源。without proper synchronization and their operation interleaves on each other.
 
+### 注解
+
+三类：自定义注解、JDK内置注解、还有第三方框架提供的注解。
+
+- 自定义注解就是我们自己写的注解，比如@UserLog
+- JDK内置注解，比如@Override检验方法重写，@Deprecated标识方法过期等
+- 第三方框架定义的注解比如SpringMVC的@Controller等
+
+<img src="https://pic1.zhimg.com/80/v2-116b805ba12495e7d2758acd99dd6c4c_1440w.jpg?source=1940ef5c" alt="img" style="zoom:50%;" />
+
+```java
+public @interface 注解名称{
+    属性列表;
+}
+```
+
+### NoSQL
+
+指非关系型数据库，与关系型数据库存在显著差异。其中最重要之处在于NoSQL数据库不适用SQL语言。其数据存储不需要固定的表格模式，一般都有水平可扩展性。NoSQL数据库分为以下几类：
+
+①Key/Value键值存储。这种数据存储通常都无数据结构，被当作字符串或者二进制数据，但是数据加载快，典型应用于高并发和日志系统场景。如Redis。
+
+②列存储数据库。列存储数据库功能相对局限，但是查找速度快，易分布式扩展。一般用于分布式文件系统。如Hbase、Cassandra
+
+③文档型数据库。和键值对数据库类似，也没有严格数据格式。不需要预先创建表结构，数据格式更加灵活，一般用户Web应用。如MongoDB。
+
+④图形数据库。图形数据库专注于构建关系图谱，如社交网络、推荐系统等等。这类网络有Neo4j、DEX。
+
+NoSQL种类繁多，Spring Boot支持绝大多数。我们主要介绍常见的Redis和MongoDB。
+
+**集群原理**
+
+  在Redis集群中，所有Redis节点彼此互联，节点内部使用二进制协议优化传输速度和带宽。当一个节点宕机后，集群中超过半数节点检测失效才认为该节点失效。不同于Tomcat集群需要反向代理服务器，Redis集群中任意节点都可以直接和Java客户端连接。Redis集群上的数据分配采用哈希槽。Redis集群中内置了16384个哈希槽，当有数据要存储时，Redis会首先使用CRC16算法对key进行计算，将计算结果对16384取余，这样每个key都会对应一个取值在16384之间的哈希槽。开发者可根据每个Redis实例性能来调整每个Redis实例上哈希槽的分布范围。
+
+**负载均衡**
+
+是防止有的人干死了，有的人闲死了，来根据能力（CPU、IO）分配一下工作量
+
+现有的负载均衡算法主要分为静态和动态两类。静态负载均衡算法以固定的概率分配任务，不考虑服务器的状态信息，如轮转算法、加权轮转算法等；动态负载均衡算法以服务器的实时负载状态信息来决定任务的分配，如最小连接法
+
 ## Jvm
 
-是运行不同bytecode的虚拟机。JVM 有针对不同系统的特定实现（Windows，Linux，macOS），目的是使用相同的字节码，它们都会给出相同的结果。可移植性高
+是运行不同bytecode的虚拟机。JVM 有针对不同系统的特定实现（Windows，Linux，macOS），目的是使用相同的字节码，它们都会给出相同的结果。可移植性高。字节码是JVM理解的代码（.class）。而且，由于字节码并不针对一种特定的机器，因此，Java 程序无须重新编译便可在多种不同操作系统的计算机上运行。	
 
-字节码是JVM理解的代码（.class）。而且，由于字节码并不针对一种特定的机器，因此，Java 程序无须重新编译便可在多种不同操作系统的计算机上运行。					
+### 类加载过程 及 双亲委派
+
+类从被加载到[内存](https://so.csdn.net/so/search?q=内存&spm=1001.2101.3001.7020)中开始，到卸载出内存，经历了**加载、连接、初始化、使用**5个阶段，其中连接又包含了**验证、准备、解析**三个步骤。这些步骤总体上是按照图中顺序进行的
+
+<img src="https://img-blog.csdnimg.cn/20200713095842419.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hvcml6b25fanVubW93ZW4=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;" />			
+
+4、解析
+虚拟机将用于标识引用的符号替换为实际指向的引用的地址。符号或符号引用只不过是个标识（描述符），而实际地址才是真正的目的内存位置。
+
+解析动作主要针对：类或接口、字段（类成员变量）、类方法、接口方法等引用进行。
+
+类或接口的解析：判断所要转化成的直接引用是对数组类型，还是对普通的对象类型的引用，从而进行不同的解析。
+字段解析：对字段进行解析时，会先在本类中查找是否包含有简单名称和字段描述符都与目标相匹配的字段，如果有，则查找结束；如果没有，则会按照继承关系从上往下递归搜索该类所实现的各个接口和它们的父接口，还没有，则按照继承关系从上往下递归搜索其父类，直至查找结束，查找流程如下图所示：
+
+最后需要注意：理论上是按照上述顺序进行搜索解析，但在实际应用中，虚拟机的编译器实现可能要比上述规范要求的更严格一些。如果有一个同名字段同时出现在该类的接口和父类中，或同时在自己或父类的接口中出现，编译器可能会拒绝编译。
+
+类方法解析：对类方法的解析与对字段解析的搜索步骤差不多，只是多了判断该方法所处的是类还是接口的步骤，而且对类方法的匹配搜索，是先搜索父类，再搜索接口。
+接口方法解析：与类方法解析步骤类似，由于接口不会有父类，因此，只递归向上搜索父接口就行了。
+
+5. 初始化
+
+给类的静态变量初始化值，不同于准备阶段，此处是使用用于自定义的值进行赋值。
+
+分为程序计数器、虚拟机栈、本地方法栈3个区域	<img src="https://pic3.zhimg.com/80/v2-dfc3b65b983a82e84420e1335a507e2a_1440w.jpg" alt="img" style="zoom:67%;" />
 
 运行步骤：![Java程序运行过程](https://my-blog-to-use.oss-cn-beijing.aliyuncs.com/Java%20%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B.png)
 
@@ -775,6 +989,16 @@ Java 泛型（generics）是 JDK 5 中引入的一个新特性, 泛型提供了�
 - 强化类型安全，由于泛型在编译期进行类型检查，从而保证类型安全，减少运行期的类型转换异常。
 - 提高代码复用，泛型能减少重复逻辑，编写更简洁的代码。
 - 类型依赖关系更加明确，接口定义更加优好，增强了代码和文档的易读性。
+
+有两种限定通配符，⼀种是<? extends T>它通过确保类型必须是T的⼦类来**设定类型的上界** 用于灵活读取，
+
+- 如果传入的类型不是 E 或者 E 的子类，编译不成功
+
+另⼀种是<? super T>它通过确保类型必须是T的⽗类来设定类型的下界 用于灵活写入
+
+下界: 用 super 进行声明，表示参数化的类型可能是所指定的类型，或者是此类型的父类型，直至 Object
+
+
 
 泛型一般有三种使用方式:泛型类、泛型接口、泛型方法。
 
@@ -807,6 +1031,22 @@ byte,short,char—> int —> long—> float —> double
 
 1. ​        x = (int)34.56 + (int)11.2;  // 丢失精度
 2. ​        y = (double)x + (double)10 + 1;  // 提高精度<img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20210520160203853.png" alt="image-20210520160203853" style="zoom:33%;" />
+
+## AOP
+
+面向切面编程(AOP)常用于在一个访问过程中纵向切开，插入控制访问。但是AOP编程不会影响正常的执行流程，仅仅是在正常执行流程关键点进行切入编程。举个例子：公司有个人力资源管理系统已经上线，但是系统运行不稳定，有时运行很慢。为了检测系统哪里出了问题，同时又不能破坏原有系统，开发人员想要监控每个方法的执行时间，再根据这些执行时间判断问题所在。当问题解决后，再把这些监控移除。由于系统目前已经运行，如果手动修改系统中成千上万个方法，工作量非常大并且对原系统侵入太深，而且后续移除又很麻烦。
+
+  这时，**在系统运行过程中动态添加代码，以相同代码检测每一个方法的执行，这就是采用面向切面编程**。Spring框架对于AOP提供了很好的支持。在AOP中，有一些常见的概念首先介绍给大家：
+
+①Joinpoint（连接点）：类中可以被增强的方法被称为链接点。例如，想修改哪个方法的功能，那么该方法就是一个连接点。
+
+②Pointcut（切入点）：对Joinpoint进行拦截的定义即为切入点。例如，拦截所有以insert开始的方法，这个定义即为切入点。
+
+③Advice（通知）：拦截到Joinpoint后要做的事就是通知。例如，打印日志监控，通知分为前置通知、后置通知、异常通知、最终通知和环绕通知。
+
+④Aspect（切面）：Pointcut和Advice结合就是一个切面。
+
+⑤Target（对象）：要增强的类被称为Target。
 
 ## OO面向对象
 
@@ -963,6 +1203,7 @@ What is the relation between class and object?
 int类型变量默认初始值为0
 **float类型变量默认初始值为0.0f
 double类型变量默认初始值为0.0
+
 **boolean类型变量默认初始值为false
 **char类型变量默认初始值为0**(ASCII码)
 **long类型变量默认初始值为0
@@ -1009,7 +1250,7 @@ int i = Array.getLength(array);
 
 a.length , s.length()  //a是int类数组， s是String
 
-### 编译运行
+**编译运行**
 
 类——对象——属性、方法
 
@@ -1115,6 +1356,26 @@ String 一般指 java.lang.String 类，作为字符串.是对象不是数据类
 
 当用new关键字创建字符串对象时, 不会查询字符串常量池; 当用双引号直接声明字符串对象时, 虚拟机将会查询字符串常量池. 说白了就是: 字符串常量池提供了字符串的复用功能, 除非我们要显式创建新的字符串对象, 否则对同一个字符串虚拟机只会维护一份拷贝。<img src="https://img-blog.csdnimg.cn/img_convert/9b21555ad4b131f7b86d599a6d465f51.png" alt="640?wx_fmt=png" style="zoom:50%;" />
 
+#### StringBuffer and StringBuilder
+
+1. 操作少量的数据: 适用String
+2. 单线程操作字符串缓冲区下操作大量数据: 适用StringBuilder       are **mutable** 
+3. 多线程操作字符串缓冲区下操作大量数据: 适用StringBuffer       are **mutable** 
+
+```
+    String a = "hello2"; 　  
+    String b = "hello";       
+    String c = b + 2;       
+    System.out.println((a == c));
+    输出结果为:false。由于有符号引用的存在，所以  String c = b + 2;不会在编译期间被优化，不会把b+2当做字面常量来处理的
+
+    String a = "hello2";   　
+    final String b = "hello";       
+    String c = b + 2;       
+    System.out.println((a == c));
+    输出结果为：true。对于被final修饰的变量，会在class文件常量池中保存一个副本，也就是说不会通过连接而进行访问
+```
+
 
 **String <--> 包装类**
 
@@ -1137,7 +1398,7 @@ Stringbuffer(synchronisation) vs.   new StringBuilder("cat"); 5.0后新方法
 
 > 因为 Java 只有值传递，所以，对于 == 来说，不管是比较基本数据类型，还是引用数据类型的变量，其本质比较的都是值，只是引用类型变量存的值是对象的地址。
 
-**`equals()`** 作用不能用于判断基本数据类型的变量，只能用来判断两个对象是否相等。`equals()`方法存在于`Object`类中，而`Object`类是所有类的直接或间接父类。
+**`equals()`** 作用**不能用于判断基本数据类型的变量**，只能用来判断两个对象是否相等。`equals()`方法存在于`Object`类中，而`Object`类是所有类的直接或间接父类。
 
 ``equals()` 方法存在两种使用情况：
 
@@ -1170,6 +1431,20 @@ public class test1 {
 
 - `String` 中的 `equals` 方法是被重写过的， `String` 的 `equals` 方法比较的是对象的值。
 - 当创建 `String` 类型的对象时，虚拟机会在常量池中查找有没有已经存在的值和要创建的值相同的对象，如果有就把它赋给当前引用。如果没有就在常量池中重新创建一个 `String` 对象。
+
+**一、equeals相等，那么hashCode一定相等**
+
+**二、hashCode相等，那么equals不一定返回true**
+
+**三、hashCode不相等，那么equals一定不相等**
+
+为什么有了equals这样有效的方法还需要hashCode呢？
+
+因为：
+
+在HashSet(特性：不含有重复的内容)，有新对象加入时，会先计算对象的HashCode值来判断对象加入的位置，同时于已有的对象hashCode作比较，如果有相同的，再用equals去比较，若相同那么则不加入hashSet，若不相同，会使其加入到其他的位置。如果没有其他对象hashCode与之相同的，那么这个对象必定是一个新对象，这样就减少了equals的执行次数、先用hashCode去比较，从而大大提高了速度
+
+
 
 将String转换成int
 int guess = Integer.parseInt(StringGuess)
@@ -1314,9 +1589,13 @@ public class Bat **implements** Flyable,Bitable;<img src="C:\Users\Stan\AppData\
 
 #### garbage collection
 
+**Stack******(local variable and methods)***
+
+
+
 **Heap******(objects and array)****实例变量在对象中，可被垃圾收集
 
-**Stack******(local variable and methods)****
+**在Java虚拟机中，对象是在Java堆中分配内存的，这是一个普遍的常识。****但是，有一种特殊情况，那就是如果经过逃逸分析后发现，一个对象并没有逃逸出方法的话，那么就可能被优化成栈上分配。这样就无需在堆上分配内存，也无须进行垃圾回收了。**
 
 **（1）程序内存布局场景下，堆与栈表示两种内存管理方式；**<img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20210508150143938.png" alt="image-20210508150143938" style="zoom: 50%;" />
 
@@ -1415,15 +1694,16 @@ Using **exception**让run-time error 在compile time被捕获，**更有效**
   
 
 try catch：自己处理异常
+
   * try {
     *可能出现异常的代码
     *} catch（Exception e）{
-    
+
     e.printStackTrace();
-    
+
     *如果出现了异常类A类型的异常，那么执行该代码
     *} ...（catch可以有多个）
-    
+
   * finally {
     *最终肯定必须要执行的代码（例如释放资源的代码）
     *}
@@ -1441,9 +1721,100 @@ try catch：自己处理异常
 
 判断语句是否为真，假——》
 
-### Collection![在这里插入图片描述](https://img-blog.csdnimg.cn/20190717224652123.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2phdmFlZV9nYW8=,size_16,color_FFFFFF,t_70)
+### **Sort**
 
-包括set，list，queue
+若一个类要实现Comparator接口：它一定要实现compareTo(T o1,T o2) 函数，但可以不实现 equals(Object obj) 函数。 
+为什么可以不实现 equals(Object obj) 函数呢？ 因为任何类，默认都是已经实现了equals(Object obj)的。 [Java](https://so.csdn.net/so/search?q=Java&spm=1001.2101.3001.7020)中的一切类都是继承于java.lang.Object，在Object.java中实现了equals(Object obj)函数；所以，其它所有的类也相当于都实现了该函数。 
+(2) int compare(T o1, T o2) 是“比较o1和o2的大小”。返回“负数”，意味着“o1比o2小”；返回“零”，意味着“o1等于o2”；返回“正数”，意味着“o1大于o2”。 
+(3) 这个排序算法是“经过调优的合并排序”算法 
+我们不难发现：Comparable相当于“内部比较器”，而Comparator相当于“外部比较器”。 
+
+## Collection
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190717224652123.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2phdmFlZV9nYW8=,size_16,color_FFFFFF,t_70)<img src="https://img-blog.csdn.net/20180807200307368?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI5MzczMjg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img" style="zoom:67%;" />包括set，list，queue
+
+
+
+Collection中的集合，元素是孤立存在的（理解为单身），向集合中存储元素采用一个个元素的方式存储。
+
+Map中的集合，元素是成对存在的(理解为夫妻)。每个元素由键与值两部分组成，通过键可以找对所对应的值。
+
+Collection中的集合称为单列集合，Map中的集合称为双列集合。
+
+需要注意的是，Map中的集合不能包含重复的键，值可以重复；每个键只能对应一个值。
+
+Map中常用的集合为HashMap集合、LinkedHashMap集合。
+
+
+### 容器
+
+ Java中容器主要分为两大类：Collection和Map
+
+容器可以管理对象的生命周期、对象与对象之间的依赖关系，您可以使用一个配置文件（通常是[XML](https://baike.baidu.com/item/XML/86251)），在上面定义好对象的名称、如何产生（Prototype 方式或Singleton 方式）、哪个对象产生之后必须设定成为某个对象的属性等，在启动容器之后，所有的对象都可以直接取用，不用编写任何一行程序代码来产生对象，或是建立对象与对象之间的依赖关系。
+
+### List
+
+<img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20220211171122420.png" alt="image-20220211171122420" style="zoom:67%;" />
+
+### Hashmap
+
+HashSet底层是HashMap，HashMap的底层（数组+链表+红黑树)来实现的，它之所以有相当快的查询速度主要是因为它是通过计算散列码来决定存储的位置。
+
+**HashMap 中，键值对的存储是通过1. put(key,vlaue)** 
+
+**get方法，传入key，就可以查询到value**。 **HashMap的底层数组长度总是2的n次方**，
+
+**HashTable**,不同的是:key和value的值均不允许为null;它支持线程的同步，即任一时刻只有一个线程能写Hashtable,因此也导致了Hashtale在写入时会比较慢。 
+
+解决HashMap的哈希碰撞？
+
+Java中HashMap是利用“拉链法”处理HashCode的碰撞问题。在调用HashMap的put方法或get方法时，都会首先调用hashcode方法，去查找相关的key，当有冲突时，再调用equals方法。hashMap基于hasing原理，我们通过put和get方法存取对象。当我们将键值对传递给put方法时，他调用键对象的hashCode()方法来计算hashCode，**然后找到bucket（哈希桶）位置来存储对象**。当获取对象时，通过键对象的equals()方法找到正确的键值对，然后返回值对象。**HashMap使用链表来解决碰撞问题，当碰撞发生了，对象将会存储在链表的头节点。hashMap在每个链表节点存储键值对对象。当两个不同的键却有相同的hashCode时，他们会存储在同一个bucket位置的链表中。键对象的equals()来找到键值对**
+
+HashCode是使用Key通过Hash函数计算出来的，由于不同的Key，通过此Hash函数可能会算的同样的HashCode，所以此时用了拉链法解决冲突，把HashCode相同的Value连成链表. 但是get的时候根据Key又去桶里找，如果是链表说明是冲突的，此时还需要检测Key是否相同
+
+Hashmap扩容：扩大[数组长度](https://so.csdn.net/so/search?q=数组长度&spm=1001.2101.3001.7020)，对原数组进行rehash操作，把原数组copy到新数组中 resize()
+
+
+
+**deque**（double-ended queue，双端队列）是一种具有[队列](https://baike.baidu.com/item/队列/14580481)和[栈](https://baike.baidu.com/item/栈/12808149)的性质的[数据结构](https://baike.baidu.com/item/数据结构/1450)。双端队列中的元素可以从两端弹出)。**虽然没有严格要求 Deque 实现禁止插入 null 元素，但强烈鼓励他们这样做。**强烈建议允许使用 null 元素的任何 Deque 实现的用户不要利用插入 null 的能力。这是因为 null 被各种方法用作特殊返回值来指示双端队列为空。
+
+Queue 中 remove() 和 poll()都是用来从队列头部删除一个元素。
+在队列元素为空的情况下，remove() 方法会抛出NoSuchElementException异常，poll() 方法只会返回 null 。
+
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jYXJ0b29uLWJsb2cub3NzLWNuLWJlaWppbmcuYWxpeXVuY3MuY29tLzEzOTg1OTQ5NjktNWNjZTVlOWFkYTczZF9hcnRpY2xleC5qcGc?x-oss-process=image/format,png" alt="img" style="zoom:80%;" />
+
+
+
+使用java的同学请注意，如果你使用Stack的方式来做这道题，会造成速度较慢； 原因的话是Stack继承了Vector接口，而Vector底层是一个Object[]数组，那么就要考虑空间扩容和移位的问题了。 可以使用LinkedList来做Stack的容器，**因为LinkedList实现了Deque接口，所以Stack能做的事LinkedList都能做，其本身结构是个双向链表，扩容消耗少。** 但是我的意思不是像100%代码那样直接使用一个LinkedList当做队列，那确实是快，但是不符题意。 贴上代码，这样的优化之后，效率提高了40%，超过97%。
+
+Vector 类实现了一个动态数组。和 ArrayList 很相似，但是两者是不同的：
+
+- Vector 是同步访问的。
+- Vector 包含了许多传统的方法，这些方法不属于集合框架。
+
+**使用场景**
+
+1.需要线程同步
+
+  使用Collections工具类中synchronizedXxx()将线程不同步的ArrayDeque以及LinkedList转换成线程同步。
+
+2.频繁的插入、删除操作：LinkedList
+
+3.频繁的随机访问操作：ArrayDeque
+
+4.未知的初始数据量：LinkedList
+
+list.add()      list.remove()
+
+PriorityQueue中常用的方法很多。来看几个常用的。
+
+**（1）add：插入一个元素，不成功会抛出异常**
+
+public boolean add(E e) { return offer(e);}
+
+我们看到add方法其实是通过调用offer方法实现的。我们直接看offer方法
+
+**（2）offer：插入一个元素，不能被立即执行的情况下会返回一个特殊的值（true 或者 false）**
 
 ## File
 
@@ -1464,6 +1835,7 @@ OutputStreamWriter是从字符流到字节流的桥接怎么理解？
      1、字符的输出需要通过字符流来操作，但是本质最后还是通过字节流输出到计算机上进行存储的
     
      2、 因此OutputStreamWriter流的作用就是利用字节流作为底层输出流然后构建字符输出流，字符输出流输出字符到流中，然后通过指定的字符集把流中的字符编码成字节输出到字节流中，其作用就是一个桥梁，使得双方链接起来
+
 OutputStream需要封装在PrintWriter中以使用 println.
 
 在try and catch中写read and write
@@ -1487,7 +1859,7 @@ println(i)   //1.0             println在结尾加上换行符，将输出光标
 runtime or compile time
 
 1. java.lang.NullPointerException
-2.  OutOfBounds
+2. OutOfBounds
 3. 
 
 #### java需要标识符
@@ -1498,7 +1870,15 @@ runtime or compile time
 （3）也可能是类当中直接忘记写方法。
 ```
 
+而**深复制**则不同，它不仅将原对象的各个属性逐个复制出去，而且将原对象各个属性所包含的对象也依次采用深复制的方法**递归复制**到新对象上。
+
 ## 补充
+
+<img src="https://img-blog.csdnimg.cn/20200706205605930.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3poYW95YW5namlhbjcyNA==,size_16,color_FFFFFF,t_70" alt="img" style="zoom: 67%;" />
+
+**单核cpu同一时间只能运行一个线程**
+
+区别：进程是操作系统分配资源的基本单位，线程是任务调度和执行的
 
 **1.CPU角度来看:**
 
@@ -1512,7 +1892,7 @@ runtime or compile time
 
 **在操作系统中,进程是最小的资源分配单位,在一个进程中可以有多个线程**.如下
 
-![img](https://img2018.cnblogs.com/blog/1671142/201909/1671142-20190918143302982-1713972299.png)
+
 
  
 
