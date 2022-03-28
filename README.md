@@ -1,5 +1,5 @@
 # stanBlog
-个人技术博客blog，记录分享我的学习路线！
+个人技术博客blog，学习路线！
 # Questions
 
 #### 浏览器中输入url到页面展示过程
