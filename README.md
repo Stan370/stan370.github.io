@@ -1,5 +1,5 @@
-# [stanBlog]
-个人技术博客blog，学习路线！(https://stan370.github.io/)
+# [stanBlog](https://stan370.github.io/)
+个人技术博客blog，学习路线！
 # Questions
 
 #### 浏览器中输入url到页面展示过程
