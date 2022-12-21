@@ -1,7 +1,34 @@
 # [stanBlog](https://stan370.github.io/)
 个人技术博客blog，学习路线！
-# Questions
 
+# Cryptology
+
+**对称加密 (DES, 3DES, AES)：**如果要加密一串消息，很自然的想法是，加密和解密用的同一个密码。如同现实生活中，一把钥匙既可以锁上一把锁，也可以打开一把锁，这就是密码学中的对称加密 (Symmetric Encryption)：加密和解密用的是同一串密钥 (Secret Key)。实际应用中的[数据加密](https://www.zhihu.com/search?q=%E6%95%B0%E6%8D%AE%E5%8A%A0%E5%AF%86&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22465894109%22%7D)，通常都是使用的对称加密，因为**[对称加密算法](https://www.zhihu.com/search?q=%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22465894109%22%7D)很多对硬件特别友好，所以在硬件加密模块上运行效率非常高**。
+
+
+
+# Oauth 2
+     +--------+                               +---------------+
+     |        |--(A)- Authorization Request ->|   Resource    |
+     |        |                               |     Owner     |
+     |        |<-(B)-- Authorization Grant ---|               |
+     |        |                               +---------------+
+     |        |
+     |        |                               +---------------+
+     |        |--(C)-- Authorization Grant -->| Authorization |
+     | Client |                               |     Server    |
+     |        |<-(D)----- Access Token -------|               |
+     |        |                               +---------------+
+     |        |
+     |        |                               +---------------+
+     |        |--(E)----- Access Token ------>|    Resource   |
+     |        |                               |     Server    |
+     |        |<-(F)--- Protected Resource ---|               |
+     +--------+                               +---------------+
+
+                     Figure 1: Abstract Protocol Flow 
+
+**非对称加密 (RSA), 非对称加密是为了解决对称加密无法解决的问题。例如，怎么才能保证使用密钥的人是可信的呢？**
 #### 浏览器中输入url到页面展示过程
 
   用户输入url，例如http://[www.baidu.com](http://www.baidu.com/)。其中http为协议，[www.baidu.com](http://www.baidu.com/)为网络地址，及指出需要的资源在那台计算机上。一般网络地址可以为域名或IP地址，此处为域名。使用域名是为了方便记忆，但是为了让计算机理解这个地址还需要把它解析为IP地址。
