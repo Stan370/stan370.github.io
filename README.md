@@ -471,6 +471,24 @@ CAP原则又称CAP定理，指的是在一个分布式系统中，Consistency（
 - 以电商网站为例，会员登录、个人设置、个人订单、购物车、搜索用AP，因为这些数据短时间内不一致不影响使用；后台的商品管理就需要CP，避免商品数量的不一致；支付功能需要CA，保证支付功能的安全稳定
 
   BASE理论的核心思想是：即使无法做到强一致性，但每个应用都可以根据自身业务特点，采用适当的方式来使系统达到最终一致性。
+     拜占庭将军问题描述的是最困难的，也是最复杂的一种分布式故障场景，除了存在故障行为，还存在恶意行为的一个场景。你要注意，在存在恶意节点行为的场景中（比如在数字货币的区块链技术中），必须使用拜占庭容错算法（Byzantine Fault Tolerance，BFT）。除了故事中提到两种算法，常用的拜占庭容错算法还有：PBFT 算法，PoW 算法。
+
+计算机分布式系统中，最常用的是非拜占庭容错算法，即故障容错算法（Crash Fault Tolerance，CFT）。CFT 解决的是分布式的系统中存在故障，但不存在恶意节点的场景下的共识问题。 也就是说，这个场景可能会丢失消息，或者有消息重复，但不存在错误消息，或者伪造消息的情况。常见的算法有 Paxos 算法、Raft 算法、ZAB 协议。
+
+在Paxos算法中，有三种角色：
+
+Proposer：提案Proposal提出者
+Acceptor：决策者，可以批准议案          Learner：最终决策的学习者
+Paxos算法安全性前提如下：
+
+只有被提出的value才能被选定。
+只有一个value被选定，并且如果某个进程认为某个value被选定了，那么这个value必须是真的被选定的那个。
+Paxos算法类似于两阶段提提交
+     Raft is a consensus algorithm that is designed to be easy to understand. It's equivalent to Paxos in fault-tolerance and performance. The difference is that it's decomposed into relatively independent subproblems, and it cleanly addresses all major pieces needed for practical systems. We hope Raft will make consensus available to a wider audience, and that this wider audience will be able to develop a variety of higher quality consensus-based systems than are available today.
+
+
+Raft is a consensus algorithm that is designed to be easy to understand. It's equivalent to Paxos in fault-tolerance and performance. The difference is that it's decomposed into relatively independent subproblems, and it cleanly addresses all major pieces needed for practical systems. We hope Raft will make consensus available to a wider audience, and that this wider audience will be able to develop a variety of higher quality consensus-based systems than are available today.
+
 
 MQ（Message Queue）[消息队列](https://baike.baidu.com/item/消息队列/4751675)，是基础数据结构中“先进先出”的一种数据结构。一般用来解决应用解耦，异步消息，流量削峰等问题，实现高性能，高可用，可伸缩和最终一致性架构
 
