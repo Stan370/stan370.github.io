@@ -34,7 +34,7 @@ jobs:
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./
-          destination: ./_site
+          destination: https://stan370.github.io/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
 
@@ -42,7 +42,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://stan370.github.io/
     runs-on: ubuntu-latest
     needs: build
     steps:
