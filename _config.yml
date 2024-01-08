@@ -71,7 +71,6 @@ category_map:
 tag_map:
 
 # Metadata elements
-## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
 meta_generator: true
 
 # Date / Time format
