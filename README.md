@@ -2,13 +2,27 @@
 A beautiful hexo blog theme with material design and responsive design with reference to BlinkFox.
 
 一个基于材料设计和响应式设计而成的全面、美观的Hexo主题的个人技术博客Blog
-<h1 align="center">blog</h1>
 
 
 > - 🔁 项目同步维护：[Github](https://github.com/Stan370/stan370.github.io/) 
 > - 📖 电子书阅读：[Github Pages](https://stan370.github.io//) 
 
+## Features
 
+- Simple and beautiful, and post is Beautiful and readable.
+- [Material Design](https://material.io/).
+- Responsive design, which can be displayed well on desktop, tablet, mobile phone, etc.
+- Home page carousel posts and changing 'banner' picture dynamically everyday.
+- Blog posts list with waterflow (There will be 24 images if the article doesn't have featured pictures).
+- Archive page with timeline.
+- Tags page of the **word cloud** and categories page of the **radar chart**
+- Rich 'About' page (including about me, posts charts, my projects, my skills, gallery etc.)
+- Friendly link page for customizable data
+- Support post topping and rewards
+- Support `MathJax`
+- TOC
+- Can be set append the copyright information when copying the content of the post
+- Can be set to do password verification when reading a post
 
 
 ## Fork 指南
