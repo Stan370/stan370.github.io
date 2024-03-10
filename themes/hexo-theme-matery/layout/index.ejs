@@ -6,36 +6,7 @@
 <%- partial('_partial/bg-video') %>
 <main class="content">
 
-    <% if (page.current === 1
-            && ((theme.dream.enable || theme.music.enable)
-                    || theme.video.enable || theme.recommend.enable)) { %>
-    <div id="indexCard" class="index-card">
-        <div class="container ">
-            <div class="card">
-                <div class="card-content">
-                    <% if (theme.dream.enable) { %>
-                        <%- partial('_widget/dream') %>
-                    <% } %>
-
-                    <% if (theme.music.enable && !theme.music.fixed) { %>
-                        <%- partial('_widget/music') %>
-                        <% } %>
-
-                    <% if (theme.video.enable && ( theme.video.url || theme.video.iframeUrl ) ) { %>
-                        <%- partial('_widget/video') %>
-                    <% } %>
-
-                    <% if (theme.recommend.enable) { %>
-                    <div id="recommend-sections" class="recommend">
-                        <%- partial('_widget/recommend') %>
-                    </div>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-    </div>
-    <% }%>
-
+   <div class="div">Great</div>
     <%
     var hashCode = function (str) {
         if (!str && str.length === 0) {
