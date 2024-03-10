@@ -4,11 +4,10 @@
 
 ## Writing
 
-提醒一句，时态用过去式，或者现在时都可以，重点是要全文统一。\
+提醒一句，时态用过去式，或者现在时都可以，重点是要全文统一。
 
-细心的话，不难发现这几个词经常被提及：development (拓展)，details (细节), organisation (构架), cohesion (连贯), sentence structure (句型), word choice (用词), variety (多变). cost effective
-
-名言motor: There are one thousand Hamlets in one thousand people’s eyes .
+细心的话，不难发现这几个词经常被提及：development (拓展)，details (细节), organisation (构架), cohesion (连贯), sentence structure (句型), word choice (用词), variety (多变). cost effective.
+名言motor: There are one thousand Hamlets in one thousand people’s eyes.
 
 As the saying goes: “the world is a book; those who do not travel read only a page”.
 
