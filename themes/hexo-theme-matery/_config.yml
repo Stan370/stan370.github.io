@@ -124,9 +124,9 @@ indexbtn:
 socialLink:
   github:  https://github.com/Stan370
   facebook: # https://www.facebook.com/xxx
-  twitter: # https://twitter.com/xxx
+  twitter: https://twitter.com/Young_trump92
   weibo: # https://weibo.com/xxx
-  zhihu: # https://www.zhihu.com/xxx
+  zhihu: https://www.zhihu.com/people/chat.openai
   rss: true # true、false
 
 
