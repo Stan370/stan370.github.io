@@ -49,7 +49,7 @@ time:
   hour: 00 # 小时
   minute: 00 # 分钟
   second: 00 # 秒
-  
+
 music:
     enable: false
 # Index cover carousel configuration.
@@ -129,6 +129,16 @@ socialLink:
   zhihu: # https://www.zhihu.com/xxx
   rss: true # true、false
 
+
+# URL
+## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
+url: https://stan370.github.io/
+permalink: :stan370.github.io/
+permalink_defaults:
+pretty_urls:
+  trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
+  trailing_html: true # Set to false to remove trailing '.html' from permalinks
+  
 # Whether to activate the Post TOC, and Configure which title types are supported by TOC support.
 # You can add `toc: false` to the Front-matter of a post to turn off the TOC.
 # 是否激活文章 TOC 功能，并配置TOC支持选中哪些标题类型，这是全局配置。
