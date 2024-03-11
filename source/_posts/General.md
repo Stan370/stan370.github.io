@@ -2,7 +2,7 @@
 title: CS NOTES
 date: 2023-10-07 17:43:33
 categories: 
-- 基础知识
+- 计算机工程
 tags:
 - 计算机基础
 - 编程
