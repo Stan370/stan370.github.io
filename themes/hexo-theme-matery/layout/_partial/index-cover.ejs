@@ -64,7 +64,7 @@ var coverPostsCount = coverPosts.length;
         <div class="container">
             <%- partial('_partial/bg-cover-content') %>
 
-            <div class="cover-btns">
+            <div id="scrollButton" class="cover-btns">
                 <a href="<%=
                         [theme.dream, theme.video, theme.recommend]
                                 .some(i=>i.enable)? "#indexCard": "#articles"
@@ -147,9 +147,19 @@ var coverPostsCount = coverPosts.length;
 </div>
 
 <script>
-    $(function () {
+    $(
+        
+        function () {
         let coverSlider = $('.carousel');
+        
+        document.getElementById('scrollButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default anchor behavior
 
+            // Smoothly scroll to the #articles section
+            document.querySelector('#articles').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
         //用户触摸轮播自动 restartPlay 是否生效
         let initUserPressedOrDraggedActive = false
 
