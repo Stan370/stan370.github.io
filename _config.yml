@@ -70,6 +70,12 @@ default_category: uncategorized
 category_map:
 tag_map:
 
+feed:
+  enable: true
+  type: atom
+  path: atom.xml
+  limit: 20
+  
 # Metadata elements
 meta_generator: true
 
