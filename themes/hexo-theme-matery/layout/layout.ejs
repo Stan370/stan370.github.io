@@ -31,39 +31,6 @@
         </script>
     <% } %>
 
-    <% if (theme.sakura.enable) { %>
-        
-        <script type="text/javascript">
-            // 只在桌面版网页启用特效
-            var windowWidth = $(window).width();
-            if (windowWidth > 768) {
-                document.write('<script type="text/javascript" src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.sakura) %>"><\/script>');
-            }
-        </script>
-    <% } %>
-
-    <!-- 雪花特效 -->
-    <% if (theme.snowdown.enable) { %> 
-        <script type="text/javascript">
-            // 只在桌面版网页启用特效
-            var windowWidth = $(window).width();
-            if (windowWidth > 768) {
-                document.write('<script type="text/javascript" src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.snow) %>"><\/script>');
-            }
-        </script>
-    <% } %>
-
-    <!-- 鼠标星星特效 -->
-    <% if (theme.mouseStar.enable) { %> 
-        <script type="text/javascript">
-            // 只在桌面版网页启用特效
-            var windowWidth = $(window).width();
-            if (windowWidth > 768) {
-                document.write('<script type="text/javascript" src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.star) %>"><\/script>');
-            }
-        </script>
-    <% } %>
-
     <% if (theme.tcaptcha.enable) { %> 
         <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
         <script src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.tcaptcha) %>"></script>
@@ -72,12 +39,8 @@
 
     <%- partial('_partial/baidu-analytics') %>
     <%- partial('_partial/baidu-push') %>
-    <% if (theme.clicklove.enable) { %>
     <script src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.clicklove) %>" async="async"></script>
-    <% } %>
-    <% if (theme.busuanziStatistics && theme.busuanziStatistics.enable) { %>
     <script async src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.busuanzi) %>"></script>
-    <% } %>
 
     <% if (theme.tidio.enable) { %>
         <script src="//code.tidio.co/<%- theme.tidio.public_key %>.js"></script>
@@ -130,12 +93,6 @@
     </script>
     <% } %>
 
-    <!--腾讯兔小巢-->
-    <% if (theme.tuxiaochao.enable) { %>
-        <div style="position:fixed;bottom:125px;right:16px;cursor: pointer;">
-            <a title="兔小巢" href="https://support.qq.com/products/<%- theme.tuxiaochao.productId %>"><i class="fa fa-comments fa-3x"  aria-hidden="true"></i></a>
-        </div>
-    <%}%>
     <% if (theme.canvas_nest.enable) { %>
     <script type="text/javascript" color="<%- theme.canvas_nest.color %>"
         pointColor="<%- theme.canvas_nest.pointColor %>" opacity='<%- theme.canvas_nest.opacity %>'
