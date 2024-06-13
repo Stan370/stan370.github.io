@@ -7,6 +7,7 @@ categories:
 tags:
 - 计算机基础
 - 编程
+img: /medias/featureimages/go.png
 ---
 
 ## Go的优势是什么

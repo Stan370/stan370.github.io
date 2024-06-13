@@ -1,6 +1,7 @@
 ---
 title: 信任的本质
 date: 2024-06-06 15:31:36
+img: /medias/featureimages/trust.jpg
 ---
 
 

@@ -8,10 +8,12 @@ tags:
 - 计算机基础
 - 编程
 - 开源
+img: /medias/featureimages/go.png
 ---
+
 ## **GIN**
 
-Gin 是一个高性能的Web框架，具有内置的中间件支持。它提供了路由、中间件、JSON验证和绑定等功能，非常适合用于构建高性能的RESTful API。
+一个高性能的Web框架，具有内置的中间件支持。它提供了路由、中间件、JSON验证和绑定等功能，非常适合用于构建高性能的RESTful API。
 It features a martini-like API with performance that is up to 40 times faster thanks to [httprouter](https://github.com/julienschmidt/httprouter). If you need performance and good productivity, you will love Gin.
 
 只要你的路由带有参数，并且这个项目的API数目超过了10，就尽量不要使用`net/http`中默认的路由。在Go开源界应用最广泛的router是httpRouter，很多开源的router框架都是基于httpRouter进行一定程度的改造的成果。关于httpRouter路由的原理，会在本章节的router一节中进行详细的阐释。
