@@ -64,8 +64,8 @@ var coverPostsCount = coverPosts.length;
         <div class="container">
             <%- partial('_partial/bg-cover-content') %>
 
-            <div id="scrollButton" class="cover-btns">
-                <a href="<%=
+            <div class="cover-btns">
+                <a id="scrollButton" href="<%=
                         [theme.dream, theme.video, theme.recommend]
                                 .some(i=>i.enable)? "#indexCard": "#articles"
                         %>" class="waves-effect waves-light btn">
@@ -73,10 +73,10 @@ var coverPostsCount = coverPosts.length;
                 </a>
 
                 <% if (theme.indexbtn && theme.indexbtn.enable) { %>
-                    <a href="<%- url_for(theme.indexbtn.url) %>" class="waves-effect waves-light btn" target="_blank">
-                        <i class="<%- theme.indexbtn.icon %>"></i><%= theme.indexbtn.name %>
+                    <a href="https://github.com/Stan370/stan370.github.io/archive/refs/heads/main.zip" class="waves-effect waves-light btn" target="_blank">
+                        <i class="<%- theme.indexbtn.icon %>"></i><%- __('down') %>
                     </a>
-                <% } else if (theme.githubLink.enable) { %>
+                <% }else if (theme.githubLink.enable) { %>
                     <a href="<%- theme.githubLink.url %>" class="waves-effect waves-light btn" target="_blank">
                         <i class="fab fa-github %>"></i><%= theme.githubLink.title %>
                     </a>
