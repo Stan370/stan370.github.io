@@ -145,7 +145,6 @@ JVM内存(Data area)
 
 运行步骤：
 
-!https://my-blog-to-use.oss-cn-beijing.aliyuncs.com/Java%20%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B.png
 
 1.方法区（Method Area）与Java堆一样，是各个线程共享的内存区域。
 
@@ -256,7 +255,7 @@ final成员变量存储在对象中，不同对象有不同的值。 final变量
 
 类从被加载到[内存](https://so.csdn.net/so/search?q=%E5%86%85%E5%AD%98&spm=1001.2101.3001.7020)中开始，到卸载出内存，经历了**加载、连接、初始化、使用**5个阶段，其中连接又包含了**验证、准备、解析**三个步骤。这些步骤总体上是按照图中顺序进行的
 
-!https://img-blog.csdnimg.cn/20200713095842419.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hvcml6b25fanVubW93ZW4=,size_16,color_FFFFFF,t_70
+[https://img-blog.csdnimg.cn/20200713095842419.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hvcml6b25fanVubW93ZW4=,size_16,color_FFFFFF,t_70]
 
 4、解析
 虚拟机将用于标识引用的符号替换为实际指向的引用的地址。符号或符号引用只不过是个标识（描述符），而实际地址才是真正的目的内存位置。
@@ -581,7 +580,7 @@ ADvantage:1、**由于抽象类不能被实例化**，最大的好处就是通�
 
 1.先父再子，执行子类的重写方法
 
-!https://img2018.cnblogs.com/blog/1080293/201809/1080293-20180927140643561-1197079835.jpg
+[https://img2018.cnblogs.com/blog/1080293/201809/1080293-20180927140643561-1197079835.jpg]
 
 2.静态代码块—主程序—非静态代码块—构造函数—一般方法
 
@@ -2037,7 +2036,6 @@ https://img-blog.csdn.net/20180430163324407?watermark/2/text/aHR0cHM6Ly9ibG9nLmN
 - 将URL映射到指定的Servlet进行处理
 - 与Servlet程序合作处理HTTP请求——根据HTTP请求生成HttpServletRequest对象并传递给Servlet进行处理，将Servlet中的HttpServletResponse对象生成的内容返回给浏览器.
     
-    !https://pica.zhimg.com/v2-ce6e39bb02e3c6a2f4eb1e5afaa6e4e6_r.jpg?source=1940ef5c
     
 
 虽然Tomcat也可以认为是HTTP服务器，但通常它仍然会和Nginx配合在一起使用：
@@ -2137,7 +2135,6 @@ jsp:useBean 标签可以在 JSP 中声明一个 JavaBean，然后使用。声明
 
 https://bkimg.cdn.bcebos.com/pic/ac6eddc451da81cb26660e7e5066d01608243184?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U4MA==,g_7,xp_5,yp_5/format,f_auto
 
-!https://developer.mozilla.org/en-US/docs/Glossary/MVC/model-view-controller-light-blue.png
 
 **渲染**页面方面，大概有三种方式：
 

@@ -8,7 +8,7 @@ tags:
 - 计算机基础
 - 编程
 - 开源
-img: /medias/featureimages/go.png
+img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/go.png
 ---
 
 ## **GIN**
