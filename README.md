@@ -1,6 +1,8 @@
 # [stanBlog](https://stan370.github.io/)
 A beautiful hexo blog theme with material design and responsive design with reference to BlinkFox.
 
+<img width="878" alt="image" src="https://github.com/Stan370/stan370.github.io/assets/56168768/bf7c495d-a51c-4c2b-a454-7a66aa036b86">
+
 一个基于材料设计和响应式设计而成的全面、美观的Hexo主题的个人技术博客Blog
 
 
