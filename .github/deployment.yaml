@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: Stanblog
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: Stanblog
+  template:
+    metadata:
+      labels:
+        app: Stanblog
+    spec:
+      containers:
+      - name: Stanblog
+        image: myregistry/Stanblog:latest
+        ports:
+        - containerPort: 5000
