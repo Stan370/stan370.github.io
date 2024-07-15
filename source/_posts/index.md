@@ -1,5 +1,5 @@
 ---
-title: Frontend Development
+title: JS和Tailwind
 date: 2024-03-10 15:43:32
 tags:
 - 计算机基础
