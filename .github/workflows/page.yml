@@ -17,12 +17,15 @@ jobs:
       
       - name: Install Dependencies
         run: npm install
+
       - name: Build
         run: npm run build
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: ./public
+
   deploy:
     needs: build
     permissions:
@@ -36,7 +39,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-   docker:
+
+  docker:
     runs-on: ubuntu-latest
     needs: build
     steps:
