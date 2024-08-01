@@ -7,6 +7,50 @@ date: 2024-03-10 15:43:32
 
 Consider this: Beyond the visible web lies an untamed and uncharted area akin to the Wild West, where data bandits and cyber outlaws reign supreme. These ne'er-do-wells constantly innovate their nefarious methods to breach firewalls, hijack sessions, and steal sensitive data. Web security is the marshal that stands in their way, brandishing the latest cryptographic shields and a sharp strategy to enforce the law of the land.
 
+## HTTPS
+1. **客户端发起请求**：
+    - 客户端向服务器发起 HTTPS 请求。
+2. **服务器响应并发送证书**：
+    - 服务器响应请求并发送 SSL/TLS 证书。证书中包含服务器的公钥，该公钥由受信任的证书颁发机构（CA）签名。
+3. **客户端验证证书**：
+    - 客户端验证服务器的证书，确保证书由受信任的 CA 签发，证书未过期，且证书中的域名与请求的域名匹配。
+    - **验证证书链**：客户端通过验证证书链来确认证书是否由受信任的 CA 签发。证书链由服务器证书、中间证书（如果有）、根证书组成。
+    - **检查证书有效期**：客户端检查证书的有效期，确保当前日期在证书的有效期内。
+    - **验证证书的域名**：客户端验证证书中的域名是否与请求的域名匹配。
+    - **检查证书吊销状态**：客户端可以通过在线证书状态协议（OCSP）或证书吊销列表（CRL）来检查证书是否被吊销。
+4. **协商 SSL/TLS 版本和加密算法**：
+    - 客户端和服务器协商选择双方都支持的 SSL/TLS 版本和加密算法套件（cipher suite）。这些算法套件定义了具体使用的对称加密算法、非对称加密算法、哈希算法等。
+5. **密钥交换和会话密钥生成**：
+    - **Ephemeral Diffie-Hellman（DHE）或 Ephemeral Elliptic Curve Diffie-Hellman（ECDHE）**：客户端和服务器使用临时的 Diffie-Hellman 或椭圆曲线 Diffie-Hellman 参数生成一个共享的预主密钥（pre-master secret）。这涉及使用服务器的临时公钥（通常是服务器基于 ECC 生成的）和客户端生成的临时公钥。
+    - **RSA**：如果使用 RSA 密钥交换，客户端生成一个随机的预主密钥，并使用服务器证书中的公钥对其进行加密，然后发送给服务器。服务器使用其私钥解密预主密钥。
+6. **生成会话密钥**：
+    - 双方使用共享的预主密钥生成会话密钥。会话密钥用于对通信数据进行对称加密。
+7. **数据加密**：
+    - 使用协商好的对称加密算法（如 AES、ChaCha20 等），客户端和服务器使用会话密钥对传输的数据进行加密和解密。
+8. **完整性验证**：
+    - 使用消息认证码（MAC）或哈希函数（如 SHA-256）来验证数据的完整性，确保数据在传输过程中未被篡改。
+证书验证的技术
+浏览器验证证书: 浏览器验证证书的合法性，包括：
+证书颁发机构: 浏览器检查证书是否由一个受信任的证书颁发机构（CA）颁发。
+证书有效期: 浏览器检查证书是否在有效期内。
+证书与域名匹配: 浏览器检查证书是否与网站的域名匹配。
+证书签名: 浏览器检查证书的签名是否正确。
+浏览器检查证书链: 浏览器检查证书链，确保证书是由一个受信任的 CA 颁发的。
+浏览器验证证书的公钥: 浏览器验证证书的公钥，确保它与服务器的公钥匹配。
+
+证书验证使用了以下技术：
+
+X.509: X.509 是一种证书格式，用于存储证书信息。
+SSL/TLS: SSL/TLS 是一种加密协议，用于建立安全连接。
+公钥加密: 公钥加密是一种加密算法，用于加密数据。
+数字签名: 数字签名是一种加密算法，用于验证证书的合法性。
+证书验证的工具
+
+证书验证可以使用以下工具：
+
+浏览器: 浏览器内置了证书验证功能。
+openssl: openssl 是一种命令行工具，用于验证证书。
+certutil: certutil 是一种命令行工具，用于验证证书。
 **安全外壳协议**( SSH **)**是一种[加密](https://en.wikipedia.org/wiki/Cryptography) [网络协议](https://en.wikipedia.org/wiki/Network_protocol)，用于在不安全的网络上安全地运行[网络服务。](https://en.wikipedia.org/wiki/Network_service)[[1]](https://en.wikipedia.org/wiki/Secure_Shell#cite_note-rfc4251-1)其最著名的应用是 remote [login](https://en.wikipedia.org/wiki/Login) and [command-line](https://en.wikipedia.org/wiki/Command-line_interface) execution.
 
 SSH 应用程序基于[客户端-服务器](https://en.wikipedia.org/wiki/Client%E2%80%93server_model)架构，将[SSH 客户端](https://en.wikipedia.org/wiki/SSH_client)实例与[SSH 服务器](https://en.wikipedia.org/wiki/SSH_server)连接。[[2]](https://en.wikipedia.org/wiki/Secure_Shell#cite_note-rfc4252-2) SSH 作为分层协议套件运行，包含三个主要分层组件：*传输层*提供服务器身份验证、机密性和完整性；用户*认证协议*向服务器验证用户；连接*协议*将加密隧道复用为多个逻辑通信通道。[[1]](https://en.wikipedia.org/wiki/Secure_Shell#cite_note-rfc4251-1)
