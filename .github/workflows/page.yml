@@ -9,6 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # The actions/checkout action clones the repository into a temporary directory and then moves the contents to the workflow's working directory. This ensures that the working directory remains clean and isolated from any other actions or jobs in the workflow.
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x
         uses: actions/setup-node@v2
