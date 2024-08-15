@@ -1,13 +1,89 @@
 ---
 title: 网络安全实践
 date: 2024-03-10 15:43:32
+tags:
+- 网络安全
+
 ---
 # Web Security
 在广阔的互联网领域，信息源源不断，交易瞬息万变，一场无声的战斗正在上演。网络威胁潜伏在阴影中，试图利用漏洞并破坏我们建造的数字堡垒。这就是网络安全的领域，一个动态且不断发展的领域，它是用户与渗透到网络世界的无数风险之间的守护者。
 
 Consider this: Beyond the visible web lies an untamed and uncharted area akin to the Wild West, where data bandits and cyber outlaws reign supreme. These ne'er-do-wells constantly innovate their nefarious methods to breach firewalls, hijack sessions, and steal sensitive data. Web security is the marshal that stands in their way, brandishing the latest cryptographic shields and a sharp strategy to enforce the law of the land.
 
+**对称加密 (DES, 3DES, AES)：**如果要加密一串消息，很自然的想法是，加密和解密用的同一个密码。如同现实生活中，一把钥匙既可以锁上一把锁，也可以打开一把锁，这就是密码学中的对称加密 (Symmetric Encryption)：加密和解密用的是同一串密钥 (Secret Key)。实际应用中的[数据加密](https://www.zhihu.com/search?q=%E6%95%B0%E6%8D%AE%E5%8A%A0%E5%AF%86&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22465894109%22%7D)，通常都是使用的对称加密，因为[**对称加密算法](https://www.zhihu.com/search?q=%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22465894109%22%7D)很多对硬件特别友好，所以在硬件加密模块上运行效率非常高**。
+
+**非对称加密 (RSA), 非对称加密是为了解决对称加密无法解决的问题。例如，怎么才能保证使用密钥的人是可信的呢？**
+
+公钥加密私钥解，私钥签名公钥验。
+
+1. **公钥加密，私钥解密**：
+    
+    这是非对称加密的基本应用场景。当A想向B发送加密信息时，A使用B的公钥对信息进行加密。由于公钥可以公开，A无需担心公钥的安全性。B收到加密信息后，使用自己的私钥进行解密，因为只有B持有对应的私钥，所以只有B能够解密并读取信息内容。这一过程确保了信息的机密性。
+    
+2. **私钥签名，公钥验证**：
+    
+    数字签名技术用于验证信息的完整性和发送方的身份。当A发送信息给B时，A使用自己的私钥对信息的摘要进行加密，生成数字签名。B收到信息和签名后，使用A的公钥对签名进行解密，验证签名的正确性。如果验证通过，B可以确信信息没有被篡改，且确实来自持有对应私钥的A，增强了信息的完整性和不可抵赖性。
+    
+消息认证码系统由三种算法组成：
+
+- 密钥生成算法从密钥空间中均匀随机地选择一个密钥。
+- 签名算法根据密钥和消息有效地返回标签。
+- 验证算法在给定相同密钥和标签的情况下，可以高效地验证消息的真实性。也就是说，当消息和标签未被篡改或伪造时，返回*接受，否则返回拒绝*
+    
+    。
+    
+
+安全的消息认证代码必须能够抵御攻击者[伪造任意、选定或所有消息的标签的](https://en.wikipedia.org/wiki/Digital_signature_forgery)企图，包括在[已知消息](https://en.wikipedia.org/wiki/Digital_signature_forgery)或[选定消息](https://en.wikipedia.org/wiki/Digital_signature_forgery)的情况下。在不知道密钥的情况下，计算给定消
+
+### MITM
+
+以下是MITM攻击的一些常见形式：
+
+1. **窃听（Eavesdropping）：**
+中间人通过监听网络通信，获取传输的敏感信息，如用户名、密码等。
+2. **数据篡改（Data Modification）：**
+中间人可以修改传输的数据，导致接收方收到被篡改过的信息，可能会对系统产生负面影响。
+3. **欺骗（Spoofing）：**
+攻击者可以伪装成合法的通信方，使得通信的两端都认为他们正在与合法的对方通信。
+4. **中继攻击（Relay Attack）：**
+攻击者在通信的两端之间传递信息，以模拟两者直接通信，同时记录或修改信息。
+5. **SSL Stripping：**
+中间人可能试图降级加密通信，将加密连接转换为非加密连接，以便更容易地窃听敏感信息。
+
+MITM攻击可以在各种通信协议中发生，包括HTTP、HTTPS、SMTP等。防范MITM攻击的方法包括使用加密通信（如HTTPS）、数字签名、使用安全的认证机制等。使用公共Wi-Fi网络时，特别需要注意MITM攻击，因为这样的网络更容易受到攻击者的窃听。
+
+Hacker劫持user DNS解析到黑客的服务器之后，如果黑客服务器上没有合法签发的SSL证书，浏览器会提示这个DNS指向的服务器不可信任，然后弹出警告画面阻止你访问，所以要**劫持DNS+合法证书**两个问题同时解决才算完美的中间人攻击。用户电脑上的证书大部分由操作系统颁发，可以离线信任链
+
+**单独说DH协商算法不能防止中间人没有意义。因为密钥协商算法要解决的是在不可靠链路上安全地协商密钥。而通信双方身份认证又是另外一个体系的东西。**
+
+在 MITM 攻击中，攻击者拦截客户端和服务器之间的通信，冒充双方拦截或更改它们之间交换的数据。
+虽然 HTTPS 对传输中的数据进行加密，但攻击者可能会插入客户端和服务器之间，拦截加密流量并使用各种技术对其进行解密，例如获取受损的 SSL/TLS 证书或利用 SSL/TLS 协议本身的漏洞。
+
+MITM:
+
+1. 服务器向客户端发送公钥。
+2. 攻击者截获公钥，保留在自己手上。
+3. 然后攻击者自己生成一个【伪造的】公钥，发给客户端。
+4. 客户端收到伪造的公钥后，生成加密hash值发给服务器。
+5. 攻击者获得加密hash值，用自己的私钥解密获得真秘钥。
+6. 同时生成假的加密hash值，发给服务器。
+7. 服务器用私钥解密获得假秘钥。
+8. 服务器用加秘钥加密传输信息
+
+可以看出我们这里数据是明文传输的，存在窃听风险。但是我们为了阐述数字签名机制是如何运转的，故意将保证信息机密性的机制省略了。
+
+如果想要保证数据的机密性，我们常见的做法是，通信双方通过非对称加密安全交换对称加密的密钥，后续通信过程的数据都使用对称加密保证数据机密性。
+
+并且「签名」的作用本身也不是用来保证数据的机密性，而是用于验证数据来源的防止数据被篡改的，也就是确认发送者的身份。接受者 Alice 收到后，取下数字签名，同时用 Bob 的公钥解密，得到「摘要1」，**证明确实是 Bob 发的**。
+
+再对邮件内容使用相同的散列函数计算「摘要2」，与上面得到的「摘要1」进行对比，**两者一致就说明信息未被篡改。**
 ## HTTPS
+主要三个作用：1. 加密通信 2.认证服务器的身份，防止mitm 窃听 3. 防止篡改，integrity
+
+HTTPS（Hypertext Transfer Protocol Secure）使用了混合加密机制，包括非对称加密和对称加密，以确保安全的数据传输。ssl3.0 1998
+
+ **TLS（传输层加密协议） 1.2 升级成 TLS 1.3，TLS 1.3 大幅度简化了握手的步骤，完成 TLS 握手只要 1 RTT，而且安全性更高。在 TLS 1.2 的握手中，一般是需要 4 次握手，先要通过 Client Hello （第 1 次握手）和 Server Hello（第 2 次握手） 消息**协商**出后续使用的加密算法，再互相交换公钥（第 3 和 第 4 次握手）**
+![HTTPS](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e8136f52-d35d-46c6-964e-ab05e6590e71/Untitled.png)
 1. **客户端发起请求**：
     - 客户端向服务器发起 HTTPS 请求。
 2. **服务器响应并发送证书**：
