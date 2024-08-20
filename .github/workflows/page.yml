@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # The actions/checkout action clones the repository into a temporary directory and then moves the contents to the workflow's working directory. This ensures that the working directory remains clean and isolated from any other actions or jobs in the workflow.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js 16.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
       
@@ -23,9 +23,10 @@ jobs:
         run: npm run build
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./public
+
 # Temporarily skip Docker and Kubernetes deployment steps
 # TOD: dockerfile
   # deploy:
