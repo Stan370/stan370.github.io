@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
   pull_request:
     branches:
       - main
@@ -37,9 +36,11 @@ jobs:
       url: https://stan370.github.io/
     runs-on: ubuntu-latest
     steps:
+      - name: Print environment variables
+        run: printenv
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3
+        uses: actions/deploy-pages@v4
         # env:
         #   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         #   DEPLOYMENT_KEY: ${{ secrets.DEPLOYMENT_KEY }}
