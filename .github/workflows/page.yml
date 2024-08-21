@@ -3,9 +3,9 @@ name: Pages
 on:
   push:
     branches:
-      - main # default branch
+      - main
       - master
-   pull_request:
+  pull_request:
     branches:
       - main
 
@@ -13,23 +13,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # The actions/checkout action clones the repository into a temporary directory and then moves the contents to the workflow's working directory. This ensures that the working directory remains clean and isolated from any other actions or jobs in the workflow.
       - uses: actions/checkout@v4
       - name: Use Node.js 16.x
         uses: actions/setup-node@v4
         with:
           node-version: '16'
-      
       - name: Install Dependencies
         run: npm install
-
       - name: Build
         run: npm run build
-
+      - name: List public directory
+        run: ls -alh ./public
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
+  
   deploy:
     needs: build
     permissions:
@@ -43,6 +42,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+
 
 # Temporarily skip Docker and Kubernetes deployment steps
 # TOD: dockerfile
