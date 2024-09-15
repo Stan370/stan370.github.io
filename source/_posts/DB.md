@@ -3,7 +3,7 @@ title: 理解数据库系统
 date: 2024-08-20 00:09:14
 tags:
 - 数据库
-img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/db.png
+img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/featureimages/db.png
 ---
 # Database
 数据库是一个存储数据的系统，它可以存储大量的数据，并且能够高效地检索这些数据。数据库中的数据被组织成表格的形式，这些表格称为表。表中的每一行代表一个记录，每一列代表一个字段。
