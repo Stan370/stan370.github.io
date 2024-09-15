@@ -6,7 +6,6 @@ categories:
 tags:
 - 计算机基础
 - 操作系统
-img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/featureimages/db.png
 
 ---
 
@@ -14,7 +13,7 @@ img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-them
 
 在操作系统中，程序运行的空间分为内核空间和用户空间， 用户空间所有对io操作的代码（如文件的读写、socket的收发等）都会通过系统调用进入内核空间完成实际的操作。
 ## 阻塞 I/O
-在阻塞 I/O 模式下，系统调用（如 read() 或 recvfrom()）会一直等待，直到内核把数据准备好并传输到用户空间。此期间，线程会被挂起，CPU将被释放去做其他事情，但这个线程无法执行任何其他任务，直到 I/O 操作完成。这种情况会导致线程阻塞，尤其在高并发环境下，每个 I/O 操作都可能耗费大量时间等待。在linux中，默认情况下所有的socket都是阻塞的，一个典型的读操作流程大概是这样：![socket](https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/source\_posts\IOandEpoll\image-1.png)
+在阻塞 I/O 模式下，系统调用（如 read() 或 recvfrom()）会一直等待，直到内核把数据准备好并传输到用户空间。此期间，线程会被挂起，CPU将被释放去做其他事情，但这个线程无法执行任何其他任务，直到 I/O 操作完成。这种情况会导致线程阻塞，尤其在高并发环境下，每个 I/O 操作都可能耗费大量时间等待。在linux中，默认情况下所有的socket都是阻塞的，一个典型的读操作流程大概是这样：![socket](https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/source/_posts/IOandEpoll/image-1.png)
 
 
 socket_io001
@@ -22,7 +21,7 @@ socket_io001
 所以，阻塞I/O的特点就是在IO执行的两个阶段（用户空间与内核空间）都被阻塞了。
 
 ## 非阻塞 I/O
-非阻塞 I/O 则允许程序发起 I/O 操作（例如 read() 或 recvfrom()），即使数据还没准备好，内核也不会让进程挂起，而是立即返回。此时用户进程得到的是一个错误，提示数据尚未准备好。用户进程需要不断轮询，重复调用 I/O 操作直到数据可用。这种方式避免了线程被阻塞的情况，但频繁的轮询可能会导致 CPU 使用效率低下。![alt text](image-2.png)
+非阻塞 I/O 则允许程序发起 I/O 操作（例如 read() 或 recvfrom()），即使数据还没准备好，内核也不会让进程挂起，而是立即返回。此时用户进程得到的是一个错误，提示数据尚未准备好。用户进程需要不断轮询，重复调用 I/O 操作直到数据可用。这种方式避免了线程被阻塞的情况，但频繁的轮询可能会导致 CPU 使用效率低下。![alt text](https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/source/_posts/IOandEpoll/image-2.png)
 多路复用 I/O
 多路复用 I/O (select()，poll()，epoll()) 允许单个线程监控多个文件描述符（如 socket），从而在多个 I/O 操作之间进行复用。它的基本原理是通过轮询多个 socket，查看是否有数据到达，并在有数据到达时通知应用程序。相比非阻塞 I/O，这种机制更高效，特别适合于处理大量连接的服务器。
 本地 I/O 操作通常为阻塞模式，即在进行 I/O 操作时，进程会被挂起直到操作完成。然而，现代操作系统也提供了非阻塞本地 I/O 或异步 I/O（如 Linux 的 aio 或 Windows 的 IOCP），允许应用程序继续执行其他任务而不等待 I/O 完成。网络 I/O 同样可以是阻塞的或非阻塞的。在非阻塞网络 I/O 中，进程发起 I/O 操作时不需要等待数据返回，可以继续执行其他操作。网络 I/O 领域中，异步 I/O、多路复用 I/O（如 select()、poll()、epoll()）、以及事件驱动编程（如 libuv、libevent）等技术被广泛使用，以应对高延迟和并发问题。
