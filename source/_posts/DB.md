@@ -97,7 +97,6 @@ img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-them
 
 OLTP vs OLAP
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/235d1c69-6aa1-4d68-944f-bc9712ea91a2/Untitled.png)
 
 ## Mysql
 
@@ -204,7 +203,6 @@ MySQL 的架构共分为两层：**Server 层和存储引擎层**，
 
 undo log 和 redo log 用于**记录事务对数据的修改**，以保证原子性和持久性，而 binlog 用于记录数据库的整体变更，MVCC 则用于控制并发，确保读写之间的隔离性。这些机制相互协作，确保数据库在事务执行和并发访问时的一致性和可靠性。
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/ea503cf6-9325-47ab-9fb3-3e33e40583ef/6bd06c67-eb44-4fbe-8c54-905aadec8be0/Untitled.png)
 
 CREATE INDEX ,ALTER TABLE
 
@@ -222,7 +220,6 @@ SELECT ... FROM ... WHERE ... ORDER BY ... LIMIT ...
 SELECT * FROM articles WHERE category_id = 123 ORDER BY id LIMIT 50, 10
 ```
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e37d8205-76d7-42cc-af76-6c807159e612/Untitled.png)
 
 1. 分解大连接查询
 将一个大连接查询分解成对每一个表进行一次单表查询，然后在应用程序中进行关联，这样做的好处有：
@@ -497,7 +494,6 @@ Mysql5.6 引入的索引下推优化（index condition pushdown)， 可以在索
 
 可以看到，使用了索引下推后，虽然 reward 列无法使用到联合索引，但是因为它包含在联合索引（age，reward）里，所以直接在存储引擎过滤出满足 reward = 100000 的记录后，才去执行回表操作获取整个记录。相比于没有使用索引下推，节省了很多回表操作。
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/ea503cf6-9325-47ab-9fb3-3e33e40583ef/c0f5f3ad-d930-472a-94f5-5da2e07e438a/Untitled.png)
 
 InnoDB以页面（Page）为基本单位来组织和管理数据。这些页面是数据库中数据和索引的物理存储单元。
 
@@ -779,7 +775,6 @@ save 60 10000`
 
 ### 缓存
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/ea503cf6-9325-47ab-9fb3-3e33e40583ef/2ddd57f1-969b-4dfa-be99-704511625908/Untitled.png)
 
 **缓存雪崩 Cache avalanche**
 
