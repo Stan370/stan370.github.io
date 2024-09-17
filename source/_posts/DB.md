@@ -100,7 +100,7 @@ OLTP vs OLAP
 
 ## Mysql
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/ea503cf6-9325-47ab-9fb3-3e33e40583ef/01a4e620-e7a8-4b42-93c1-220075d1ef92/Untitled.png)
+![sql](https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/SQL.png)
 
 MySQL 的架构共分为两层：**Server 层和存储引擎层**，
 
