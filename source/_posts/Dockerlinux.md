@@ -27,7 +27,13 @@ Docker引入的解决方案
 Docker利用操作系统层的虚拟化技术，通过Linux内核的Cgroups和Namespaces实现轻量级的容器。与虚拟机不同，容器共享主机操作系统的内核，但仍提供进程级别的隔离。这使得容器比虚拟机更轻量、更高效。
 
 通过Docker，开发人员可以将应用程序及其所有依赖项打包成一个标准化的容器镜像。这个容器镜像可以在任何支持Docker的环境中运行，从而确保开发、测试和生产环境的一致性。Docker容器的快速启动和停止使得应用程序的部署和扩展变得更加简便。容器的不可变性也有助于实现更可靠的持续集成和持续交付（CI/CD）流程。Docker天然适合微服务架构，每个微服务可以运行在一个独立的容器中，互不干扰。这简化了微服务的开发、部署和管理。
+### WSL
 
+WSL 提供的隔离比传统的虚拟机和容器要弱得多。它更注重与 Windows 的集成和互操作性，而不是隔离。WSL 更像是一个集成的开发环境，可以在 Windows 中无缝运行 Linux 工具和应用程序，但它没有提供强隔离性的需求，比如网络隔离或进程隔离。因此，WSL 更适合用于开发和测试场景，而不是对隔离性要求很高的生产环境。
+
+1. **File System:** WSL interacts with the Windows file system, which means there might be differences in file I/O performance or behavior compared to a native Ubuntu installation where it interacts directly with Linux file systems like ext4.
+2. **Integration:** WSL provides integration features allowing Windows and Linux to communicate and share resources. However, this integration might not be as seamless as in a native Ubuntu environment.
+3. **Hardware Access:** Certain hardware functionalities and access might be different between WSL and native Ubuntu due to how WSL interacts with the underlying Windows system.
 ## Linux内核调用
 Namespaces和Cgroups是容器化技术的两个关键机制，它们分别用于实现进程隔离和资源管理。以下是对Namespaces和Cgroups的详细介绍：
 
