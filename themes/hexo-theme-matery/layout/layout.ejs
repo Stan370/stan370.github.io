@@ -9,8 +9,7 @@
 <body>
     <%- partial('_partial/header') %>
     <%- body %>
-
-
+    <%- partial('_partial/footer') %>
     <%- partial('_partial/search') %>
     <%- partial('_partial/back-top') %>
 
@@ -20,16 +19,6 @@
     <script src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.scrollProgress) %>"></script>
     <script src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.lightgallery) %>"></script>
     <script src="<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.matery) %>"></script>
-
-    <% if (theme.mermaid.enable) { %>
-        <!-- <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script> -->
-        <script src='<%- theme.jsDelivr.url %><%- url_for(theme.libs.js.mermaid) %>'></script>
-        <script>
-          if (window.mermaid) {
-            mermaid.initialize({theme: 'forest'});
-          }
-        </script>
-    <% } %>
 
     <% if (theme.tcaptcha.enable) { %> 
         <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>

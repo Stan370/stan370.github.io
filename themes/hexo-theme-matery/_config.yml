@@ -26,21 +26,11 @@ menu:
   #    - name: Musics
   #      url: /musics
   #      icon: fas fa-music
-  #    - name: Movies
-  #      url: /movies
-  #      icon: fas fa-film
-  #    - name: Books
-  #      url: /books
-  #      icon: fas fa-book
-  #    - name: Galleries
-  #      url: /galleries
-  #      icon: fas fa-image
-
 # Website start time.
 # 站点运行开始时间.
 time:
   enable: true
-  year: 2020 # 年份
+  year: 2019 # 年份
   month: 06 # 月份
   date: 28 # 日期
   hour: 00 # 小时
@@ -403,7 +393,15 @@ busuanziStatistics:
   enable: true
   totalTraffic: true # 总访问量
   totalNumberOfvisitors: true # 总人次
-
+busuanzi:
+  pv:
+    enable: true
+    title: 本站总访问量
+    quantifier: 次
+  uv:
+    enable: true
+    title: 本站总访客量
+    quantifier: 次
 # Add google analytics configuration
 # 添加 Google Analytics 配置
 googleAnalytics:
@@ -651,34 +649,3 @@ bbtime:
   appId: # 你的appId
   appKey: # 你的appKey
   serverURLs: # https://你的api
-
-
-# 图表绘制插件
-# 建议更换更换hexo-renderer-markdown-it引擎。参考下面链接
-# https://github.com/hexojs/hexo-renderer-markdown-it
-# https://github.com/hexojs/hexo-renderer-markdown-it/wiki/Advanced-Configuration
-# 安装配置方法
-# yarn remove hexo-renderer-marked
-# yarn add hexo-renderer-markdown-it hexo-tag-mermaid
-# 注意：hexo-renderer-markdown-it 比默认引擎更快，可选择插件较多，请认真看上面两个链接教程。
-# mermaid语法教程 https://mermaid-js.github.io/mermaid/#/
-# 使用方法：
-# 在post文章中填写mermaid语句，需要使用{% mermaid %} 包裹
-# {% mermaid %}
-# [mermaid 语句正文]
-# {% endmermaid %}
-# 样例如下所示：
-# {% mermaid %}
-# graph TD
-#     A[Christmas] -->|Get money| B(Go shopping)
-#     B --> C{Let me think}
-#     C -->|One| D[Laptop]
-#     C -->|Two| E[iPhone]
-#     C -->|Three| F[Car]
-# {% endmermaid %}
-# mermaid chart。 依赖hexo-tag-mermaid
-mermaid: ## mermaid url https://github.com/knsv/mermaid
-  enable: false  # default false
-  version: "latest" # default v7.1.2
-  options:  # find more api options from https://github.com/knsv/mermaid/blob/master/src/mermaidAPI.js
-    #startOnload: true  // default true
