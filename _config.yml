@@ -3,9 +3,10 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: StanBlog
+title: StanBlog - provide quality contents
 subtitle: ''
-description: ''
+description: 'A popular long-form, stick-figure-illustrated blog about almost everything. Material Themes / GitHub Pages 个性化定制的Hexo-Matery主题
+'
 keywords:
 author: Stan ke
 language: en
