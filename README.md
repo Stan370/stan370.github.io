@@ -1,5 +1,6 @@
 # [stanBlog](https://stan370.github.io/)
-A beautiful hexo blog theme with material design and responsive design with reference to BlinkFox.
+StanBlog是一个基于Hexo和EJS模板引擎的博客主题，具有材料设计和响应式设计的特点。它是一个全面、美观的个人技术博客主题，支持 Markdown 和 HTML 语法，自带 RSS 和 Atom 订阅功能，支持自定义主题和布局，支持代码高亮和语法检查，支持移动设备访问。
+A beautiful hexo blog theme with material design and responsive design.
 
 <img width="878" alt="image" src="https://github.com/Stan370/stan370.github.io/assets/56168768/bf7c495d-a51c-4c2b-a454-7a66aa036b86">
 
@@ -11,21 +12,51 @@ A beautiful hexo blog theme with material design and responsive design with refe
 
 ## Features
 
-- Simple and beautiful, and post is Beautiful and readable.
-- [Material Design](https://material.io/).
-- Responsive design, which can be displayed well on desktop, tablet, mobile phone, etc.
-- Home page carousel posts and changing 'banner' picture dynamically everyday.
-- Blog posts list with waterflow (There will be 24 images if the article doesn't have featured pictures).
-- Archive page with timeline.
-- Tags page of the **word cloud** and categories page of the **radar chart**
-- Rich 'About' page (including about me, posts charts, my projects, my skills, gallery etc.)
-- Friendly link page for customizable data
-- Support post topping and rewards
-- Support `MathJax`
-- TOC
-- Can be set append the copyright information when copying the content of the post
-- Can be set to do password verification when reading a post
+*   使用Hexo作为博客框架
+*   使用EJS作为模板引擎
+*   支持 Markdown 和 HTML 语法
+*   自带 RSS 和 Atom 订阅功能
+*   支持自定义主题和布局
+*   支持代码高亮和语法检查
+*   支持移动设备访问
+*   简单美观的设计，文章页面美观易读
+*   支持Material Design- [Material Design](https://material.io/).
+*   响应式设计，适用于桌面、平板、手机等设备
+*   首页轮播文章和每日动态更换的banner图片
+*   文章列表采用瀑布流布局（如果文章没有特色图片，则显示24张图片）
+*   归档页面采用时间轴布局
+*   标签页面采用词云布局，分类页面采用雷达图布局
+*   丰富的"关于"页面（包括关于我、文章统计、我的项目、我的技能、相册等）
+*   友情链接页面支持自定义数据
+*   可以设置在复制文章内容时追加版权信息
+*   可以设置阅读文章时需要密码验证
 
+## 项目结构
+```
+├── _config.yml
+├── package.json
+├── scaffolds
+│   ├── draft.md
+│   ├── page.md
+│   └── post.md
+├── scripts
+│   ├── deploy.sh
+│   └── server.sh
+├── source
+│   ├── _drafts
+│   ├── _posts
+│   └── index.ejs
+├── themes
+│   └── ejs-theme
+│       ├── _config.yml
+│       ├── layout.ejs
+│       ├── index.ejs
+│       └── partials
+│           ├── footer.ejs
+│           ├── header.ejs
+│           └── sidebar.ejs
+└── yarn.lock
+```
 
 ## Fork 指南
 
@@ -57,6 +88,23 @@ Fork 本项目之后，还需要做一些事情才能让你的页面「正确」
 
    pages/about.md 文件内容对应网站的「关于」页面，里面的内容多为个人相关，将它们替换成你自己的信息，包括 \_data 目录下的 skills.yml 和 social.yml 文件里的数据。
 
+6. 进行本地部署测试
+部署您的博客
+您需要选择一种部署方法。Hexo支持GitHub Pages、Vercel等多种平台。以下是如何设置GitHub页面：
+```
+npm install hexo-deployer-git --save
+
+Configure deployment in _config.yml:
+deploy:
+  type: git
+  repo: <repository url>
+  branch: gh-pages
+Generate and Deploy:
+
+hexo generate
+hexo deploy
+```
+Layouts and Partials: EJS themes often use .ejs files for layouts and partials. For example, layout.ejs might be the main layout file where you define the structure of your pages.
 
 ## 致谢
 
