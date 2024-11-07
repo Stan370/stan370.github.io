@@ -6,7 +6,6 @@ categories:
 tags:
 - 计算机基础
 - 操作系统
-img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/featureimages/fk.png
 ---
 
 # 操作系统OS
