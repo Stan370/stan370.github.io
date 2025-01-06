@@ -2,6 +2,7 @@
 title: Coding philosophy
 date: 2024-10-10 12:49:46
 tags: 个人成长
+img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/0.jpg
 ---
 
 # Coding philosophy
@@ -45,10 +46,11 @@ tags: 个人成长
 
 ### 软件架构与团队组织架构
 
-**软件架构反映团队组织：**
+软件架构反映团队组织（康威定律）：
 
-- 软件架构设计往往受到团队组织结构的影响。庞大的开发团队需要通过拆分和解耦来提高效率。
-- **微服务架构：** 通过将庞大的单体应用拆分为多个独立的小服务，微服务架构可以提高开发效率、缩短开发周期，并减少团队之间的依赖和冲突。
+你提到了软件架构设计受到团队组织结构的影响，这正是康威定律的核心思想：
+
+  “组织架构决定了系统架构。”（Organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations.）
 
 这种架构的最大价值在于，它不仅仅是技术上的进步，更是对团队组织形式的一种优化，从而提升了整体的软件质量和开发效率。
 
