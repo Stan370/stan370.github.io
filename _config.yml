@@ -39,6 +39,12 @@ filename_case: 0
 render_drafts: false
 relative_link: false
 future: true
+search:
+  path: search.xml
+  field: post
+  content: true
+  template: ./search.xml
+  
 syntax_highlighter: highlight.js
 highlight:
   auto_detect: false
