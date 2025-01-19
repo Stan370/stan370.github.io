@@ -1597,7 +1597,6 @@ public class Bat **implements** Flyable,Bitable;<img src="C:\Users\Stan\AppData\
 
 **在Java虚拟机中，对象是在Java堆中分配内存的，这是一个普遍的常识。****但是，有一种特殊情况，那就是如果经过逃逸分析后发现，一个对象并没有逃逸出方法的话，那么就可能被优化成栈上分配。这样就无需在堆上分配内存，也无须进行垃圾回收了。**
 
-**（1）程序内存布局场景下，堆与栈表示两种内存管理方式；**<img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20210508150143938.png" alt="image-20210508150143938" style="zoom: 50%;" />
 
 
 

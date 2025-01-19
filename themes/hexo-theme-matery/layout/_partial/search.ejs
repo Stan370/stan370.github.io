@@ -12,6 +12,7 @@
 
 <script type="text/javascript">
 $(function () {
+    
     var searchFunc = function (path, search_id, content_id) {
         'use strict';
         $.ajax({
@@ -98,6 +99,6 @@ $(function () {
         });
     };
 
-    searchFunc('<%- url_for('/search.xml') %>', 'searchInput', 'searchResult');
+    searchFunc('<%- url_for("/search.xml") %>', 'searchInput', 'searchResult');
 });
 </script>

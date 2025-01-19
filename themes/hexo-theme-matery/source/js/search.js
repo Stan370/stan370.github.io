@@ -1,5 +1,15 @@
 var searchFunc = function (path, search_id, content_id) {
     'use strict';
+    
+    // Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, arguments), wait);
+        };
+    }
+
     $.ajax({
         url: path,
         dataType: "xml",
@@ -14,15 +24,16 @@ var searchFunc = function (path, search_id, content_id) {
             }).get();
             var $input = document.getElementById(search_id);
             var $resultContent = document.getElementById(content_id);
-            $input.addEventListener('input', function () {
-                var str = '<ul class=\"search-result-list\">';
+
+            const handleSearch = debounce(function () {
+                var str = '<ul class="search-result-list">';
                 var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
                 $resultContent.innerHTML = "";
                 if (this.value.trim().length <= 0) {
                     return;
                 }
                 // perform local searching
-                var cnt = 1;
+                var matchCount = 0;
                 datas.forEach(function (data) {
                     var isMatch = true;
                     var content_index = [];
@@ -51,6 +62,7 @@ var searchFunc = function (path, search_id, content_id) {
                     }
                     // show search results
                     if (isMatch) {
+                        matchCount++;
                         str += "<li><a href='" + data_url + "' class='search-result-title'>" + String(cnt) + ". " + data_title + "</a>";
                         cnt += 1;
 
@@ -74,9 +86,17 @@ var searchFunc = function (path, search_id, content_id) {
                     }
                 });
                 str += "</ul>";
-                str = "<p class=\"search-result-summary\">共找到" + String(cnt-1) + "条结果</p>"  + str;
+                // Internationalized summary
+                str = `<p class="search-result-summary">Found ${matchCount} results</p>${str}`;
                 $resultContent.innerHTML = str;
-            });
+            }, 300); // 300ms debounce
+
+            $input.addEventListener('input', handleSearch);
+        },
+        error: function(xhr, status, error) {
+            console.error('Search data loading failed:', error);
+            document.getElementById(content_id).innerHTML = 
+                '<p class="search-error">Search data loading failed. Please try again later.</p>';
         }
     });
 }
