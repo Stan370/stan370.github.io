@@ -50,7 +50,7 @@
                                         文字：<input class="form-control" name="info" type="text" placeholder="hello, world"/>
                                     </div>
                                     <div class="form-group">
-                                        链接：<input class="form-control" name="href" type="text" placeholder="https://github.com/blinkfox/hexo-theme-matery"/>
+                                        链接：<input class="form-control" name="href" type="text" placeholder="https://github.com/Stan370/stan370.github.io"/>
                                     </div>
                                     <div class="form-group">
                                         速度：<input  class="form-control"  name="speed" type="text" placeholder="5~20" value="16" />
@@ -106,7 +106,7 @@
                         let info = $('input[name=info]').val();
                         (info === '' ) ?  info='hello world' : info=info;
                         let href = $('input[name=href]').val();
-                        (href === '' ) ?  href='https://github.com/blinkfox/hexo-theme-matery' : href=href;
+                        (href === '' ) ?  href='https://github.com/Stan370/stan370.github.io' : href=href;
                         let speed = parseInt($('input[name=speed]').val());
                         if(speed > 20 || speed < 5)
                             speed = Math.floor(Math.random() * 10) + 5;
