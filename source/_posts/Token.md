@@ -2,18 +2,28 @@
 title: Token设计与选型
 date: 2025-01-07 19:43:33
 categories: 
-- 计算机科学
+- 计算机工程
 tags:
 - 计算机基础
 - 分布式系统
 - 网络安全
 ---
 
-### Token 设计与选型：Access Token 与 Refresh Token 的适用场景
+### 认证系统的设计与选型：JWT到长短生命周期的Token管理
 
 在现代的认证与授权机制中，**Token**扮演着关键角色，用于标识和验证用户的身份。
 
 Token是一个令牌，客户端访问服务器时，验证通过后服务端会为其签发一张令牌，之后客户端就可以携带令牌访问服务器，服务端只需要验证令牌的有效性即可。一句话概括；**访问资源接口（API）时所需要的资源凭证**
+JWT（JSON Web Token）常常是一个热门选择。下面我将从设计原则、优势与劣势、以及实际应用场景等角度详细说明 JWT 的设计与选型问题。JWT 的标准结构由三部分组成：
+
+Header（头部）：通常包含令牌的类型（通常为 JWT）以及所使用的签名算法（如 HMAC SHA256 或 RSA）。
+Payload（载荷）：包含声明（Claims），如注册声明（如 iss、sub、aud、exp、nbf、iat 和 jti）以及自定义数据。
+Signature（签名）：通过对 Header 和 Payload 进行编码后，使用指定的算法和密钥（或私钥）进行签名，确保数据未被篡改。
+**参考文献与数据来源**：
+- [RFC 7519 - JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519)
+- [JWT Best Practices](https://auth0.com/blog/jwt-best-practices/)
+- [OWASP JWT Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java.html)
+- [NIST Guidelines on Authentication](https://pages.nist.gov/800-63-3/)
 
 然而，如何设计Token，尤其是在选择使用**Access Token**和**Refresh Token**的组合（简称AT&RT方案）还是单Token方案时，往往需要根据业务需求和安全性做权衡。本文将从原理、场景和安全性三个角度入手，深入探讨Token设计中的抉择。
 

@@ -1,7 +1,10 @@
 ---
 title: 日本麻将（日麻）策略分析
 date: 2024-11-07 14:41:43
-tags:
+tags: 
+- 概率论
+- 组合数学  
+- 决策理论
 categories: 
 - 随谈
 img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/featureimages/richi.png
