@@ -1,5 +1,6 @@
 # [stanBlog](https://stan370.github.io/)
 StanBlog是一个基于Hexo和EJS模板引擎的博客主题，具有材料设计和响应式设计的特点。它是一个全面、美观的个人技术博客主题，支持 Markdown 和 HTML 语法，自带 RSS 和 Atom 订阅功能，支持自定义主题和布局，支持代码高亮和语法检查，支持移动设备访问。
+
 A beautiful hexo blog theme with material design and responsive design.
 
 <img width="878" alt="image" src="https://github.com/Stan370/stan370.github.io/assets/56168768/bf7c495d-a51c-4c2b-a454-7a66aa036b86">
@@ -46,15 +47,23 @@ A beautiful hexo blog theme with material design and responsive design.
 │   ├── _drafts
 │   ├── _posts
 │   └── index.ejs
-├── themes
-│   └── ejs-theme
-│       ├── _config.yml
-│       ├── layout.ejs
-│       ├── index.ejs
-│       └── partials
-│           ├── footer.ejs
-│           ├── header.ejs
-│           └── sidebar.ejs
+themes/hexo-theme-matery/
+├── layout/                  # Main layout templates
+│   ├── _partial/          # Reusable template parts
+│   │   ├── header.ejs     # Page header template
+│   │   ├── footer.ejs     # Page footer template 
+│   │   ├── head.ejs       # HTML head section
+│   ├── layout.ejs         # Main layout template
+│   ├── index.ejs          # Homepage template
+│   ├── post.ejs           # Single post template
+│   ├── about.ejs          # About page template
+│   ├── contact.ejs        # Contact page template
+│   └── gallery.ejs        # Gallery page template
+│
+├── source/                # Static assets
+│   ├── posts
+│
+└── _config.yml            # Theme configuration file
 └── yarn.lock
 ```
 
