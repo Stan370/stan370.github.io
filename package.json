@@ -1,6 +1,6 @@
 {
-  "name": "hexo-site",
-  "version": "0.0.0",
+  "name": "StanBlog",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "hexo generate",
@@ -20,7 +20,7 @@
     "hexo-generator-category": "^1.0.0",
     "hexo-generator-feed": "^3.0.0",
     "hexo-generator-index": "^2.0.0",
-    "hexo-generator-search": "^2.4.3",
+    "hexo-generator-searchdb": "^1.4.1",
     "hexo-generator-tag": "^1.0.0",
     "hexo-renderer-ejs": "^2.0.0",
     "hexo-renderer-markdown-it": "^7.1.1",

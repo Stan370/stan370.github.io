@@ -2,7 +2,22 @@
     var configRoot = config.root
     configRoot = (configRoot === null || configRoot === undefined || configRoot === '/') ? '' : configRoot;
 %>
-
+<style>
+  #openSearchBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+#openSearchBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+  #searchIcon {
+    color: white;
+  }
+</style>
 <a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
 <ul class="right nav-menu">
   <% Object.keys(theme.menu).forEach(function(key) { %>
@@ -39,9 +54,9 @@
   </li>
   <% }); %>
   <li>
-    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+    <button id="openSearchBtn" type="button" class="modal-trigger waves-effect waves-light">
       <i id="searchIcon" class="fas fa-search" title="<%= __('search') %>" style="zoom: 0.85;"></i>
-    </a>
+    </button>
   </li>
 </ul>
 

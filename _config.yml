@@ -40,10 +40,9 @@ render_drafts: false
 relative_link: false
 future: true
 search:
-  path: search.xml
+  path: search.json
   field: post
   content: true
-  template: ./search.xml
   
 syntax_highlighter: highlight.js
 highlight:
