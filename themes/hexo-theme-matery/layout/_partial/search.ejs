@@ -39,6 +39,7 @@
     // Only open modal when search button is clicked
     document.getElementById("openSearchBtn")?.addEventListener("click", function() {
         modalInstance.open();
+        searchInput.focus(); 
     });
     function closeSearchModal() {
         modalInstance.close();
