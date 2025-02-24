@@ -83,7 +83,6 @@ MITM:
 HTTPS（Hypertext Transfer Protocol Secure）使用了混合加密机制，包括非对称加密和对称加密，以确保安全的数据传输。ssl3.0 1998
 
  **TLS（传输层加密协议） 1.2 升级成 TLS 1.3，TLS 1.3 大幅度简化了握手的步骤，完成 TLS 握手只要 1 RTT，而且安全性更高。在 TLS 1.2 的握手中，一般是需要 4 次握手，先要通过 Client Hello （第 1 次握手）和 Server Hello（第 2 次握手） 消息**协商**出后续使用的加密算法，再互相交换公钥（第 3 和 第 4 次握手）**
-![HTTPS](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e8136f52-d35d-46c6-964e-ab05e6590e71/Untitled.png)
 1. **客户端发起请求**：
     - 客户端向服务器发起 HTTPS 请求。
 2. **服务器响应并发送证书**：
@@ -336,7 +335,7 @@ HTTP是构建在TCP协议之上的，而TCP可以使用Socket来实现网络通�
 
 俺曾经写过一篇《[如何让【不支持】代理的网络软件，通过代理进行联网（不同平台的 N 种方法）](https://program-think.blogspot.com/2019/04/Proxy-Tricks.html)》，其中介绍了“HTTP 代理”的两种模式：“转发模式 ＆ 隧道模式”。对于“HTTP 代理”的隧道模式，可以实现【TCP over HTTP】（把 TCP 协议打包到 HTTP 协议内部）
 
-**Network层**
+##**Network层**
 
 网络层的两种交换技术：电路交换（有连接） VS 分组交换（无连接）。
 
