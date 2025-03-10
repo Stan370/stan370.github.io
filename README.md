@@ -1,6 +1,8 @@
 # [stanBlog](https://stan370.github.io/)
 StanBlog是一个基于Hexo和EJS模板引擎的博客主题，具有材料设计和响应式设计的特点。它是一个全面、美观的个人技术博客主题，支持 Markdown 和 HTML 语法，自带 RSS 和 Atom 订阅功能，支持自定义主题和布局，支持代码高亮和语法检查，支持移动设备访问。
 
+[![](https://data.jsdelivr.com/v1/package/gh/Stan370/stan370.github.io/badge)](https://www.jsdelivr.com/package/gh/Stan370/stan370.github.io)
+
 A beautiful hexo blog theme with material design and responsive design.
 
 <img width="878" alt="image" src="https://github.com/Stan370/stan370.github.io/assets/56168768/bf7c495d-a51c-4c2b-a454-7a66aa036b86">
