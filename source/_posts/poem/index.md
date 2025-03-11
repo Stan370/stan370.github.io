@@ -1,7 +1,8 @@
 ---
 title: The Roads I Couldn’t Take
 date: 2025-03-05 15:49:50
-img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/tears.jpg
+img: https://www.telegraph.co.uk/content/dam/films/2017/10/05/TearsInRain-8_trans_NvBQzQNjv4Bq40NVKkzKgy7iV1BEZjiceW48E5hk3wG0G0anVB7mS8E.jpg?imwidth=680
+categories: 感想
 
 ---
 
