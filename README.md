@@ -103,6 +103,8 @@ Fork 本项目之后，还需要做一些事情才能让你的页面「正确」
 部署您的博客
 您需要选择一种部署方法。Hexo支持GitHub Pages、Vercel等多种平台。以下是如何设置GitHub页面：
 ```
+npm set audit false
+
 npm install hexo-deployer-git --save
 
 Configure deployment in _config.yml:
