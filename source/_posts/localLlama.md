@@ -3,6 +3,7 @@ title: 4000元挑战部署localLlama解决方案
 date: 2025-03-19 21:56:29
 tags:
 - LLM
+img: https://a-us.storyblok.com/f/1014296/5000x3000/a4a9fdddc0/satechi_macmini2024_hub_env1-edit.jpg
 ---
 ### **为什么我选择 Mac Mini M4？——本地 LLM 部署 & 个人知识库探索**  
 
