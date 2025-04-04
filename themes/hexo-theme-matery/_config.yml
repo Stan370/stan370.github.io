@@ -249,6 +249,7 @@ myGallery:
   enable: true
   data:
     - /medias/featureimages/0.jpg
+    - /themes/hexo-theme-matery/source/medias/featureimages/1.jpg
     - /medias/featureimages/2.jpg
   
 math:
@@ -492,7 +493,7 @@ libs:
 # 无文章特色图片时需要显示的文章特色图片.
 featureImages:
 - /medias/featureimages/0.jpg
-- /themes/hexo-theme-matery/source/medias/featureimages/1.jpg
+- /medias/featureimages/1.jpg
 - /medias/featureimages/2.jpg
 - /medias/featureimages/3.jpg
 - /medias/featureimages/4.jpg
