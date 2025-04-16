@@ -9,14 +9,25 @@ img: https://media.licdn.com/dms/image/v2/D5612AQFqe-ohOOoRHQ/article-cover_imag
 ---
 From a young age, many of us are told: “If you work hard and prove yourself, you will be rewarded.”
 
-We are steeped in the gospel of meritocracy from childhood. Study diligently, excel academically, collect the accolades – the path to a successful future, we are assured, is paved with quantifiable effort and talent. As students aiming for demanding fields like Computer Engineering, this ethos becomes an intense reality. School morphs into an arena for performance, knowledge a means to an end measured in grades and rankings, and the ultimate prize: admission into prestigious institutions. I bought into this promise wholeheartedly. I learned the rules, played the game, and poured years into mastering the metrics. And by the system's own standards, I succeeded. Multiple Master's offers in Computer Engineering from international universities felt like the culmination, the hard-earned validation.
+We are steeped in the gospel of **meritocracy** from childhood. Study diligently, excel academically, collect the accolades – the path to a successful future, we are assured, is paved with quantifiable effort and talent. As students aiming for demanding fields like Computer Engineering, this **ethos** becomes an intense reality. School morphs into an arena for performance, knowledge a means to an end measured in grades and rankings, and the ultimate prize: admission into prestigious institutions. 
 
-However, Life doesn’t always go according to plan. I didn’t plan to take a gap year, but I see it comming. Somewhere in this journey, I started questioning something deeper — not just why it’s hard to get a job in tech right now, but why it feels so personal.
+I bought into this promise wholeheartedly. I learned the rules, played the game, and poured years into mastering the metrics. And by the system's own standards, I succeeded. Multiple Master's offers in Computer Engineering from international universities felt like the culmination, the hard-earned validation.
 
- This reflection led me to confront a much bigger issue: the curse of meritocracy. In a true meritocracy, these things should translate into opportunities, right?
 
-Get good grades. Win competitions. Find a job. etc.
+## The Twist
 
+However, life doesn’t always go as expected. That’s it.
+
+I didn’t plan to take a **gap year**, but I saw it coming.
+
+Somewhere in this journey, I started questioning something deeper — not just *why it’s hard to get a job in tech right now*, but *why it feels so personal*.
+
+ This reflection led me to confront a much bigger issue: the curse of meritocracy. 
+ In a *true* meritocracy, these things should translate into opportunities, right?
+
+- Get good grades  
+- Win competitions  
+- Find a job  
 So when job offers don’t come in — or only come in under unfair terms — we’re left confused, maybe even ashamed. “Did I not work hard enough?” becomes an internal voice of blame. 
 
 
@@ -35,7 +46,7 @@ For a while, I thought the solution was simple: solve more Leetcode problems, an
 
 But here's what I learned: solving algorithms under a time limit is a skill, but it's not the only one that matters. 
 
-🚫 What it doesn’t prove in a person:
+## 🚫 What it doesn’t prove in a person:
 That you’re a good software engineer.
 
 That you can maintain and refactor complex codebases.
@@ -56,7 +67,7 @@ That kind of growth doesn’t show up on a transcript — but it shapes the kind
 
 Meritocracy told me to chase validation. Reality taught me to chase growth. It equates our human value with our output, fosters crippling anxiety, and can alienate us from our own genuine interests and sense of self. I didn't magically have all the answers, nor was I suddenly immune to the pressures of the world.
 
-👀 To Others on a Similar Path
+## 👀 To Others on a Similar Path
 
 If you're always feel being left, or struggling to find your place — you're not behind. You're just not playing a zero-sum game anymore. 
 
