@@ -14,11 +14,7 @@ tags:
 
 # CS NOTES
 
-UTF-8 能够使用一到四个单[字节](https://en.wikipedia.org/wiki/Byte)（8 位）代码单元对[Unicode](https://en.wikipedia.org/wiki/Unicode)中的所有 1,112,064 [[a]](https://en.wikipedia.org/wiki/UTF-8#cite_note-code-point-count-2)个有效字符[代码点进行编码。](https://en.wikipedia.org/wiki/Code_point)具有较低数值的代码点，往往更频繁地出现，使用较少的字节进行编码。它是为与[ASCII](https://en.wikipedia.org/wiki/ASCII)[向后兼容而](https://en.wikipedia.org/wiki/Backward_compatibility)设计的：Unicode 的前 128 个字符与 ASCII 一一对应，使用与 ASCII 具有相同二进制值的单个字节进行编码，因此有效的 ASCII 文本是有效的 UTF-8 -编码的 Unicode 也是如此。
-
-UTF-8 导致的国际化问题[[7]](https://en.wikipedia.org/wiki/UTF-8#cite_note-Microsoft_GDK-8) [[8]](https://en.wikipedia.org/wiki/UTF-8#cite_note-whatwg-9)比任何替代文本编码都少，并且它已在所有现代[操作系统](https://en.wikipedia.org/wiki/Operating_system)中实现，包括[Microsoft Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)和[JSON](https://en.wikipedia.org/wiki/JSON)等标准，其中越来越多的情况是，它是唯一允许的[Unicode](https://en.wikipedia.org/wiki/Unicode)形式。
-
-[UTF-8 是万维网](https://en.wikipedia.org/wiki/World_Wide_Web)（和互联网技术）的主要编码，截至 2023 年，占所有网页的 97.9%，前 10,000 个页面的 99.0% 以上，许多语言的 100 % 。[[9]](https://en.wikipedia.org/wiki/UTF-8#cite_note-W3TechsWebEncoding-10)几乎所有国家和语言都有 95% 或更多的网络使用 UTF-8 编码。
+杂乱的一些笔记
 
 # Electronics
 
@@ -444,7 +440,56 @@ DNS污染是指一些刻意制造或无意中制造出来的域名服务器分�
 **本地电脑的dns是最高优先级**，也就是说如果你电脑的dns设置跟其他2个不一样，那么当你访问网站的时候，是自动遵循你电脑的dns路线的。第二优先级的是路由器的dhcp的dns，如果你电脑端的dns没有设置=自动获取的话，这里获取的首先就是dhcp的dns，如果你电脑端和dhcp都没有设置dns，都是默认的话，使用的就是wan端口的dns，这样说大家都明白了吧，所以一般wan口的dns都是会自动获取到电信分配的dns的，即便是你路由器的dhcp和电脑端的dns都不设置都是可以正常上网的，当然你如果要防止dns劫持，那么你只需要在你电脑端设置一个安全的dns就行了。
 
 专业点的说法就是WAN 端口的 DNS 服务器从ISP电信运营商获取，路由器向之发送域名解析请求；
+**Clash支持四种策略类型：**
 
+- DIRECT：通过 `interface-name` 直接连接目标（不查找系统路由表）
+- REJECT：直接丢弃数据包
+- Proxy：将数据包转发到指定的代理服务器
+- Proxy Group：将数据包转发到指定的策略组
+
+规则类型及用法：
+
+- DOMAIN：`DOMAIN,www.google.com,policy` 将 `www.google.com` 的流量转发到 `policy`
+- DOMAIN-SUFFIX：`DOMAIN-SUFFIX,youtube.com,policy` 将所有以 `youtube.com` 结尾的域名转发到 `policy`。例如，`www.youtube.com` 和 `foo.bar.youtube.com`
+- DOMAIN-KEYWORD：`DOMAIN-KEYWORD,google,policy` 将所有包含 `google` 关键字的域名转发到 `policy`。例如，`www.google.com` 或 `googleapis.com`
+- GEOIP：根据IP地理位置（国家代码）转发。使用 [**MaxMind GeoLite2**](https://dev.maxmind.com/geoip/geoip2/geolite2/) 数据库。需要先解析IP再查找国家代码，可用 `no-resolve` 跳过解析。例：`GEOIP,CN,policy`
+- IP-CIDR：根据IPv4地址段转发。需要先解析IPv4地址，可用 `no-resolve` 跳过。例：`IP-CIDR,127.0.0.0/8,DIRECT`
+- IP-CIDR6：根据IPv6地址段转发。需要先解析IPv6地址，可用 `no-resolve` 跳过。例：`IP-CIDR6,2620:0:2d0:200::7/32,policy`
+### Clash DNS
+**1. Clash 的 DNS 和代理两个模块是独立的, 实际使用会出现问题。什么时候用 namerserver 和 fallback 取决于 fallback-filter ，和 rules 无关。对于 TCP 流量，DNS 解析的结果不是实际连接的 IP ，Clash 会传递域名在代理服务器上解析。UDP 流量则用本地解析的结果。**
+
+当 DNS 请求被发送到 Clash DNS 时, Clash 内核会通过管理内部的域名和其 fake-ip 地址的映射, 从池中分配一个 *空闲* 的 fake-ip 地址.
+
+以使用浏览器访问 `http://google.com` 为例.
+
+浏览器向 Clash DNS 请求 `google.com` 的 IP 地址
+
+Clash 检查内部映射并返回 `198.18.1.5`
+
+浏览器向 `198.18.1.5` 的 `80/tcp` 端口发送 HTTP 请求
+
+当收到 `198.18.1.5` 的入站数据包时, Clash 查询内部映射, 发现客户端实际上是在向 `google.com` 发送数据包
+
+根据规则的不同:
+
+1. Clash 可能仅将域名发送到 SOCKS5 或 shadowsocks 等出站代理, 并与代理服务器建立连接
+2. 或者 Clash 可能会基于 `SCRIPT`、`GEOIP`、`IP-CIDR` 规则或者使用 DIRECT 直连出口查询 `google.com` 的真实 IP 地址
+
+**配置误区之 fallback dns**
+
+fallback dns 是 redir-host 时代的产物，是为了解决 DNS 污染问题。clash dns路径：
+
+1. nameserver → 成功则用
+2. fallback → 失败了再试 fallback
+3. fallback 超时或失败 → 请求返回失败
+
+redir-host 模式也是 tun 模式的一种（还有一种叫 fake IP），tun 模式工作在第三层网络层，拿不到请求的域名，只能拿到连接的 IP 地址。那他如何根据域名规则分流呢？答案是先拦截 53 端口的 DNS 请求，自己建立一个映射表，在**终端**发起请求的时候来匹配访问的域名，从而进行后续分流等操作。
+
+但是如果多个网站部署在同一个 IP 下，或者 DNS 被污染到同一个 IP，redir-host 就不准了（除非加上嗅探功能）。配置 fallback dns 之后，如果获取到的 IP 被判定为被污染（需要回滚），就使用 fallback dns 解析出来的结果。为了确保拿到的结果完全正确，fallback dns 要设置为境外的加密 DNS 服务器，因为无加密或者境内的 DNS 都会被污染。
+
+1. **国内域名直接走 UDP**：223.5.5.5、119.29.29.29 在大陆网络几乎零丢包、低延迟。
+2. **污染域名强制走加密**：通过 `nameserver-policy` 单域名指定，保证只有必要流量进境外通道。
+3. **无 fallback**：一旦启用 fallback，就会在主解析失败后才触发，加重了整体解析链路延迟。
 DHCP 的 DNS 服务器可以自主设置或者继承WAN的DNS服务器，所有自动获取DNS服务器的连接设备向之发送域名解析请求； 所以上网使用域名解析时使用上面3个dns服务器的优先级循序：本机电脑的dns服务器--->路由器中的dhcp服务器中的dns服务器--->路由器中的wan口中的dns服务器。这3个服务器中只要有一个设置了都能保证上网的域名解析，
 另外，你设备上，例如Windows也可以在网络连接上自主设置DNS服务器，或者接受DHCP服务器分配的DNS服务器，本地受用。
 
@@ -3348,77 +3393,3 @@ Go语言正是在多核和网络化的时代背景下诞生的原生支持并发
 Go语言的并发是基于 goroutine 的，goroutine 类似于线程，但并非线程。可以将 goroutine 理解为一种虚拟线程。Go语言运行时会参与调度 goroutine，并将 goroutine 合理地分配到每个 CPU 中，最大限度地使用 CPU 性能。
 
 多个 goroutine 中，Go语言使用通道（channel）进行通信，通道是一种内置的[数据结构](http://c.biancheng.net/data_structure/)，可以让用户在不同的 goroutine 之间同步发送具有类型的消息。这让编程模型更倾向于在 goroutine 之间发送消息，而不是让多个 goroutine 争夺同一个数据的使用权。
-
-# Web搜索
-
- 增大 Batch_Size 有何好处？ 内存利用率提高了，大矩阵乘法的并行化效率提高。 跑完一次 epoch（全数据集）所需的迭代次数减少，对于相同数据量的处理速度进一步加快。 在一定范围内，一般来说 Batch_Size 越大，其确定的下降方向越准，引起训练震荡越小。  盲目增大 Batch_Size 有何坏处？ 内存利用率提高了，但是内存容量可能撑不住了。 跑完一次 epoch（全数据集）所需的迭代次数减少，要想达到相同的精度，其所花费的时间大大增加了，从而对参数的修正也就显得更加缓慢。 Batch_Size增大到一定程度，其确定的下降方向已经基本不再变化。
-
-词项频率(Term Frequency, TF): 排序中的重要因子 ▪ Tf-idf 权重计算方法: 最出名的经典排序方法 ▪ 向量空间模型(Vector space model): 信息检索中最重要的形式化模型之一 (其他模型还包括布尔模型和概率模型)
-
-## Markov
-
-**马尔可夫模型**
-
-P(o1,o2,o3,…|s1,s2,s3….)根据应用的不同而又不同的名称，在语音识别中它被称为“[声学模型](https://baike.baidu.com/item/%E5%A3%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B)”(*AcousticModel*)，在[机器翻译](https://baike.baidu.com/item/%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91)中是“翻译模型”(*TranslationModel)*而在拼写校正中是“纠错模型”(*CorrectionMode*l)。而P(s1,s2,s3,…)就是我们在系列一中提到的语言模型。
-
-第一，s1,s2,s3,…是一个[马尔可夫链](https://baike.baidu.com/item/%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE)，也就是说，si只由si-1决定(详见系列一)；
-
-第二，第i时刻的接收信号oi只由发送信号si决定（又称为独立输出假设,即P(o1,o2,o3,…|s1,s2,s3….)=P(o1|s1)*P(o2|s2)*P(o3|s3)…。
-
-满足上述两个假设的模型就叫隐含马尔可夫模型。我们之所以用“隐含”这个词，是因为状态s1,s2,s3,…是无法直接观测到的。
-
-在利用隐含马尔可夫模型解决语言处理问题前，先要进行模型的训练。常用的训练方法由伯姆（*Baum*）在60年代提出的，并以他的名字命名。隐含马尔可夫模型在处理语言问题早期的成功应用是语音识别。七十年代，当时*IBM*的*FredJelinek*(贾里尼克)和[卡内基·梅隆大学](https://baike.baidu.com/item/%E5%8D%A1%E5%86%85%E5%9F%BA%C2%B7%E6%A2%85%E9%9A%86%E5%A4%A7%E5%AD%A6)的*JimandJanetBake提出用隐含马尔可夫模型来识别语音，语音识别的错误率相是人工智能和模式匹配等方法的三分之一(从30%到10%)。八十年代李开复博士坚持采用隐含马尔可夫模型的框架，成功地开发了世界上第一个大词汇量连续语音识别系统Sphinx。
-
-衡量二分类：
-
-**精确率**是针对我们**预测结果**而言的，它表示的是预测为正的样本中有多少是真正的正样本。那么预测为正就有两种可能了，一种就是把正类预测为正类(TP)，另一种就是把负类预测为正类(FP)，也就是
-
-!https://upload-images.jianshu.io/upload_images/7880701-bff5466551031535.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/138/format/webp
-
-img
-
-而**召回率**是针对我们原来的**样本**而言的，它表示的是样本中的正例有多少被预测正确了。那也有两种可能，一种是把原来的正类预测成正类(TP)，另一种就是把原来的正类预测为负类(FN)。
-
-召回率(Recall): RR/(RR + NR)，返回的相关结果数占实际相关结果总数的比率，也称为查全率，R∈ [0,1]
-
-▪ 正确率(Precision): RR/(RR + RN)，返回的结果中真正相关结果的比率，也称为查准率， P∈ [0,1]
-
-▪ 两个指标分别度量检索效果的某个方面，忽略 任何一个方面都有失偏颇。两个极端情况：返 回有把握的1篇，P=100%，但R极低；全部文 档都返回，R＝1，但P极低
-
-## RNN
-
-Softmax 如果你在开发一个音乐分类的应用，需要对k种类型的音乐进行识别，那么是选择使用 softmax 分类器呢，还是使用 logistic 回归算法建立 k 个独立的二元分类器呢？
-
-这一选择取决于你的类别之间是否互斥，例如，如果你有四个类别的音乐，分别为：古典音乐、乡村音乐、摇滚乐和爵士乐，那么你可以假设每个训练样本只会被打上一个标签（即：一首歌只能属于这四种音乐类型的其中一种），此时你应该使用类别数*k*= 4的softmax回归。（如果在你的数据集中，有的歌曲不属于以上四类的其中任何一类，那么你可以添加一个“其他类”，并将类别数*k*设为5。）
-
-如果你的四个类别如下：人声音乐、舞曲、影视原声、流行歌曲，那么这些类别之间并不是互斥的。例如：一首歌曲可以来源于影视原声，同时也包含人声 。这种情况下，使用4个二分类的 logistic 回归分类器更为合适。这样，对于每个新的音乐作品 ，我们的算法可以分别判断它是否属于各个类别。
-
-当前我们来看一个计算视觉领域的例子，你的任务是将图像分到三个不同类别中。(i) 假设这三个类别分别是：室内场景、户外城区场景、户外荒野场景。你会使用sofmax回归还是 3个logistic 回归分类器呢？ (ii) 当前假设这三个类别分别是室内场景、黑白图片、包含人物的图片，你又会选择 softmax 回归还是多个 logistic 回归分类器呢？
-
-在第一个例子中，三个类别是互斥的，因此更适于选择softmax回归分类器 。而在第二个例子中，建立三个独立的 logistic回归分类器更加合适。
-
-## 错误
-
-1. 都会出现错误提示: [Error] assignment to expression with array type
-
- 中文通俗意思：不可以赋值给具有数组类型的表达式。这里的表达式是指整个数组的首地址。
-
- 也就是说在C语言内部 数组的首地址是不可更改的，相当于被const修饰
-
-### SIGSEGV Segmentation fault.段错误
-
-1.利用指针对数组间访时越界了，即间访到该数组后面的空间了（即间访了一段不属于操作系统给你的空间。）
-
-2.间访悬挂或 空指针!!!
-
-写入东西，应先用内存分配为指针分配一段空间或将其指向某个东西。
-
-1. 
-
-img
-
- 程序企图向指针ps所指内存中写入,但指针ps所指的是常量字符串，在生成可执行文件后它会与代码段放在一起，该区域是只读的，所以企图修改指针所指内容会出错。
-
-**Notice**
-
-<1>定义了指针后记得初始化，在使用的时候记得判断是否为NULL <2>在使用数组的时候是否被初始化，数组下标是否越界，数组元素是否存在等 <3>在变量处理的时候变量的格式控制是否合理等
