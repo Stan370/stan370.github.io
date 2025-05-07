@@ -24,10 +24,25 @@
                     <span id="busuanzi_value_site_uv" class="white-color"></span>
             </span>
             <br>
-            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
-        
-
+            <!-- Matomo -->
+            <script>
+                var _paq = window._paq = window._paq || [];
+                /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+                _paq.push(['trackPageView']);
+                _paq.push(['enableLinkTracking']);
+                (function() {
+                    var u="<%- theme.matomo.url %>";
+                    _paq.push(['setTrackerUrl', u+'matomo.php']);
+                    _paq.push(['setSiteId', '<%- theme.matomo.siteId %>']);
+                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+                })();
+            </script>
+            <!-- End Matomo Code -->
+            <!-- Privacy Notice -->
+            <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+                <i class="fas fa-shield-alt"></i> This site uses Matomo for privacy-friendly analytics.
+            </div>
             <!-- 运行天数提醒. -->
             <% if (theme.time.enable) { %>
                 <span id="sitetime"> Loading ...</span>

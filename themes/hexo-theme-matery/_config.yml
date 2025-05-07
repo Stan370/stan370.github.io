@@ -209,7 +209,7 @@ snowdown:
   enable: false
 
 # profile in about page, including avatars, career, and personal introductions.
-# 在”关于”页面中配置个人信息，包括头像、职业和个人介绍.
+# 在"关于"页面中配置个人信息，包括头像、职业和个人介绍.
 profile:
   avatar: /medias/avatar.jpg
   career: Software Engineer
@@ -219,7 +219,7 @@ profile:
 
 # config my skills informations in about page.
 # If you don't want to display this `My Skills` content, you can deactivate or delete this configuration.
-# 在“关于”页面配置"我的技能"信息，如果你不需要这些信息则可以将其设置为不激活或者将其删除.
+# 在"关于"页面配置"我的技能"信息，如果你不需要这些信息则可以将其设置为不激活或者将其删除.
 mySkills:
   enable: true
   data:
@@ -244,7 +244,7 @@ mySkills:
 
 # config gallery of my photos in about page.
 # If you don't want to display this `Gallery` content, you can deactivate or delete this configuration.
-# 在“关于”页面配置"我的相册"图片，如果你不需要这些信息则可以将其设置为不激活或者将其删除.
+# 在"关于"页面配置"我的相册"图片，如果你不需要这些信息则可以将其设置为不激活或者将其删除.
 myGallery:
   enable: true
   data:
@@ -537,7 +537,7 @@ featureImages:
 # noreprint（不允许转载 not allowed to reprint）
 # pay（付费转载 pay for reprinting）
 reprint:
-  enable: true # whether enable reprint section 是否启用“转载规则限定模块”
+  enable: true # whether enable reprint section 是否启用"转载规则限定模块"
   default: cc_by
 
 # DaoVoice online contact
@@ -587,7 +587,7 @@ addthis:
   pubid:  # 前往https://www.addthis.com/获取
 
 # 打字效果副标题.
-# 如果有符号 ‘ ，请在 ’ 前面加上 \
+# 如果有符号 ' ，请在 ' 前面加上 \
 subtitle:
   enable: true
   loop: true # 是否循环
@@ -650,3 +650,9 @@ bbtime:
   appId: # 你的appId
   appKey: # 你的appKey
   serverURLs: # https://你的api
+
+# Matomo Analytics
+matomo:
+  enable: true
+  url: 'https://your-matomo-instance.com/'  # Replace with your Matomo instance URL
+  siteId: '1'  # Replace with your site ID from Matomo
