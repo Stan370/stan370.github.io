@@ -17,7 +17,7 @@ img: https://a-us.storyblok.com/f/1014296/5000x3000/a4a9fdddc0/satechi_macmini20
 
 在挑选设备时，我主要考虑了以下几个因素：  
 
-### **✅ 1.1 性能 vs. 能耗：M4 的性价比惊喜**  
+### ** 1.1 性能 vs. 能耗：M4 的性价比惊喜**  
 相比 Intel/AMD 服务器或台式机，**Apple Silicon 的能耗比确实很强**。M4 拥有**10 核 CPU + 10 核 GPU + 16 核 NPU**，而且功耗低到离谱（官方标称 30W）。  
 在选择硬件时，我研究了多个选项，包括自建 PC、云服务器和其他品牌的小型机，最终锁定了 Mac Mini M4。以下是我的理由。
 Mac Mini M4 的核心亮点是 Apple Silicon 的 M4 芯片，其统一架构和高能效比在 AI 工作负载中表现出色。以下是 M4 的一些关键参数，以及它们如何提升 RAG 工作流的效率：
@@ -40,7 +40,7 @@ Neural Engine（神经引擎）：
 
 ---
 
-### **✅ 1.2 本地 LLM 部署：Ollama & MLX**
+### ** 1.2 本地 LLM 部署：Ollama & MLX**
 在考虑在Mac系统上使用LLM构建和管理个人知识基础的工具时，LM Studio MLX和Ollama都是不错的选择，但具有自己的优势。让我们分解如何在功能，用例和易用性方面进行比较。有限的定制：Ollama 的简单性是以灵活性为代价的。如果您想要更好地控制模型行为、定制或与其他系统的集成，Ollama 可能不如 LM Studio MLX 强大。
 基本功能：虽然 Ollama 非常适合简单查询和管理小型知识库，但它没有 LM Studio MLX 那么多高级功能，例如复杂的数据结构、训练或多模型集成。
 
@@ -59,7 +59,7 @@ LM Studio用自己的UI带来了整个包装。在MacOS上，它也是运行MLX�
 
 ---
 
-### **✅ 1.3 价格 vs. 扩展性：最划算的 macOS 设备**
+### ** 1.3 价格 vs. 扩展性：最划算的 macOS 设备**
 买 Mac Mini M4 有几个隐藏的优点：  
 
 1. **比 Mac Studio / MacBook Pro 便宜得多**  
@@ -81,16 +81,16 @@ LM Studio用自己的UI带来了整个包装。在MacOS上，它也是运行MLX�
 ## **2. Mac Mini M4 在我的 AI 工作流中的作用**
 买了 Mac Mini M4 之后，我主要用它来做 **本地 AI 助手 + 个人知识库**，具体用途包括：  
 
-### **✅ 2.1 个人知识库（Local RAG）**
+### ** 2.1 个人知识库（Local RAG）**
 - 通过 `Ollama + LangChain` 搭建**本地 RAG（检索增强生成）**系统。  
 - 数据存储在 **ChromaDB** 或 **Qdrant** 里，配合 `Mistral 7B` 或 `Phi-3` 进行查询。  
 - 实现一个离线可用的 AI 助手，不依赖 OpenAI API。  
 
-### **✅ 2.2 本地代码助手**
+### ** 2.2 本地代码助手**
 - 用 `Deepseek Coder` 作为 **离线代码补全助手**，在 VS Code 里运行 `ollama run deepseek-coder:6b`。  
 - 结合 `Copilot`，提高代码写作效率，适合离线环境或数据隐私要求高的项目。  
 
-### **✅ 2.3 轻量级 AI 训练**
+### ** 2.3 轻量级 AI 训练**
 - 主要用 `MLX` 跑一些小模型的微调（Fine-tune）。  
 - `MLX` 可以充分利用 Mac 的 **Neural Engine（NPU）**，比 CPU-only 方案快很多。  
 
@@ -121,7 +121,7 @@ attempt=1
 while [ $attempt -le $MAX_ATTEMPTS ]; do
     # 检查是否已下载
     if ollama list | awk '{print $1}' | grep -q "^$MODEL_NAME$"; then
-        echo "✅ Model $MODEL_NAME is fully downloaded."
+        echo " Model $MODEL_NAME is fully downloaded."
         exit 0
     fi
 
@@ -158,7 +158,7 @@ while ($attempt -le $MAX_ATTEMPTS) {
     # 检查是否已下载
     $modelExists = ollama list | Select-String $MODEL_NAME
     if ($modelExists) {
-        Write-Host "✅ Model $MODEL_NAME is fully downloaded."
+        Write-Host " Model $MODEL_NAME is fully downloaded."
         exit 0
     }
 
@@ -202,17 +202,17 @@ cd open-webui
 npm install
 npm run dev
 📌 优势：
-✅ 不需要 Docker，减少资源占用
-✅ 可以自己控制环境，避免 Docker 额外的磁盘消耗
+ 不需要 Docker，减少资源占用
+ 可以自己控制环境，避免 Docker 额外的磁盘消耗
 
 
 ## **4. 结论：Mac Mini M4，最具性价比的本地 AI 设备**
 如果你的需求是 **跑本地 AI 助手、LLM 推理、个人知识库**，**Mac Mini M4 绝对是目前最具性价比的 Apple 设备**。  
 
 📌 **适合人群**：  
-✅ 想折腾本地 AI，体验 Ollama / MLX  
-✅ 需要一个低功耗、高性价比的 macOS 设备  
-✅ 主要跑 7B 以内 LLM，或做小型 RAG / 本地 AI 应用  
+ 想折腾本地 AI，体验 Ollama / MLX  
+ 需要一个低功耗、高性价比的 macOS 设备  
+ 主要跑 7B 以内 LLM，或做小型 RAG / 本地 AI 应用  
 
 💡 **不适合**：  
 ❌ 训练大模型（建议上 Linux + 3090/A100）  

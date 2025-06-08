@@ -7,7 +7,7 @@ tags: 网络安全
 
 按照惯例，政策执行后续都会扩大化。说是禁 PCDN ，目前已经有扩大化迹象，比如顺带被封禁的 PT 和 NAS 服务。这两个服务同样容易产生较大网络流量，所以容易被误伤。不过事情还不仅如此。网络监控会进一步收紧，运营商会全面监控网络流量，这种监控是否进一步扩大化不详。
 
-最近，不少网友反映，家里的宽带网关似乎变得“不太安分”了。以中国移动为例，后台进程里多了几个不认识的应用，比如 com.chinamobile.smartgateway.andlink、com.chinamobile.smartgateway.cmccdpi、com.chinamobile.smartgateway.appcore 和 com.cmcc.wuyougateway。这些应用是什么？它们在干什么？运营商为什么要这么做？今天我们就来聊聊这个话题。![alt text](image.png)
+最近，不少网友反映，家里的宽带网关似乎变得“不太安分”了。以中国移动为例，后台进程里多了几个不认识的应用，比如 com.chinamobile.smartgateway.andlink、com.chinamobile.smartgateway.cmccdpi、com.chinamobile.smartgateway.appcore 和 com.cmcc.wuyougateway。这些应用是什么？它们在干什么？运营商为什么要这么做？今天我们就来聊聊这个话题。![alt text](https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/image.png)
 中国移动在为用户安装宽带时，总会好心地“赠送”一个光猫(调制解调器)。这看似是个不错的促销手段，但通常情况下，这个“赠品”会给用户带来许多麻烦。
 
 赠送的“光猫”安装了许多不必要的功能。光猫的本职工作是进行光电转换，然而中国移动的“光猫”不仅承担着光电转换的任务，还同时进行拨号上网、路由、地址转换(NAT)、端口映射、文件服务器(FTP)等等额外的功能。这些功能让本就廉价而算力低下的光猫运行缓慢，不堪重负。最可气的是，中国移动为了节约维护成本，将光猫的绝大多数设置项锁定，防止用户修改。
