@@ -12,9 +12,15 @@ img: https://vitalik.eth.limo/images/end/cryptomap.drawio.png
 In the world of crypto, few figures have shaped its philosophical and technical trajectory as deeply as Vitalik Buterin, the co-founder of Ethereum. Beyond the whitepaper that birthed the world's most programmable blockchain, Vitalik's prolific blog output over the years has become a canon for developers, economists, and visionaries in the decentralized ecosystem.
 For builders—especially those designing agent platforms, decentralized governance models, or crypto-powered coordination systems—these writings form a strategic blueprint. Build systems that are not only redundant in infrastructure but also politically and logically anti-fragile. Consider multisig governance, on-chain voting, and modular designs.
 
-* Total Value Locked (TVL) on Ethereum stands at **\$61.3 billion**, dwarfing competitors—Ethereum holds \~45% of DeFi capital versus Solana's \~5% (![defillama.com][1]).
-* Liquid staking (LST) on Ethereum locks 13.7 million ETH (\~\$34.4B) .
-* ETH chain records \~\$676K/day in fees and nearly \$1 billion in 24‑hour DEX volume ([defillama.com][1]).
+Total Value Locked (TVL) on Ethereum stands at **\$61.3 billion**, dwarfing competitors—Ethereum holds ~45% of DeFi capital versus Solana's ~5% ([source](https://defillama.com/chain/Ethereum)).
+
+Liquid staking (LST) on Ethereum locks **13.7 million ETH (~\$34.4B)**.
+
+ETH chain records **~\$676K/day in fees** and nearly **\$1 billion in 24-hour DEX volume** ([source](https://defillama.com/chain/Ethereum)).
+
+See Vitalik’s recent blogs:  
+[The near and mid-term future of improving Ethereum](https://vitalik.eth.limo/general/2024/05/17/decentralization.html)  
+[Possible futures of Ethereum, Part 2](https://vitalik.eth.limo/general/2024/10/17/futures2.html)
 
 **This scope matters.**
 
@@ -107,7 +113,4 @@ The following are **Vitalik's most influential and discussed blog posts**, categ
 * Assume that there is a super decentralized blockchain, but it must also rely on centralized building blocks (like sequencers).
 * Deeply reveal the future direction of L1-L2.
 
-[1]: https://defillama.com/chain/Ethereum?utm_source=chatgpt.com "Ethereum - DefiLlama"
-[2]: https://vitalik.eth.limo/general/2024/05/17/decentralization.html?utm_source=chatgpt.com "The near and mid-term future of improving the Ethereum network's ..."
-[3]: https://vitalik.eth.limo/general/2024/10/17/futures2.html?utm_source=chatgpt.com "Possible futures of the Ethereum protocol, part 2: The Surge"
-[4]: https://www.reddit.com/r/ethtrader/comments/1kq4m6e/vitalik_buterin_just_dropped_a_new_ethereum_l1/?utm_source=chatgpt.com "Vitalik Buterin just dropped a new Ethereum L1 scaling roadmap"
+[1]: https://defillama.com/chain/Ethereum "Ethereum - DefiLlama"
