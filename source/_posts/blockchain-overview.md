@@ -1,8 +1,10 @@
 ---
 title: How blockchain evolves to a new world order?
 date: 2025-06-08 22:25:07
-tags:blockchain
-img:https://vitalik.eth.limo/images/end/cryptomap.drawio.png
+tags: 
+- blockchain
+img: https://vitalik.eth.limo/images/end/cryptomap.drawio.png
+
 ---
 
 # A new world order
