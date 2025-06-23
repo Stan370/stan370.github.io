@@ -4,7 +4,6 @@ date: 2025-04-13 16:39:20
 tags:
 - feelings
 - personal growth
-img: https://media.licdn.com/dms/image/v2/D5612AQFqe-ohOOoRHQ/article-cover_image-shrink_720_1280/B56ZYtZ3C0GUAI-/0/1744518573532?e=1750291200&v=beta&t=gR7KCZvsG4_uFwsdQrFHAhGpR30hE8dH7x2AyXc_HtU
 
 ---
 From a young age, many of us are told: “If you work hard and prove yourself, you will be rewarded.”
