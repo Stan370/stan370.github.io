@@ -88,9 +88,25 @@ select()和poll()：
 两者都具有O(n)复杂度，其中n是被监视的文件描述符的数量。随着描述符数量的增加，检查它们所花费的时间也呈线性增长。
 epoll()：
 epoll_wait()对于大多数操作来说，其复杂度为O(1)，这意味着它的性能不会随着文件描述符数量的增加而降低。这使得它在处理数千（甚至数万）个连接时具有更好的扩展性。
+
 4.内核空间数据结构
 epoll()使用更先进的内核空间数据结构（如红黑树和链接列表）来高效跟踪文件描述符。一旦文件描述符被注册，它就会存储在树中，从而允许快速查找和更新，进一步提高性能。
 相比之下，每次调用时select()都poll()需要将所有文件描述符从用户空间复制到内核空间，并且内核必须检查每一个文件描述符，从而导致更多的开销。
+    
+    - **`select()` and `poll()`**:
+        - Both have **O(n)** complexity, where `n` is the number of file descriptors being monitored. As the number of descriptors grows, the time taken to check them grows linearly.
+    - **`epoll()`**:
+        - `epoll_wait()` has **O(1)** complexity for most operations, meaning it doesn't degrade in performance as the number of file descriptors increases. This allows it to scale much better when handling thousands (or even tens of thousands) of connections.
+    
+    ### 4. **Kernel-Space Data Structures**
+    
+    - `epoll()` uses more advanced kernel-space data structures (like red-black trees and linked lists) to efficiently track the file descriptors. Once a file descriptor is registered, it is stored in a tree, allowing quick lookups and updates, further improving performance.
+    - In contrast, `select()` and `poll()` need to copy all file descriptors from user space to kernel space on every call, and the kernel has to check each one, leading to more overhead.
+    
+    此外还使用了内存映射（ `mmap` ）技术
+    
+    另一个本质的改进在于 `epoll` 采用基于事件的就绪通知方式。在 `select/poll` 中，进程只有在调用一定的方法后，内核才对所有监视的socket描述符进行扫描，而 `epoll` 事先通过 `epoll_ctl()` 来注册一个socket描述符，一旦检测到epoll管理的socket描述符就绪时，内核会采用类似 `callback` 的回调机制，迅速激活这个socket描述符，当进程调用 `epoll_wait()` 时便可以得到通知，也就是说epoll最大的优点就在于它 **只管就绪的socket描述符，而跟socket描述符的总数无关** 。
+
 5.大量描述符的内存使用率较低
 在 中select()，您必须提供一个固定大小的位掩码（通常限制为 1024 个描述符，但在某些系统中可以进行调整）。
 在中poll()，您传递一个数组struct pollfd，该数组随着描述符的数量线性增长。
@@ -158,9 +174,36 @@ int main() {
     return 0;
 }
 ```
-
-
-
- 
-
 epoll()速度更快，主要是因为它避免了重复扫描所有文件描述符，而是使用事件驱动模型，仅在必要时通知应用程序。对于大多数操作，它的性能为 O(1)，并且可以高效处理数千个连接，使其成为大型 Web 服务器等高并发场景的理想选择。相比之下，select()和poll()两者都具有 O(n) 性能，随着文件描述符数量的增加，这会导致速度明显变慢。
+## Reactor 
+最直观的服务器处理多客户端访问的方式，就是为每个连接创建一个线程，或者更早期操作系统里甚至是一个进程。虽然线程比进程更轻量，切换成本也更低，但每连接一个线程在并发量大时仍会面临两个问题：
+
+线程创建/销毁有系统开销（malloc stack、context switch）。
+
+线程是稀缺资源，系统线程数有上限（如 Linux 默认 1024~65535）。
+
+所以，现代服务端架构更倾向于使用线程池来复用线程资源。线程池中每个线程从任务队列中取任务处理，避免了反复创建/销毁的开销。
+
+但线程池引入后面临另一个问题：I/O 阻塞会浪费线程资源。如果一个线程执行 read(socket) 被阻塞，而连接上没有数据，那么整个线程就“卡住”了，不能服务其他连接。
+
+为了避免这个问题，我们可以将 socket 设置为非阻塞模式。这样 read() 不会阻塞，而是立即返回，如果没有数据，就返回错误码 EAGAIN。线程就可以在用户空间“轮询”所有 socket。
+
+但这种方式会导致高 CPU 占用，尤其在连接数多时效率低。
+
+所以引入了 I/O 多路复用技术（如 select、poll、epoll），它允许一个线程通过一个系统调用（如 epoll_wait）同时监听多个连接的状态，一旦某些连接可读（或可写），内核就通知我们“这些连接准备好了”，我们再去 read()，避免了不必要的轮询。
+
+这就是像 Nginx、Redis、Node.js、netty 等高并发服务采用的基础模式：I/O 多路复用 + 非阻塞 I/O + 事件驱动模型。Reactor模式称为反应器模式或应答者模式，是基于事件驱动的设计模式，拥有一个或多个并发输入源，有一个服务处理器和多个请求处理器，服务处理器会同步的将输入的请求事件以多路复用的方式分发给相应的请求处理器。
+单 Reactor 单线程（Redis）
+所有 I/O + 业务逻辑都在一个线程中串行完成
+
+简单、性能好（但业务处理不能太重）
+
+单 Reactor 多线程（Nginx）
+Reactor 只负责监听/调度，业务逻辑交给线程池处理
+
+主从 Reactor（Netty）
+主 Reactor 接收连接
+
+从 Reactor 负责具体数据读写
+
+分离 accept 和 IO 阶段，提高可扩展性
