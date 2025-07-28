@@ -22,19 +22,19 @@ tags:
 所以，阻塞I/O的特点就是在IO执行的两个阶段（用户空间与内核空间）都被阻塞了。
 
 ## 非阻塞 I/O
-socket 是 Unix 中的术语。socket 可以用于同一台主机的不同进程间的通信，也可以用于不同主机间的通信。一个 socket 包含地址、类型和通信协议等信息，通过 socket() 函数创建：
-
-int socket(int domain, int type, int protocol)
-返回的就是这个 socket 对应的文件描述符 fd。操作系统将 socket 映射到进程的一个文件描述符上，进程就可以通过读写这个文件描述符来和远程主机通信。
-
-可以这样理解：socket 是进程间通信规则的高层抽象，而 fd 提供的是底层的具体实现。socket 与 fd 是一一对应的。通过 socket 通信，实际上就是通过文件描述符 fd 读写文件。这也符合 Unix“一切皆文件”的哲学。
-
 
 非阻塞 I/O 则允许程序发起 I/O 操作（例如 read() 或 recvfrom()），即使数据还没准备好，内核也不会让进程挂起，而是立即返回。此时用户进程得到的是一个错误，提示数据尚未准备好。用户进程需要不断轮询，重复调用 I/O 操作直到数据可用。这种方式避免了线程被阻塞的情况，但频繁的轮询可能会导致 CPU 使用效率低下。![alt text](https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/source/_posts/IOandEpoll/image-2.png)
-多路复用 I/O
+
+## 多路复用 I/O
+协程（英语：coroutine）是计算机程序的一类组件，推广了协作式多任务的子例程，允许执行被挂起与被恢复,协程可以通过yield（取其“退让”之义而非“产生”）来调用其它协程，接下来的每次协程被调用时，从协程上次yield返回的位置接着执行，通过yield方式转移执行权的协程之间不是调用者与被调用者的关系，而是彼此对称、平等的。
 多路复用 I/O (select()，poll()，epoll()) 允许单个线程监控多个文件描述符（如 socket），从而在多个 I/O 操作之间进行复用。它的基本原理是通过轮询多个 socket，查看是否有数据到达，并在有数据到达时通知应用程序。相比非阻塞 I/O，这种机制更高效，特别适合于处理大量连接的服务器。
 本地 I/O 操作通常为阻塞模式，即在进行 I/O 操作时，进程会被挂起直到操作完成。然而，现代操作系统也提供了非阻塞本地 I/O 或异步 I/O（如 Linux 的 aio 或 Windows 的 IOCP），允许应用程序继续执行其他任务而不等待 I/O 完成。网络 I/O 同样可以是阻塞的或非阻塞的。在非阻塞网络 I/O 中，进程发起 I/O 操作时不需要等待数据返回，可以继续执行其他操作。网络 I/O 领域中，异步 I/O、多路复用 I/O（如 select()、poll()、epoll()）、以及事件驱动编程（如 libuv、libevent）等技术被广泛使用，以应对高延迟和并发问题。
 
+将协程与IO多路复用结合起来，可以实现高性能的并发IO程序。socket 是 Unix 中的术语。socket 可以用于同一台主机的不同进程间的通信，也可以用于不同主机间的通信。一个 socket 包含地址、类型和通信协议等信息，通过 socket() 函数创建：
+int socket(int domain, int type, int protocol)
+返回的就是这个 socket 对应的文件描述符 fd。操作系统将 socket 映射到进程的一个文件描述符上，进程就可以通过读写这个文件描述符来和远程主机通信。
+
+可以这样理解：socket 是进程间通信规则的高层抽象，而 fd 提供的是底层的具体实现。socket 与 fd 是一一对应的。通过 socket 通信，实际上就是通过文件描述符 fd 读写文件。这也符合 Unix“一切皆文件”的哲学。使用IO多路复用技术监听多个socket，当有socket可读或可写时，通过事件通知，激活相应的协程进行处理。﻿
  
 ## 1.select() 
 用法：允许监视多个文件描述符，以查看它们是否已准备好读取、写入或是否有错误。
@@ -93,19 +93,19 @@ epoll_wait()对于大多数操作来说，其复杂度为O(1)，这意味着它�
 epoll()使用更先进的内核空间数据结构（如红黑树和链接列表）来高效跟踪文件描述符。一旦文件描述符被注册，它就会存储在树中，从而允许快速查找和更新，进一步提高性能。
 相比之下，每次调用时select()都poll()需要将所有文件描述符从用户空间复制到内核空间，并且内核必须检查每一个文件描述符，从而导致更多的开销。
     
-    - **`select()` and `poll()`**:
-        - Both have **O(n)** complexity, where `n` is the number of file descriptors being monitored. As the number of descriptors grows, the time taken to check them grows linearly.
-    - **`epoll()`**:
-        - `epoll_wait()` has **O(1)** complexity for most operations, meaning it doesn't degrade in performance as the number of file descriptors increases. This allows it to scale much better when handling thousands (or even tens of thousands) of connections.
-    
-    ### 4. **Kernel-Space Data Structures**
-    
-    - `epoll()` uses more advanced kernel-space data structures (like red-black trees and linked lists) to efficiently track the file descriptors. Once a file descriptor is registered, it is stored in a tree, allowing quick lookups and updates, further improving performance.
-    - In contrast, `select()` and `poll()` need to copy all file descriptors from user space to kernel space on every call, and the kernel has to check each one, leading to more overhead.
-    
-    此外还使用了内存映射（ `mmap` ）技术
-    
-    另一个本质的改进在于 `epoll` 采用基于事件的就绪通知方式。在 `select/poll` 中，进程只有在调用一定的方法后，内核才对所有监视的socket描述符进行扫描，而 `epoll` 事先通过 `epoll_ctl()` 来注册一个socket描述符，一旦检测到epoll管理的socket描述符就绪时，内核会采用类似 `callback` 的回调机制，迅速激活这个socket描述符，当进程调用 `epoll_wait()` 时便可以得到通知，也就是说epoll最大的优点就在于它 **只管就绪的socket描述符，而跟socket描述符的总数无关** 。
+- **`select()` and `poll()`**:
+    - Both have **O(n)** complexity, where `n` is the number of file descriptors being monitored. As the number of descriptors grows, the time taken to check them grows linearly.
+- **`epoll()`**:
+    - `epoll_wait()` has **O(1)** complexity for most operations, meaning it doesn't degrade in performance as the number of file descriptors increases. This allows it to scale much better when handling thousands (or even tens of thousands) of connections.
+
+### 4. **Kernel-Space Data Structures**
+
+- `epoll()` uses more advanced kernel-space data structures (like red-black trees and linked lists) to efficiently track the file descriptors. Once a file descriptor is registered, it is stored in a tree, allowing quick lookups and updates, further improving performance.
+- In contrast, `select()` and `poll()` need to copy all file descriptors from user space to kernel space on every call, and the kernel has to check each one, leading to more overhead.
+
+此外还使用了内存映射（ `mmap` ）技术
+
+另一个本质的改进在于 `epoll` 采用基于事件的就绪通知方式。在 `select/poll` 中，进程只有在调用一定的方法后，内核才对所有监视的socket描述符进行扫描，而 `epoll` 事先通过 `epoll_ctl()` 来注册一个socket描述符，一旦检测到epoll管理的socket描述符就绪时，内核会采用类似 `callback` 的回调机制，迅速激活这个socket描述符，当进程调用 `epoll_wait()` 时便可以得到通知，也就是说epoll最大的优点就在于它 **只管就绪的socket描述符，而跟socket描述符的总数无关** 。
 
 5.大量描述符的内存使用率较低
 在 中select()，您必须提供一个固定大小的位掩码（通常限制为 1024 个描述符，但在某些系统中可以进行调整）。
@@ -192,7 +192,9 @@ epoll()速度更快，主要是因为它避免了重复扫描所有文件描述�
 
 所以引入了 I/O 多路复用技术（如 select、poll、epoll），它允许一个线程通过一个系统调用（如 epoll_wait）同时监听多个连接的状态，一旦某些连接可读（或可写），内核就通知我们“这些连接准备好了”，我们再去 read()，避免了不必要的轮询。
 
-这就是像 Nginx、Redis、Node.js、netty 等高并发服务采用的基础模式：I/O 多路复用 + 非阻塞 I/O + 事件驱动模型。Reactor模式称为反应器模式或应答者模式，是基于事件驱动的设计模式，拥有一个或多个并发输入源，有一个服务处理器和多个请求处理器，服务处理器会同步的将输入的请求事件以多路复用的方式分发给相应的请求处理器。
+这就是像 Nginx、Redis、Node.js、netty 等高并发服务采用的基础模式：I/O 多路复用 + 非阻塞 I/O + 事件驱动模型。Reactor模式称为反应器模式或应答者模式，是基于事件驱动的设计模式，拥有一个或多个并发输入源，有一个服务处理器和多个请求处理器，服务处理器会同步的将输入的请求事件以多路复用的方式分发给相应的请求处理器。Proactor 是把任务交给操作系统 / runtime，让它完成后通知你处理结果
+
+
 单 Reactor 单线程（Redis）
 所有 I/O + 业务逻辑都在一个线程中串行完成
 
