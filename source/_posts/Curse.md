@@ -13,8 +13,8 @@ We are steeped in the gospel of **meritocracy** from childhood. Study diligently
 I bought into this promise wholeheartedly. I learned the rules, played the game, and poured years into mastering the metrics. And by the system's own standards, I succeeded. Multiple Master's offers in Computer Engineering from international universities felt like the culmination, the hard-earned validation.
 
 
-## The Twist
-
+**The Twist
+**
 However, life doesn’t always go as expected. That’s it.
 
 I didn’t plan to take a **gap year**, but I saw it coming.
@@ -45,7 +45,7 @@ For a while, I thought the solution was simple: solve more Leetcode problems, an
 
 But here's what I learned: solving algorithms under a time limit is a skill, but it's not the only one that matters. 
 
-## 🚫 What it doesn’t prove in a person:
+What it doesn’t prove in a person:
 That you’re a good software engineer.
 
 That you can maintain and refactor complex codebases.
@@ -66,11 +66,9 @@ That kind of growth doesn’t show up on a transcript — but it shapes the kind
 
 Meritocracy told me to chase validation. Reality taught me to chase growth. It equates our human value with our output, fosters crippling anxiety, and can alienate us from our own genuine interests and sense of self. I didn't magically have all the answers, nor was I suddenly immune to the pressures of the world.
 
-## 👀 To Others on a Similar Path
-
+**To Others on a Similar Path
+**
 If you're always feel being left, or struggling to find your place — you're not behind. You're just not playing a zero-sum game anymore. 
-
-
 
 Gap Year was transformative for me because it existed outside the metrics of the standardize life I should live. I didn't magically have all the answers, nor was I suddenly immune to the pressures of the world in the past 2 years. But something fundamental had shifted within me.
 
