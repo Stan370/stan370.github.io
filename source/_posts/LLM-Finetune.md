@@ -170,9 +170,8 @@ Here’s what I ended up running:
 5. Learn to *smell* lobotomized models. They always avoid certain topics, answer vaguely, and fail to write full functions.
 6. Local deployment isn't complicated; quantization and Ollama can handle it.
 
-Don't let excessive alignment limit your model's capabilities.
-If you're looking for privacy, security, and customization, local LLM is the only solution.
----
+7. Don't let excessive alignment limit your model's capabilities.
+8. If you're looking for privacy, security, and customization, local LLM is the only solution.
 
 ## Coming Next: Local LoRA fine tune and Gemma3n image and audio test
 
