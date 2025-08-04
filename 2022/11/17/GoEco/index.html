@@ -1,0 +1,1648 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Go生态常用库 中间件, StanBlog">
+    <meta name="description" content="GIN
+一个高性能的Web框架，具有内置的中间件支持。它提供了路由、中间件、JSON验证和绑定等功能，非常适合用于构建高性能的RESTful API。
+It features a martini-like API with performa">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+    <title>Go生态常用库 中间件 | StanBlog</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/atom.xml" title="StanBlog" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3592614110969127"
+     crossorigin="anonymous"></script>
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">StanBlog</span>
+                </a>
+            </div>
+            
+<style>
+  #openSearchBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+#openSearchBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+  #searchIcon {
+    color: white;
+  }
+</style>
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>Index</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>Tags</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>Categories</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>Archives</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>About</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>Contact</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <button id="openSearchBtn" type="button" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </button>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">StanBlog</div>
+        <div class="logo-desc">
+            
+            A popular long-form, stick-figure-illustrated blog about almost everything. Material Themes / GitHub Pages 个性化定制的Hexo-Matery主题 
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			Index
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			Tags
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			Categories
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			Archives
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			About
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			Contact
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Stan370/stan370.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Stan370/stan370.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/go.png')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Go生态常用库 中间件</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                                <span class="chip bg-color">计算机基础</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BC%96%E7%A8%8B/">
+                                <span class="chip bg-color">编程</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%BC%80%E6%BA%90/">
+                                <span class="chip bg-color">开源</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%B7%A5%E7%A8%8B/" class="post-category">
+                                计算机工程
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    2022-11-17
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
+                    5.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
+                    22 Min
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="GIN"><strong>GIN</strong></h2>
+<p>一个高性能的Web框架，具有内置的中间件支持。它提供了路由、中间件、JSON验证和绑定等功能，非常适合用于构建高性能的RESTful API。<br>
+It features a martini-like API with performance that is up to 40 times faster thanks to <a target="_blank" rel="noopener" href="https://github.com/julienschmidt/httprouter">httprouter</a>. If you need performance and good productivity, you will love Gin.</p>
+<p>只要你的路由带有参数，并且这个项目的API数目超过了10，就尽量不要使用<code>net/http</code>中默认的路由。在Go开源界应用最广泛的router是httpRouter，很多开源的router框架都是基于httpRouter进行一定程度的改造的成果。关于httpRouter路由的原理，会在本章节的router一节中进行详细的阐释。</p>
+<p><strong>Features</strong></p>
+<p><strong>Fast</strong></p>
+<p>Radix tree based routing, small memory foot print. No reflection. Predictable API performance.</p>
+<p><strong>Middleware support</strong></p>
+<p>An incoming HTTP request can be handled by a chain of middlewares and the final action. For example: Logger, Authorization, GZIP and finally post a message in the DB.</p>
+<p><strong>Crash-free</strong></p>
+<p>Gin can catch a panic occurred during a HTTP request and recover it. This way, your server will be always available. As an example - it’s also possible to report this panic to Sentry!</p>
+<p><strong>JSON validation</strong></p>
+<p>Gin can parse and validate the JSON of a request - for example, checking the existence of required values.</p>
+<p><strong>Routes grouping</strong></p>
+<p>Organize your routes better. Authorization required vs non required, different API versions… In addition, the groups can be nested unlimitedly without degrading performance.</p>
+<p><strong>Error management</strong></p>
+<p>Gin provides a convenient way to collect all the errors occurred during a HTTP request. Eventually, a middleware can write them to a log file, to a database and send them through the network.</p>
+<p><strong>Rendering built-in</strong></p>
+<p>Gin provides an easy to use API for JSON, XML and HTML rendering.</p>
+<p>再来回顾一下文章开头说的，开源界有这么几种框架，第一种是对httpRouter进行简单的封装，然后提供定制的中间件和一些简单的小工具集成比如gin，主打轻量，易学，高性能。第二种是借鉴其它语言的编程风格的一些MVC类框架，例如beego，方便从其它语言迁移过来的程序员快速上手，快速开发。还有一些框架功能更为强大，除了数据库schema设计，大部分代码直接生成，例如goa。不管哪种框架，适合开发者背景的就是最好的</p>
+<ul>
+<li>routes group是为了管理一些相同的URL</li>
+</ul>
+<p><code>Gin</code>提供了<code>Any</code>方法，可以一次性注册以上这些<code>HTTP Method</code>方法。如果你只想注册其中某两个、或者三个方法，<code>Gin</code>就没有这样的便捷方法了，不过<code>Gin</code>为我们提供了通用的<code>Handle</code>方法，我们可以包装一下使用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">funcHandle(r*gin.Engine, httpMethods []string, relativePathstring, handlers...gin.HandlerFunc) gin.IRoutes {</span><br><span class="line">var routes gin.IRoutes</span><br><span class="line">for _, httpMethod:=range httpMethods {</span><br><span class="line">    routes = r.Handle(httpMethod, relativePath, handlers...)</span><br><span class="line">  }</span><br><span class="line">return routes</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如果对于这些请求的URL我们一个个去注册，比如张三用户和李四用户，分别注册一个对应的GET方法，是很繁琐的，所以Gin为我们提供了URL路由的<strong>模糊匹配</strong>，比如URL路径中的参数</p>
+<p>/users/*id 表示模糊匹配id</p>
+<p><code>/users/:id</code>这种匹配模式是精确匹配的，只能匹配一个k</p>
+<p>重定向的根本原因在于<code>/users</code>没有匹配的路由，但是有匹配<code>/users/</code>的路由，所以就会被重定向到<code>/users/</code>。得益于<code>gin.RedirectTrailingSlash</code><br>
+ 等于<code>true</code></p>
+<p>URL<strong>获取查询参数</strong></p>
+<p><code>GetQuery</code>来代替<code>Query</code>方法。</p>
+<p><code>GetQuery</code>方法的底层实现其实是<code>c.Request.URL.Query().Get(key)</code>，通过<code>url.URL.Query()</code>来获取所有的参数键值对。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">unc (c*Context)GetQueryArray(keystring) ([]string,bool) {</span><br><span class="line">  c.getQueryCache()//缓存所有的键值对</span><br><span class="line">if values, ok:= c.queryCache[key]; ok&amp;&amp; len(values) &gt; 0 {</span><br><span class="line">return values,true</span><br><span class="line">  }</span><br><span class="line">return []string{},false</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">func (c*Context)getQueryCache() {</span><br><span class="line">if c.queryCache==nil {</span><br><span class="line">    c.queryCache = c.Request.URL.Query()</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>从以上的实现代码中，可以看到最终的实现都在<code>GetQueryArray</code>方法中，找到对应的<code>key</code>就返回对应的<code>[]string</code>，返回就返回空数组。</p>
+<p>这里<code>Gin</code>进行了优化，通过缓存所有的键值对，提升代码的查询效率。这里缓存的<code>queryCache</code>本质上是<code>url.Values</code>，也是一个<code>map[string][]string</code>。提高了GIN的性能</p>
+<p><code>GetQuery</code>方法的底层实现其实是<code>c.Request.URL.Query().Get(key)</code>，通过<code>url.URL.Query()</code><br>
+来获取所有的参数键值对</p>
+<p>!<a target="_blank" rel="noopener" href="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ab28a5ec-65a2-4ed5-bfc7-f4c972dc4c8a/Untitled.png">https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ab28a5ec-65a2-4ed5-bfc7-f4c972dc4c8a/Untitled.png</a></p>
+<p>通过<code>gin.Default()</code>生成的<code>gin.Engine</code>其实包含一个<code>RouterGroup</code>(嵌套组合),所以它可以用<code>RouterGroup</code>的方法。</p>
+<p><code>Group</code>方法又生成了一个<code>*RouterGroup</code>，这里最重要的就是<code>basePath</code>,它的值是<code>group.calculateAbsolutePath(relativePath)</code></p>
+<p>1.<strong>gin 数据解析和绑定</strong></p>
+<p>客户端传参，后端接收并解析到结构体。</p>
+<h3 id="Lifecycle">Lifecycle</h3>
+<p>Gin-Context 实现了对request和response的封装，是Gin的核心实现之一，学习使用gin框架就是学习使用Context包的过程。内部封装了request 和response 过程中的数据。</p>
+<p><strong>框架启动过程</strong></p>
+<p><strong>1. New 一个Engine实例</strong></p>
+<p><code>app **:=** gin.**Default**()</code></p>
+<p><strong>2. 注册添加路由、中间件</strong></p>
+<p>你可能会疑惑，为什么这里的路由处理函数要接受一个 gin.Context 类型的参数，是在何时传入的？</p>
+<p><strong>Engine结构体本身发挥的核心功能就是路由处理。</strong></p>
+<p><code>app.**GET**("/ping", **func**(c *****gin.Context) {         c.**JSON**(200, gin.H{             "message": "pong",         })     })</code></p>
+<p><strong>3. 启动Gin框架</strong></p>
+<p><strong>Run 本质就是将 注册的路由信息engine 绑定到一个 http.Server，然后开始开始监听并处理请求</strong></p>
+<p>`app.<strong>Run</strong>()</p>
+<p><strong>func</strong> (engine *****Engine) <strong>Run</strong>(addr <strong>…string</strong>) (err <strong>error</strong>) {<br>
+<strong>defer</strong> <strong>func</strong>() { <strong>debugPrintError</strong>(err) }()</p>
+<p>address <strong>:=</strong> <strong>resolveAddress</strong>(addr)<br>
+<strong>debugPrint</strong>(“Listening and serving HTTP on %s\n”, address)<br>
+err = http.<strong>ListenAndServe</strong>(address, engine)<br>
+<strong>return</strong>}`</p>
+<p>进入到 golang net/http包 （ListenandServe) ，Hanlder 是一个实现了ServeHTTP方法的类型</p>
+<p>API调用过程</p>
+<p><strong>当监听到请求时，gin框架就会衍生一个Context，为它添加上请求相关参数。开一个go程进行处理。</strong></p>
+<p><strong>1. net\http 创建连接，握手</strong></p>
+<p><strong>2. gin 框架处理请求核心：ServeHTTP</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func (engine*Engine)ServeHTTP(w http.ResponseWriter, req*http.Request) {</span><br><span class="line">    c:= engine.pool.Get().(*Context)</span><br><span class="line">    c.writermem.reset(w)</span><br><span class="line">    c.Request = req</span><br><span class="line">    c.reset()</span><br><span class="line">    engine.handleHTTPRequest(c)</span><br><span class="line">    engine.pool.Put(c)</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>SEO</p>
+<ul>
+<li>Search engine optimization: the process of making your site better for search engines.</li>
+</ul>
+<p>如果您的网站不在 Google 的索引中</p>
+<p>虽然 Google 可抓取数十亿个网页，但难免也会遗漏部分网站。造成抓取工具遗漏网站的常见原因如下：</p>
+<ul>
+<li>此网站未与网络上的其他网站紧密关联</li>
+<li>您刚刚推出新的网站，Google 还没来得及抓取</li>
+<li>网站的设计致使 Google 难以有效抓取其中的内容</li>
+<li>Google 在尝试抓取网站时收到了错误消息</li>
+<li>您的政策阻止 Google 抓取网站</li>
+</ul>
+<p>元描述标记很重要，因为 Google 可能会在搜索结果中将其用作网页的摘要。请注意，我们说的是“可能”，因为如果网页中有一段可见文本能很好地匹配用户查询，那么 Google 也可能会选择使用这段文本。最好为每个网页添加元描述标记，以防 Google 找不到要在摘要中使用的恰当文本。</p>
+<p>&lt;meta</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%BD%91%E7%BB%9C%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E">网络搜索引擎</a>通常使用网站具有的<strong>反向链接数</strong>作为确定该网站的搜索引擎排名，受欢迎程度和重要性的最重要因素之一。例如<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Google">Google</a>的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/PageRank">PageRank</a>系统<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%8F%8D%E5%90%91%E9%93%BE%E6%8E%A5#cite_note-1">[1]</a>。<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9E%83%E5%9C%BE%E7%B4%A2%E5%BC%95">垃圾索引</a>（linkspam），即公司试图在其站点上放置尽可能多的入站链接backlinks，而不管源站点的上下文如何。搜索引擎排名的重要性非常高，它被视为在线业务和任何网站的访问者转化率（尤其是在线购物时）的关键参数。博客评论、文章提交、新闻稿发布，社交媒体参与和论坛发布可用于增加反向链接。</p>
+<p>DNS 将域名转换为 IP 地址，以便浏览器能够加载互联网资源。</p>
+<p>要解决跨域问题的办法有CORS、代理和JSONP</p>
+<ol>
+<li>CORS</li>
+</ol>
+<p>出于安全原因，浏览器限制从脚本发起的跨域 HTTP 请求。例如，<code>XMLHttpRequest</code> 和 Fetch <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">API</a>遵循<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy">同源策略</a>。这意味着使用这些 API 的 Web 应用程序只能从加载应用程序的同一来源请求资源，除非来自其他来源的响应包含正确的 CORS 标头。(XMLHTTP是一组API函数集，可被JavaScript、JScript、VBScript以及其它web浏览器内嵌的脚本语言调用，通过HTTP在浏览器和web服务器之间收发XML或其它数据。XMLHTTP最大的好处在于可以<strong>动态</strong>地更新网页，它无需重新从服务器读取整个网页，也不需要安装额外的插件。该技术被许多网站使用，以实现快速响应的动态网页应用。例如：Google的Gmail服务、Google Suggest动态查找界面以及Google Map地理信息服务。</p>
+<p>在HTTP协议中，OPTIONS方法是一个预检请求（preflight request），用于在发送实际请求之前确定服务器是否愿意接受该请求。这种方法特别重要在跨源资源共享（CORS, Cross-Origin Resource Sharing）中，因为它帮助浏览器决定是否安全地进行跨域请求。</p>
+<p><strong>OPTIONS 请求的作用包括：</strong></p>
+<ol>
+<li><strong>检查服务器支持的HTTP方法</strong>：通过发送一个OPTIONS请求到服务器，客户端可以知道服务器支持哪些HTTP方法（如GET, POST, DELETE等）。</li>
+<li><strong>CORS预检请求</strong>：
+<ul>
+<li>在进行跨域请求时，如果请求满足某些条件（例如，使用了除GET/HEAD/POST以外的方法，或者POST请求的Content-Type不是application/x-www-form-urlencoded、multipart/form-data或text/plain，或者请求包含了额外的头信息），浏览器会自动先发送一个OPTIONS请求到服务器，询问服务器是否允许跨域请求，并且询问可以使用哪些HTTP方法和头信息。</li>
+<li>这个预检请求的响应中，服务器会返回**<code>Access-Control-Allow-Origin</code><strong>、</strong><code>Access-Control-Allow-Methods</code><strong>和</strong><code>Access-Control-Allow-Headers</code>**等CORS相关的响应头，指示哪些源、哪些HTTP方法和哪些头信息是被允许的。<br>
+<strong>OPTIONS 请求的响应头：</strong></li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>Access-Control-Allow-Origin</strong>：指示哪些源可以访问资源。</li>
+<li><strong>Access-Control-Allow-Methods</strong>：指示允许的HTTP方法。</li>
+<li><strong>Access-Control-Allow-Headers</strong>：在实际请求中允许携带的自定义请求头。</li>
+<li><strong>Access-Control-Max-Age</strong>：指示浏览器应该缓存预检请求的结果多长时间。</li>
+</ul>
+<p>2.JSONP （动态创建script标签）</p>
+<p>JSONP跨域-前端适配，后端配合<br>
+前后端同时改造<br>
+jsonp原理：img、srcipt，link标签的src或href属性不受同源策略限制，可以用来作为请求，后端接受请求后返回一个回调函数callback，调用前端已经定义好的函数，从而实现跨域请求，如：</p>
+<p>$(‘#btn’).click(function(){<br>
+var frame = document.createElement(‘script’);<br>
+frame.src = ‘<a target="_blank" rel="noopener" href="http://localhost:3000/article-listname=leo&amp;age=30&amp;callback=func">http://localhost:3000/article-listname=leo&amp;age=30&amp;callback=func</a>’;<br>
+$(‘body’).append(frame);<br>
+});</p>
+<p>// 此为回调函数，其中res为后端返回的数据<br>
+function func(res){<br>
+alert(res.message+res.name+‘你已经’+res.age+‘岁了’);<br>
+}<br>
+其中， func 这个回调函数命名，需要前后端沟通一致</p>
+<p>3.接口代理</p>
+<p>通过修改nginx服务器配置实现代理转发<br>
+前端修改，后端不用<br>
+前端请求 a 地址，设置nginx服务，将 a 地址代理到 b 地址。</p>
+<p>如vue项目中可以在 vue.config.js 中设置</p>
+<p><strong>Echo</strong> is a Web pkg of GO,</p>
+<h2 id="GORM">GORM</h2>
+<p>WEB开发中的ORM</p>
+<p>实际上大量的工作都是简单的select，和update delete等，复杂的sql并不是特别频繁，如果orm有性能问题，再手写sql。</p>
+<p>ORM的目的就是屏蔽掉DB层，很多语言的ORM只要把你的类或结构体定义好，再用特定的语法将结构体之间的一对一或者一对多关系表达出来。那么任务就完成了。然后你就可以对这些映射好了数据库表的对象进行各种操作，例如save，create，retrieve，delete。至于ORM在背地里做了什么阴险的勾当，你是不一定清楚的。使用ORM的时候，我们往往比较容易有一种忘记了数据库的直观感受。</p>
+<p>决定在项目中是否使用 ORM（对象关系映射）库通常取决于多种因素，包括项目规模、开发团队的经验、项目的复杂性以及特定需求等。以下是一些关于是否使用 ORM 的考虑因素：</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li><strong>简化数据库操作</strong>：ORM 将数据库操作转换为对象操作，使代码更易读、易写、易维护。它可以让开发者更专注于业务逻辑而不是 SQL 语句。</li>
+<li><strong>跨数据库平台</strong>：ORM 库通常能够提供跨不同数据库平台的支持，因此你可以更轻松地在不同的数据库之间切换。</li>
+<li><strong>对象映射</strong>：ORM 可以将数据库表映射到程序中的对象，简化了对象和数据库之间的转换。</li>
+<li><strong>内置功能</strong>：ORM 通常提供了许多内置功能，例如数据验证、查询构建器、关联查询等，简化了开发流程。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><strong>性能损耗</strong>：有时候 ORM 会引入一定程度的性能损耗，因为它需要进行对象和数据库之间的映射转换。</li>
+<li><strong>学习曲线</strong>：ORM 框架可能有自己的学习曲线，开发团队需要时间来熟悉并掌握框架的使用。</li>
+<li><strong>复杂查询的处理</strong>：在一些复杂的查询场景下，ORM 可能会限制灵活性，需要编写复杂的 ORM 特定语法或者原生 SQL。</li>
+</ul>
+<p><strong>何时使用 ORM：</strong></p>
+<ul>
+<li><strong>小型到中型项目</strong>：对于小型到中型的项目，ORM 可能更有益于提高开发效率，并减少基本的 CRUD 操作的重复代码。</li>
+<li><strong>团队熟悉度</strong>：如果团队对某个 ORM 框架比较熟悉，并且该框架能够满足项目需求，那么使用 ORM 可能是个不错的选择。</li>
+<li><strong>快速开发</strong>：对于需要快速迭代和开发的项目，ORM 可以加快开发速度。</li>
+</ul>
+<p><strong>何时不使用 ORM：</strong></p>
+<ul>
+<li><strong>性能要求极高</strong>：对于对性能要求极高、需要高度优化的场景，可能直接使用原生 SQL 或避免 ORM 更合适。</li>
+<li><strong>复杂查询</strong>：某些复杂的查询可能不容易通过 ORM 来表达，可能需要编写复杂的 ORM 语句或者原生 SQL。</li>
+</ul>
+<p>Go官方提供了<code>database/sql</code><br>
+包来给用户进行和数据库打交道的工作，<code>database/sql</code><br>
+库实际只提供了一套操作数据库的接口和规范，例如抽象好的SQL预处理（prepare），连接池管理，数据绑定，事务，错误处理等等。官方并没有提供具体某种数据库实现的协议支持。</p>
+<hr>
+<p><strong>gorm</strong>框架是go的一个数据库连接及交互框架，一般用于连接关系型数据库。</p>
+<p>本人最近用go写业务后台，数据库是mysql，用的是gorm连接，一般而言，是数据库先启动，再启动业务后台服务。<br>
+本人在程序启动的时候，会事先进行数据库连接。<br>
+下面是我发现的现象：<br>
+1.数据库先启动，再启动业务后台，业务操作正常，此时断掉数据库，业务操作异常(数据库操作报错)， 此时启动数据库，再进行业务请求，业务操作正常(数据库请求正常)。</p>
+<p>2.业务后台先启动，数据库后启动，此时业务操作异常(数据库操作报错)</p>
+<p>很明显，现象1是我想要的结果，断掉数据库后再重新启动数据库，gorm内部给人感觉会自动重连一样。</p>
+<p><strong>现象1表现出了期望的行为，而现象2则没有展现出自动重连的效果。这可能是因为在现象2中，GORM 连接并未尝试重新连接到数据库，而是仍然使用先前建立的连接，导致了业务操作异常。</strong></p>
+<p>在 GORM 中，默认情况下，并不会对连接断开进行自动重连。但是你可以设置 GORM 的连接参数以实现断开连接后的自动重连功能。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 示例使用 DryRun 模式来检查是否有额外或低效的查询</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Assuming 'db' is your GORM database connection instance</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 开启 DryRun 模式</span></span><br><span class="line">db = db.<span class="title class_">Session</span>(&amp;gorm.<span class="property">Session</span>{<span class="title class_">DryRun</span>: <span class="literal">true</span>})</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建查询</span></span><br><span class="line">query := db.<span class="title class_">Preload</span>(<span class="string">"Orders"</span>).<span class="title class_">Find</span>(&amp;[]<span class="title class_">User</span>{})</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印生成的 SQL 语句</span></span><br><span class="line">fmt.<span class="title class_">Println</span>(query.<span class="property">Statement</span>.<span class="property">SQL</span>.<span class="title class_">String</span>()) <span class="comment">// 这里会输出生成的 SQL 语句</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 分析生成的 SQL 查询语句，确保它们是你预期的，且是有效的</span></span><br></pre></td></tr></table></figure>
+<p><strong>避免N+1查询问题？</strong></p>
+<p><strong>1. 使用预加载（Eager Loading）</strong>：<br>
+ORM工具通常提供预加载功能，例如使用 <strong><code>Preload</code></strong> 或 <strong><code>Join</code></strong> 等方法可以一次性加载所有需要的关联数据，而不是在循环中逐个加载。 Preload().Find(&amp;product)</p>
+<p><strong>2. 批量查询</strong>：<br>
+可以通过在单个查询中检索所有相关的数据来避免多次查询。这可以通过ORM工具的批量查询方法来实现，以减少数据库的访问次数。</p>
+<p><strong>3. 使用联合查询（Join）</strong>：<br>
+利用数据库的关联查询功能，通过在查询中使用JOIN语句一次性获取所需的数据，而不是进行多次单独的查询。 Select</p>
+<p><strong>4. 缓存数据</strong>：<br>
+对于频繁使用的数据，可以考虑将其缓存在内存中，以减少对数据库的实际访问次数。</p>
+<h2 id="casbin">casbin</h2>
+<p>Casbin 是一个强大的、高效的开源访问控制框架，其权限管理机制支持多种访问控制模型。储存RBAC关系中user role的ORM</p>
+<p>Casbin 可以：</p>
+<ol>
+<li>支持自定义请求的格式，默认的请求格式为<code>{subject, object, action}</code>。</li>
+<li>具有访问控制模型model和策略policy两个核心概念。</li>
+<li>支持RBAC中的多层角色继承，不止主体可以有角色，资源也可以具有角色。</li>
+<li>支持内置的超级用户 例如：<code>root</code> 或 <code>administrator</code>。超级用户可以执行任何操作而无需显式的权限声明。</li>
+<li>支持多种内置的操作符，如 <code>keyMatch</code>，方便对路径式的资源进行管理，如 <code>/foo/bar</code> 可以映射到 <code>/foo*</code></li>
+</ol>
+<p>Casbin 不能：</p>
+<ol>
+<li>身份认证 authentication（即验证用户的用户名和密码），Casbin 只负责访问控制。应该有其他专门的组件负责身份认证，然后由 Casbin 进行访问控制，二者是相互配合的关系。</li>
+<li>管理用户列表或角色列表。 Casbin 认为由项目自身来管理用户、角色列表更为合适， 用户通常有他们的密码，但是 Casbin 的设计思想并不是把它作为一个存储密码的容器。 而是存储RBAC方案中用户和角色之间的映射关系。</li>
+</ol>
+<p>有两个配置文件，<code>model.conf</code>和<code>policy.csv</code>。 其中，<code>model.conf</code>存储了访问模型，<code>policy.csv</code>存储了特定的用户权限配置。 Casbin的使用非常精炼。 基本上，我们只需要一个主要结构：<strong>enforcer</strong>。 当构建这个结构时，<code>model.conf</code>和<code>policy.csv</code>将被加载。</p>
+<p>换句话说，要新建一个Casbin执行器，你必须提供一个<a target="_blank" rel="noopener" href="https://casbin.org/docs/zh-CN/supported-models">Model</a>和一个<a target="_blank" rel="noopener" href="https://casbin.org/docs/zh-CN/adapters">Adapter</a>。</p>
+<h2 id="Wire">Wire</h2>
+<p>Wire is a dependency inject platform. <a href="https://link.zhihu.com/?target=https%3A//github.com/uber-go/dig">di</a>g和Facebook的<a href="https://link.zhihu.com/?target=https%3A//github.com/facebookarchive/inject">injec</a>t，它们都是使用反射机制来实现运行时依赖注入(<code>runtime dependency injection</code>)，而wire则是采用<strong>代码生成的方式来达到编译时依赖注入</strong>(<code>compile-time dependency injection</code>)。使用反射带来的性能损失倒是其次，更重要的是反射使得代码难以追踪和调试（反射会令Ctrl+左键失效…）。而wire生成的代码是符合程序员常规使用习惯的代码，十分容易理解和调试。</p>
+<p><code>provider</code>和<code>injector</code>是<code>wire</code>的两个核心概念。</p>
+<blockquote>
+<p>provider: a function that can produce a value. These functions are ordinary Go code.</p>
+</blockquote>
+<p>通过提供<code>provider</code>函数，让<code>wire</code>知道如何产生这些依赖对象。<code>wire</code>根据我们定义的<code>injector</code>函数签名，生成完整的<code>injector</code>函数，<code>injector</code>函数是最终我们需要的函数，它将按<strong>依赖顺序调</strong>用<code>provider</code>。</p>
+<p>injector中声明wire.build,<code>wire_gen.go</code>创建后，您可以通过运行重新生成它<code>[go generate](&lt;https://blog.golang.org/generate&gt;)</code>。****</p>
+<p>Bind 函数的作用是为了让接口类型参与 wire 的构建过程。wire 的构建依靠的是参数的类型来组织代码，所以接口类型天然是不支持的。Bind 函数通过将接口类型和实现类型绑定，来达到依赖注入的目的。</p>
+<p>eg.</p>
+<p>`type Fooer interface{<br>
+HelloWorld()<br>
+}<br>
+type Foo struct{}<br>
+func (f Foo)HelloWorld(){}</p>
+<p>var bind = wire.Bind(new(Fooer),new(Foo))`</p>
+<p>这样将 bind 传入 NewSet 或 Build 中就可以将 <strong>Fooer 接口和 Foo 类型绑定</strong>。</p>
+<p>这里需要特别注意，如果是 *Foo 实现了 Fooer 接口，需要将最后的 new(Foo) 改成 new(*Foo)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var Set = wire.NewSet(</span><br><span class="line">    provideMyFooer,</span><br><span class="line">    wire.Bind(new(Fooer), new(*MyFooer)),</span><br><span class="line">    provideBar)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>第一个参数<code>wire.Bind</code>是指向所需接口类型的值的指针，第二个参数是指向实现接口的类型的值的指针。任何包含接口绑定的集合也必须在提供具体类型的同一集合中具有提供者。</p>
+<p><em><strong>属性自动注入</strong></em></p>
+<p><code>wire.Struct</code>函数构造一个结构类型并告诉注入器应该注入哪些字段。注入器将使用字段类型的提供程序填充每个字段。对于生成的结构类型<code>S</code>，<code>wire.Struct</code>同时提供<code>S</code>和<code>*S</code><br>
+ 提供一项额外的灵活性： 它能适应指针与非指针类型，根据需要自动调整生成的代码。</p>
+<p>有时我们不需什么特定的初始化工作， 只是简单地创建一个对象实例， 为其指定属性赋值，然后返回。当属性多的时候，这种工作会很无聊。</p>
+<p><code>wire.Struct</code> 可以简化此类工作， 指定属性名来注入特定属性：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//. type S struct {</span><br><span class="line">//    MyFoo *Foo</span><br><span class="line">//    MyBar *Bar</span><br><span class="line">//  }</span><br><span class="line">//  var Set = wire.NewSet(wire.Struct(new(S), "MyFoo")) -&gt; inject only S.MyFoo</span><br><span class="line">//  var Set = wire.NewSet(wire.Struct(new(S), "*")) -&gt; inject all fields</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>依赖注入的过程。</p>
+<p><strong>1. 定义 Injector</strong></p>
+<p>创建<code>wire.go</code>文件，定义下你最终想用的实例初始化函数例如<code>initApp</code>（即 Injector），定好它返回的东西<code>*App</code>，在方法里用<code>panic(wire.Build(NewRedis, SomeProviderSet, NewApp))</code>罗列出它依赖哪些实例的初始化方法（即 Provider）/或者哪些组初始化方法（ProviderSet）</p>
+<p><strong>2. 定义 ProviderSet（如果有的话）</strong></p>
+<p>ProviderSet 就是一组初始化函数，是为了少写一些代码，能够更清晰的组织各个模块的依赖才出现的。也可以不用，但 Injector 里面的东西就需要写一堆。 像这样 <code>var SomeProviderSet = wire.NewSet(NewES,NewDB)</code>定义 ProviderSet 里面包含哪些 Provider</p>
+<p><strong>3. 实现各个 Provider</strong></p>
+<p>Provider 就是初始化方法，你需要自己实现，比如 NewApp，NewRedis，NewMySQL，GetConfig 等，注意他们们各自的输入输出</p>
+<p><strong>4. 生成代码</strong></p>
+<p>执行 wire 命令生成代码，工具会扫描你的代码，依照你的 Injector 定义来组织各个 Provider 的执行顺序，并自动按照 Provider 们的类型需求来按照顺序执行和安排参数传递，如果有哪些 Provider 的要求没有满足，会在终端报出来，持续修复执行 wire，直到成功生成<code>wire_gen.go</code>文件。接下来就可以正常使用<code>initApp</code>来写你后续的代码了。</p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        Author:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Stan ke</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        Link:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://stan370.github.io/2022/11/17/GoEco/">https://stan370.github.io/2022/11/17/GoEco/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        Reprint policy:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    All articles in this blog are used except for special statements
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    reprint policy. If reproduced, please indicate source
+                    <a href="/about" target="_blank">Stan ke</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                                    <span class="chip bg-color">计算机基础</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BC%96%E7%A8%8B/">
+                                    <span class="chip bg-color">编程</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%BC%80%E6%BA%90/">
+                                    <span class="chip bg-color">开源</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                    </ul>
+                    
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/reward/wechat.JPG" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        TBD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2022/12/07/Go/">
+                    <div class="card-image">
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/go.png" class="responsive-img" alt="入门学习GO的一些记录">
+                        
+                        <span class="card-title">入门学习GO的一些记录</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-12-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%B7%A5%E7%A8%8B/" class="post-category">
+                                    计算机工程
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">计算机基础</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BC%96%E7%A8%8B/">
+                        <span class="chip bg-color">编程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/12/07/hello-world/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="First Post">
+                        
+                        <span class="card-title">First Post</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Stan ke
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+
+    <div class="container row center-align"
+         style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2025</span>
+            
+            <a href="/about" target="_blank">Stan ke</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/Stan370/stan370.github.io" target="_blank">Matery</a>
+            <br>
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:&nbsp;<span
+                        class="white-color">293.4k</span>
+            <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;Total visits:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;Total visitors:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            <br>
+            <!-- Matomo -->
+            <script>
+                var _paq = window._paq = window._paq || [];
+                /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+                _paq.push(['trackPageView']);
+                _paq.push(['enableLinkTracking']);
+                (function() {
+                    var u="https://your-matomo-instance.com/";
+                    _paq.push(['setTrackerUrl', u+'matomo.php']);
+                    _paq.push(['setSiteId', '1']);
+                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+                })();
+            </script>
+            <!-- End Matomo Code -->
+            <!-- Privacy Notice -->
+            <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+                <i class="fas fa-shield-alt"></i> This site uses Matomo for privacy-friendly analytics.
+            </div>
+            <!-- 运行天数提醒. -->
+            
+                <span id="sitetime"> Loading ...</span>
+                <script>
+                    var calcSiteTime = function () {
+                        var seconds = 1000;
+                        var minutes = seconds * 60;
+                        var hours = minutes * 60;
+                        var days = hours * 24;
+                        var years = days * 365;
+                        var today = new Date();
+                        var startYear = "2019";
+                        var startMonth = "6";
+                        var startDate = "28";
+                        var startHour = "0";
+                        var startMinute = "0";
+                        var startSecond = "0";
+                        var todayYear = today.getFullYear();
+                        var todayMonth = today.getMonth() + 1;
+                        var todayDate = today.getDate();
+                        var todayHour = today.getHours();
+                        var todayMinute = today.getMinutes();
+                        var todaySecond = today.getSeconds();
+                        var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                        var diff = t2 - t1;
+                        var diffYears = Math.floor(diff / years);
+                        var diffDays = Math.floor((diff / days) - diffYears * 365);
+
+                        // 区分是否有年份.
+                        var language = 'en';
+                        if (startYear === String(todayYear)) {
+                            document.getElementById("year").innerHTML = todayYear;
+                            var daysTip = 'This site has been running for ' + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                daysTip = '本站已运行 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                daysTip = '本站已運行 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = daysTip;
+                        } else {
+                            document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                            var yearsAndDaysTip = 'This site has been running for ' + diffYears + ' years and '
+                                + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                yearsAndDaysTip = '本站已运行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                yearsAndDaysTip = '本站已運行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+                        }
+                    }
+
+                    calcSiteTime();
+                </script>
+            
+            <br>
+            
+        </div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+  <div class="modal-content">
+    <div class="search-header">
+      <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span  >
+      <input
+        type="search"
+        id="searchInput"
+        name="s"
+        placeholder="Please enter a search keyword"
+        class="search-input"
+      />
+    </div>
+    <div id="searchResult"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems, {
+        dismissible: true,    // Allow modal to be dismissed by clicking outside
+        preventScrolling: false, // Allow scrolling while modal is open
+        opacity: 0.5,        // Opacity of modal background
+        inDuration: 250,     // Transition in duration
+        outDuration: 250,    // Transition out duration
+        onOpenStart: function() {
+            document.body.style.overflow = 'auto';
+        },
+        onCloseEnd: function() {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Get modal instance
+    const searchModal = document.getElementById("searchModal");
+    const modalInstance = M.Modal.getInstance(searchModal);
+    
+    // Only open modal when search button is clicked
+    document.getElementById("openSearchBtn")?.addEventListener("click", function() {
+        modalInstance.open();
+        searchInput.focus(); 
+    });
+    function closeSearchModal() {
+        modalInstance.close();
+    }
+
+    // Handle clicks outside modal
+    document.addEventListener("click", function(event) {
+        const modalContent = searchModal.querySelector(".modal-content");
+        // Check if click is outside modal content
+        if (event.target === searchModal && !modalContent.contains(event.target)) {
+            closeSearchModal();
+        }
+    });
+
+    // Add ESC key to close modal
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape" && searchModal.classList.contains('open')) {
+            closeSearchModal();
+        }
+    });
+
+    var searchFunc = function (path, search_id, content_id) {
+      "use strict";
+      function debounce(func, wait) {
+        let timeout;
+        return function () {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, arguments), wait);
+        };
+      }
+      $.ajax({
+        url: path,
+        dataType: "json",
+        success: function (jsonData) {
+          // 获取所有文章数据
+          console.log(jsonData);
+          var datas = jsonData.map(function (post) {
+            return {
+              title: post.title,
+              content: post.content,
+              url: post.url,
+            };
+          });
+
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+
+          // 搜索输入监听
+          $input.addEventListener(
+            "input",
+            debounce(function () {
+              var str = '<ul class="search-result-list">';
+              var keywords = this.value
+                .trim()
+                .toLowerCase()
+                .split(/[\s\-]+/);
+              $resultContent.innerHTML = "";
+              if (this.value.trim().length <= 0) {
+                return;
+              }
+              // Perform local searching
+              datas.forEach(function (data) {
+                var isMatch = true;
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content
+                  .trim()
+                  .replace(/<[^>]+>/g, "")
+                  .toLowerCase();
+                var data_url =
+                  data.url.indexOf("/") === 0 ? data.url : "/" + data.url;
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                console.log(data_title, data_content, data_url);
+                if (data_title !== "" && data_content !== "") {
+                  for (let i = 0; i < keywords.length; i++) {
+                    let keyword = keywords[i];
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+
+                    if (index_title < 0 && index_content < 0) {
+                      isMatch = false;
+                      break; // 直接退出关键词遍历
+                    } else {
+                      if (index_content < 0) {
+                        index_content = 0;
+                      }
+                      if (i === 0) {
+                        first_occur = index_content;
+                      }
+                    }
+                  }
+                }
+
+                // Show search results
+                if (isMatch) {
+                  str += `<li>
+                <a href="${data_url}" class="search-result-title">${data_title}</a>`;
+                  var content = data.content.trim().replace(/<[^>]+>/g, "");
+                  if (first_occur >= 0) {
+                    var start = Math.max(0, first_occur - 20);
+                    var end = Math.min(content.length, first_occur + 80);
+                    var match_content = content.substring(start, end);
+
+                    keywords.forEach(function (keyword) {
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(
+                        regS,
+                        '<em class="search-keyword">$&</em>'
+                      );
+                    });
+
+                    str += `<p class="search-result">${match_content}...</p>`;
+                  }
+                  str += "</li>";
+                }
+              });
+
+              str += "</ul>";
+              $resultContent.innerHTML = str;
+            }, 300)
+          ); // 设置 300 毫秒延迟
+        },
+        error: function (xhr, status, error) {
+          console.error("Search failed:", error);
+          document.getElementById(content_id).innerHTML =
+            '<p class="search-error">Search failed to load. Please try again.</p>';
+        },
+      });
+    };
+
+    // 初始化搜索
+    searchFunc('/search.json', "searchInput", "searchResult");
+  });
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/js/matery.js"></script>
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/clicklove.js" async="async"></script>
+    <script async src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

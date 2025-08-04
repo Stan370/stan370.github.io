@@ -1,0 +1,2145 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="访问localhost的时候你的电脑发生了什么？, StanBlog">
+    <meta name="description" content="1. 环回地址（127.0.0.1）的请求流程
+(1) 协议栈的处理
+
+数据包仍然会走完整的网络协议栈（应用层 → 传输层 → 网络层 → 链路层），但链路层和物理层的处理是虚拟的。
+关键点：
+
+网络层（IP层）： 数据包的目标地址是 12">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+    <title>访问localhost的时候你的电脑发生了什么？ | StanBlog</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/atom.xml" title="StanBlog" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3592614110969127"
+     crossorigin="anonymous"></script>
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">StanBlog</span>
+                </a>
+            </div>
+            
+<style>
+  #openSearchBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+#openSearchBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+  #searchIcon {
+    color: white;
+  }
+</style>
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>Index</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>Tags</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>Categories</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>Archives</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>About</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>Contact</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <button id="openSearchBtn" type="button" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </button>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">StanBlog</div>
+        <div class="logo-desc">
+            
+            A popular long-form, stick-figure-illustrated blog about almost everything. Material Themes / GitHub Pages 个性化定制的Hexo-Matery主题 
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			Index
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			Tags
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			Categories
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			Archives
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			About
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			Contact
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Stan370/stan370.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Stan370/stan370.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/18.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">访问localhost的时候你的电脑发生了什么？</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+                                <span class="chip bg-color">计算机网络</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    2025-02-28
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
+                    14.9k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
+                    56 Min
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="1-环回地址（127-0-0-1）的请求流程"><strong>1. 环回地址（127.0.0.1）的请求流程</strong></h2>
+<h4 id="1-协议栈的处理"><strong>(1) 协议栈的处理</strong></h4>
+<ul>
+<li><strong>数据包仍然会走完整的网络协议栈</strong>（应用层 → 传输层 → 网络层 → 链路层），但链路层和物理层的处理是虚拟的。</li>
+<li><strong>关键点：</strong>
+<ul>
+<li><strong>网络层（IP层）：</strong> 数据包的目标地址是 <code>127.0.0.1</code>，操作系统识别为环回地址，不会将数据包发送到物理网卡。</li>
+<li><strong>链路层和物理层：</strong> 操作系统通过虚拟的环回接口（<code>lo</code> 或 <code>Loopback Adapter</code>）处理数据包，不会触发真实的硬件操作（如网卡收发数据）。</li>
+<li><strong>传输层（TCP/UDP）：</strong> 仍然需要完成端口绑定、连接管理等逻辑（例如 TCP 的三次握手）。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-示例：Ping-127-0-0-1"><strong>(2) 示例：Ping 127.0.0.1</strong></h4>
+<ul>
+<li>当执行 <code>ping 127.0.0.1</code> 时：<br>
+当你在浏览器、cURL 或任何应用程序（如 ping 127.0.0.1）中输入 127.0.0.1：</li>
+</ul>
+<p>应用程序会尝试解析该地址，但 127.0.0.1 是一个 IP 地址，不需要 DNS 解析。<br>
+它会选择协议（通常是 TCP 或 UDP），并调用系统 API（如 socket()、connect()）。<br>
+2. 传输层（Transport Layer）<br>
+如果使用 TCP（如 HTTP 请求），应用程序会创建一个 TCP 连接, 内核会生成 TCP 三次握手（SYN -&gt; SYN+ACK -&gt; ACK）。<br>
+如果使用 UDP，则不会有连接建立的过程，而是直接发送数据报。<br>
+3. 网络层（Network Layer）<br>
+传输层将数据交给 网络层，指定目标地址 127.0.0.1。<br>
+网络层检测到 127.0.0.1 属于 环回地址（Loopback Address）：<br>
+这一地址不会被路由到外部网络。<br>
+操作系统会将数据包 直接送回本机 处理，而不经过网卡。</p>
+<p>a. ICMP 请求（网络层）生成并发送到环回接口。<br>
+b. 操作系统直接在内核中将请求转发给接收逻辑，不经过物理网卡。<br>
+c. 因此，能 <code>ping</code> 通，但数据包仅在内存中处理，不涉及硬件。</p>
+<ul>
+<li>
+<p>127.0.0.1： 是一个 IPv4 地址,  网络层检测到 <code>127.0.0.1</code> 属于 <strong>环回地址（Loopback Address）</strong></p>
+</li>
+<li>
+<p>在支持 IPv6 的系统中，<code>localhost</code> 可能同时映射到 <code>127.0.0.1</code>（IPv4）和 <code>::1</code>（IPv6）。</p>
+<ul>
+<li>如果服务只监听 IPv4，使用 <code>localhost</code> 可能会导致连接失败。</li>
+</ul>
+</li>
+<li>
+<p><strong>性能差异：</strong></p>
+<ul>
+<li>在大多数情况下，<code>localhost</code> 和 <code>127.0.0.1</code> 的性能差异可以忽略不计。</li>
+<li>但在高并发或性能敏感的场景中，直接使用 <code>127.0.0.1</code> 可能更高效。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-localhost-的请求流程"><strong>2. localhost 的请求流程</strong></h3>
+<ul>
+<li><strong><code>localhost</code> 是主机名</strong>，默认解析为 <code>127.0.0.1</code>，因此其行为与直接使用 <code>127.0.0.1</code> 完全相同。</li>
+<li><strong>请求流程：</strong>
+<ol>
+<li>应用层发起请求（例如访问 <code>http://localhost:8080</code>）。</li>
+<li>DNS 解析将 <code>localhost</code> 转换为 <code>127.0.0.1</code>。</li>
+</ol>
+</li>
+</ul>
+<p><code>localhost</code> 的请求处理方式仍然依赖于网络协议栈, 如果 <code>localhost</code> 完全绕过网络协议栈，直接让应用层处理请求，那它确实更像 <strong>进程间通信（IPC）</strong>，比如：</p>
+<ul>
+<li><strong>Unix Domain Socket（UDS）</strong></li>
+<li><strong>共享内存、管道、消息队列</strong></li>
+</ul>
+<p>但实际情况是：</p>
+<ul>
+<li><code>localhost</code> 依然需要解析为 IP 地址并走 TCP/IP 协议栈。</li>
+<li>只不过数据不会经过物理网卡，而是在 <strong>内核</strong> 中完成回环处理。</li>
+<li>所以它比普通的网络请求快，但比 IPC 方式慢。</li>
+</ul>
+<hr>
+<h3 id="3-localhost-请求-vs-本地进程间通信（IPC）"><strong>3. localhost 请求 vs. 本地进程间通信（IPC）</strong></h3>
+<h4 id="1-相似之处"><strong>(1) 相似之处</strong></h4>
+<ul>
+<li><strong>不依赖物理网络：</strong> 两者都不需要物理网卡或外部网络设备。</li>
+<li><strong>高性能：</strong> 由于数据在内存中处理，延迟极低。</li>
+</ul>
+<h4 id="2-关键区别"><strong>(2) 关键区别</strong></h4>
+<table>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th><strong>localhost（环回接口）</strong></th>
+<th><strong>本地进程间通信（IPC）</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>协议栈</strong></td>
+<td>走完整的网络协议栈（TCP/IP）</td>
+<td>直接通过操作系统提供的 IPC 机制（如管道、共享内存）</td>
+</tr>
+<tr>
+<td><strong>编程接口</strong></td>
+<td>使用 Socket API（如 <code>bind()</code>, <code>listen()</code>）</td>
+<td>使用 IPC 专用 API（如 <code>pipe()</code>, <code>shm_open()</code>）</td>
+</tr>
+<tr>
+<td><strong>兼容性</strong></td>
+<td>与网络通信代码完全兼容</td>
+<td>需要专门设计 IPC 逻辑</td>
+</tr>
+<tr>
+<td><strong>数据封装</strong></td>
+<td>需要处理 TCP/UDP 包头、IP 包头等</td>
+<td>直接传输原始数据</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>模拟网络服务、测试客户端-服务端逻辑</td>
+<td>高性能进程间数据交换</td>
+</tr>
+</tbody>
+</table>
+<h4 id="3-为什么环回接口仍要走协议栈？"><strong>(3) 为什么环回接口仍要走协议栈？</strong></h4>
+<ul>
+<li><strong>兼容性：</strong> 开发者可以使用相同的网络编程代码（如 Socket API）测试本地服务，无需修改逻辑。</li>
+<li><strong>隔离性：</strong> 通过端口号隔离不同服务，与远程通信的行为一致。</li>
+<li><strong>安全性：</strong> 防火墙规则可以统一管理环回接口和物理接口的流量。</li>
+</ul>
+<hr>
+<h3 id="4-操作系统的实现优化"><strong>4. 操作系统的实现优化</strong></h3>
+<ul>
+<li><strong>内核优化：</strong> 操作系统会对环回接口的流量进行优化，例如：
+<ul>
+<li>跳过物理网卡驱动和中断处理。</li>
+<li>减少数据拷贝次数（如从应用层直接传递到接收缓冲区）。</li>
+</ul>
+</li>
+<li><strong>性能对比：</strong>
+<ul>
+<li><strong>环回接口：</strong> 延迟通常在微秒级（μs），吞吐量可达数十 Gbps。</li>
+<li><strong>IPC：</strong> 延迟可低至纳秒级（ns），吞吐量更高（取决于具体 IPC 机制）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="5-实验验证"><strong>5. 实验验证</strong></h3>
+<h4 id="1-使用-Wireshark-抓包"><strong>(1) 使用 Wireshark 抓包</strong></h4>
+<ul>
+<li>抓取环回接口（如 <code>Loopback</code>）的流量，可以看到完整的 TCP/IP 数据包（包括以太网帧头），但这些帧头是虚拟生成的，不会发送到物理网卡。</li>
+</ul>
+<h2 id="Internet-protocol">Internet protocol</h2>
+<p><strong>在当今互联互通的世界中，TCP/IP（Transmission Control Protocol/Internet Protocol，传输控制协议/互联网协议）协议栈构成了现代网络通信的核心。无论是访问网页、发送电子邮件，还是进行视频通话，所有数据的传输都依赖于这一分层协议体系。TCP/IP 协议栈采用分层架构，通常分为四个层次：应用层、传输层、网络层和数据链路层，每一层都承担特定的功能，共同实现可靠、高效的数据传输。网络层（IP）负责寻址和路由，确保数据包能够跨越全球网络到达目标地址；传输层（TCP/UDP）提供数据传输的可靠性和效率，而应用层则承载 HTTP、FTP、DNS 等实际服务，使用户能够便捷地访问互联网资源。</strong></p>
+<p>作为现代网络的基石，TCP/IP 协议栈不仅推动了全球互联网的发展，也成为企业网络、云计算、物联网（IoT）等技术的通信标准。它的开放性和可扩展性使其能够不断适应新的技术需求，持续引领数字时代的网络演进。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/source/_posts/Network/Untitled.png" alt="TCP/IP Protocol Stack"></p>
+<p>Protocol defines format,order of messages was sent, received among network entities ,and  actions taken on transmission,receipt</p>
+<h3 id="OSI">OSI</h3>
+<p>MAC∈datalink LAN层</p>
+<p>常见的网络编程中的问题主要是怎么定位网络上的一台主机或多台主机，另一个是定位后如何进行数据的传输。对于前者，在网络层中主要负责网络主机的定位，数据传输的路由，由IP地址可以唯一地确定Internet上的一台主机。对于后者，在传输层则提供面向应用的可靠（tcp）的或非可靠（UDP）的数据传输机制。</p>
+<p>对于客户端/服务器（C/S）结构。 即通信双方一方作为服务器等待客户提出请求并予以响应。客户则在需要服务时向服务器提出申请。服务器一般作为守护进程始终运行，监听网络端口，一旦有客户请求，就会启动一个服务进程来响应该客户，同时自己继续监听服务端口，使后来的客户也能及时得到服务。</p>
+<p>对于浏览器/服务器（B/S）结构。 客户则在需要服务时向服务器进行请求。服务器响应后及时返回，不需要实时监听端口。</p>
+<p>二者的区别，取决于怎么看他们，<strong>如果使用浏览器，浏览器就是指“客户端”，</strong>“client/server” 和 “browser/server”两种体系结构没有真正的区别，没法比较</p>
+<img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20210920175427765.png" alt="image-20210920175427765" style="zoom:50%;">
+<h4 id="HTTP-TCP-IP">HTTP TCP IP</h4>
+<p>HTTP规定了每段数据以什么形式表达才是能够被另外一台计算机理解。而TCP所要规定的是数据应该怎么传输才能稳定且高效的传递与计算机之间。</p>
+<p><strong>HTTP</strong>:</p>
+<p>200OK  请求成功  400 bad request</p>
+<p>Idempotent幂等性概念：幂等通俗来说是指不管进行多少次重复操作，都是实现相同的结果。</p>
+<p>2.REST请求中哪些是幂等操作<br>
+GET，PUT，DELETE都是幂等操作，而POST不是，以下进行分析：</p>
+<p>首先GET请求很好理解，对资源做查询多次，此实现的结果都是一样的。    PUT请求的幂等性可以这样理解，将A修改为B</p>
+<p>SSL</p>
+<blockquote>
+<p>SSL(Secure Sockets Layer 安全套接层)是为网络通信提供安全及数据完整性的一种安全协议。SSL 是 “Secure Sockets Layer” 的缩写，中文意思为“安全套接层”，而 TLS 则是标准化之后的 SSL。</p>
+</blockquote>
+<p>TLS</p>
+<blockquote>
+<p>安全传输层协议（TLS：Transport Layer Security）用于在两个通信应用程序之间提供保密性和数据完整性。该协议由两层组成： TLS 记录协议（TLS Record）和 TLS 握手协议（TLS Handshake），是更新、更安全的SSL版本。 HTTPS use TLS1.3</p>
+</blockquote>
+<h5 id="HTTP的核心概念"><strong>HTTP的核心概念</strong></h5>
+<p>除了HTTP存在于应用层之外，该协议还有5个特点。</p>
+<ol>
+<li>
+<p>HTTP的标准建立在将两台计算机视为不同的角色：客户端和服务器。客户端会向服务器传送不同的请求(request)，而服务器会对应每个请求给出回应(response)。<strong>无连接</strong></p>
+</li>
+<li>
+<p>HTTP属于<strong>无状态协议(Stateless)</strong>。这表示每一个请求之间是没有相关性的。在该协议的规则中服务器是不会记录任何客户端操作，每一次请求都是独立的。（记录用户浏览行为会通过其他技术实现）</p>
+</li>
+<li>
+<p>客户端的请求被定义在几个动词意义范围内。最长用到的是GET和POST，其他动词还包括DELETE, HEAD等等。</p>
+<h3 id="GET和POST两种http请求方法的区别">[GET和POST两种http请求方法的区别]</h3>
+<p>GET和POST是HTTP请求的两种基本方法, HTTP的底层是TCP/IP。所以GET和POST的底层也是TCP/IP，也就是说，GET/POST都是TCP链接。**GET请求没有body，只有url，请求数据放在url的querystring中；POST请求的数据在body中“。但这种情况仅限于浏览器发请求的场景。**GET和POST能做的事情是一样一样的。你要给GET加上request body，给POST带上url参数，技术上是完全行的通的。</p>
+<p><strong>GET</strong></p>
+<p>“读取“一个资源。<strong>比如Get到一个html文件。反复读取不应该对访问的数据有副作用。比如”GET一下，用户就下单了，返回订单已受理“，这是不可接受的。没有副作用被称为“幂等“（Idempotent)。</strong></p>
+<p>因为GET因为是读取，就可以对GET请求的数据做缓存。这个缓存可以做到浏览器本身上（彻底避免浏览器发请求），也可以做到代理上（如nginx），或者做到server端（用Etag，至少可以减少带宽消耗）</p>
+<ul>
+<li>千万不要用GET方法传送密码等敏感信息！（发出的数据会在浏览器地址栏中显示出来）</li>
+</ul>
+<p><strong>POST</strong></p>
+<p>在页面里<form> 标签会定义一个表单。<strong>点击其中的submit元素会发出一个POST请求让服务器做一件事。这件事往往是有副作用的，不幂等的。</strong></form></p>
+<p>不幂等也就意味着不能随意多次执行。因此也就不能缓存。比如通过POST下一个单，服务器创建了新的订单，然后返回订单成功的界面。这个页面不能被缓存。试想一下，如果POST请求被浏览器缓存了，那么下单请求就可以不向服务器发请求，而直接返回本地缓存的“下单成功界面”，却又没有真的在服务器下单。那是一件多么滑稽的事情。</p>
+<p>因为POST可能有副作用，所以浏览器实现为不能把POST请求保存为书签。想想，如果点一下书签就下一个单，是不是很恐怖？。</p>
+<p><strong>POST方法比GET方法更健壮、更安全，而且POST方法对数据大小没有限制。</strong></p>
+</li>
+<li>
+<p>服务器的回应被定义在几个状态码之间：5开头表示服务器错误，4开头表示客户端错误，3开头表示需要做进一步处理，2开头表示成功，1开头表示在请求被接受处理的同时提供的额外信息。</p>
+</li>
+<li>
+<p>不管是客户端的请求信息还是服务器的回应，双方都拥有一块头部信息(Header)。头部信息是自定义，其用途在于传递额外信息（浏览器信息、请求的内容类型、相应的语言）。</p>
+</li>
+</ol>
+<h5 id="持久-or-pipeline-连接">持久 or pipeline 连接</h5>
+<p>**持久连接：**使用同一个TCP连接发送和接受 <strong>多个</strong> http请求/应答；<br>
+　　**非持久连接：**一个TCP连接只能发送和接受 <strong>一个</strong> http请求/应答；</p>
+<p>stateful contains stateless filter, which is the most flexible but cost more.</p>
+<p><strong>HTTP2.0 多路复用 (Multiplexing)</strong></p>
+<p><strong>多路复用允许同时通过单一的 HTTP/2 连接发起多重的请求-响应消息。</strong></p>
+<p><strong>pipeline连接</strong></p>
+<p>HTTP/1.1的新特性，允许在持久连接上可选地使用请求管道。在响应到达之前，可以将多条请求放入队列。当第一条请求通过网络流向服务器时，第二条和第三条请求也可以开始发送了。<strong>在髙时延网络条件下，这样做可以降低网络的环回时间，提高性能。</strong></p>
+<p><strong>管道化连接有如下几条限制：</strong></p>
+<ol>
+<li>客户端必须确认是<strong>持久连接</strong>才能使用管道；</li>
+</ol>
+<p>TCP/IP 意味着 TCP 和 IP 在一起协同工作。TCP 负责应用软件（比如您的浏览器）和网络软件之间的通信。</p>
+<p>Internet 的<strong>传输层</strong>有两个主要协议，互为补充。无连接的是 UDP，它除了给应用程序发送数据包功能并允许它们在所需的层次上架构自己的协议之外，几乎没有做什么特别的事情。面向连接的是 <a target="_blank" rel="noopener" href="https://baike.baidu.com/item/TCP/33012">TCP</a>，该协议几乎做了所有的事情。</p>
+<p><em><strong>使用无连接协议可以很方便地支持一对多和多对一通信，而面向连接协议通常都需要多个独立的连接才能做到。但更重要的是，无连接协议是构建面向连接协议的基础</strong>。TCP/IP 是基于一个４层的协议栈，如下图所示：</em></p>
+<p>IP 负责计算机之间的通信。TCP 负责将数据分割并装入 IP 包，然后在它们到达的时候重新组合它们。IP 负责将包发送至接受者。</p>
+<h2 id="Transport-layer"><strong>Transport layer</strong></h2>
+<p>TCP/IP 意味着 TCP 和 IP 在一起协同工作。TCP 负责应用软件（比如您的浏览器）和网络软件之间的通信。</p>
+<p>Internet 的<strong>传输层</strong>有两个主要协议，互为补充。无连接的是 UDP，它除了给应用程序发送数据包功能并允许它们在所需的层次上架构自己的协议之外，几乎没有做什么特别的事情。面向连接的是 <a target="_blank" rel="noopener" href="https://baike.baidu.com/item/TCP/33012">TCP</a>，该协议几乎做了所有的事情。</p>
+<ul>
+<li><strong>使用无连接协议可以很方便地支持一对多和多对一通信，而面向连接协议通常都需要多个独立的连接才能做到。但更重要的是，无连接协议是构建面向连接协议的基础</strong>。</li>
+</ul>
+<p>IP 负责计算机之间的通信。TCP 负责将数据分割并装入 IP 包，然后在它们到达的时候重新组合它们。IP 负责将包发送至接受者。</p>
+<p>Here are some key differences between TCP and UDP:</p>
+<ol>
+<li><strong>Reliability</strong>: TCP is a reliable protocol, while UDP is unreliable. TCP provides guaranteed delivery of data packets, ensuring that they arrive at the destination in the correct order and without errors. UDP, on the other hand, does not have built-in mechanisms for error checking, retransmission of lost packets, or ensuring packet ordering. It is up to the application layer to handle these aspects if required.</li>
+<li>Connection-oriented vs. Connectionless: TCP is a connection-oriented protocol, which means it establishes a connection between the sender and receiver before data transmission. It performs a handshake process, establishes a reliable channel, and ensures a secure data transfer. UDP, on the other hand, is connectionless. It does not establish a dedicated connection before data transfer and simply sends packets to the destination without any handshake or setup.</li>
+<li>Packet overhead:开销 TCP has a higher packet overhead compared to UDP. TCP adds additional information to each packet, such as sequence numbers, acknowledgments, and other control flags, which increases the overall size of the transmitted data. UDP has a smaller packet overhead, resulting in less network congestion and lower latency.</li>
+<li>Ordering of packets: TCP guarantees the ordering of packets. If packets arrive out of order, TCP reorders them at the receiver’s end, ensuring that the application layer receives the data in the correct order. UDP does not provide any mechanisms for ordering packets, so the application layer must handle packet ordering if required.</li>
+<li>Flow control and congestion control: TCP implements flow control and congestion control mechanisms to manage the rate of data transmission and avoid network congestion. It dynamically adjusts the transmission rate based on network conditions and ensures that the receiver can handle the incoming data. UDP does not have built-in flow control or congestion control mechanisms, and it’s up to the application layer to manage these aspects if necessary.</li>
+<li>Application suitability: TCP is commonly used for applications that require reliable and ordered data delivery, such as web browsing, email, file transfer, and remote desktop. UDP is suitable for applications that prioritize speed and efficiency over reliability, such as real-time streaming, online gaming, DNS (Domain Name System), and VoIP (Voice over IP).</li>
+</ol>
+<ul>
+<li>
+<p>TCP实现细节</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_46156900/article/details/113809699%E4%BC%A0%E8%BE%93%E5%B1%82%E6%A6%82%E8%BF%B0%E3%80%81%E4%BC%A0%E8%BE%93%E5%B1%82%E6%9C%8D%E5%8A%A1%E3%80%81%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E5%92%8C%E8%A7%A3%E5%A4%8D%E7%94%A8%E3%80%81%E6%97%A0%E8%BF%9E%E6%8E%A5%E4%BC%A0%E8%BE%93">https://blog.csdn.net/m0_46156900/article/details/113809699传输层概述、传输层服务、多路复用和解复用、无连接传输</a> UDP</p>
+<h3 id="DEMUX"><strong>DEMUX</strong></h3>
+<p><strong>connectionless</strong>: 主机接收到<strong>UDP</strong> segment (dest port dest IP)</p>
+<p>connection <strong>oriented</strong>:</p>
+<ul>
+<li><strong>服务器能够在一个TCP端口上同时支持多个TCP套接字：</strong><br>
+ 每个套接字由其四元组标识（有不同的源IP和源PORT）</li>
+<li><strong> Web服务器对每个连接客户端有不同的套接字</strong><br>
+ 非持久对每个请求有不同的套接字</li>
+</ul>
+<p>“服务器能够根据源IP地址和源端口号来区分来自不同客户机的报文段。<br>
+但是套接字与进程之间并非总是有着一一对应的关系。<br>
+事实上，Web服务器通常一个服务进程可以为每个新的客户机连接创建一个具有新连接套接字的线程。<br>
+显然，对于这样的服务器，在任意给定的时间内都可能有很多套接字(具有不同的标识)连接到同一个进程。”</p>
+<h3 id="rdt3-0："><strong>rdt3.0：</strong></h3>
+<p>具有比特差错和分组丢失的信道</p>
+<p><strong>新的假设：****下层信道可能会丢失分组（数据或ACK）</strong>(好比之前说的路由器队列排满了，新来的就被drop掉)</p>
+<ul>
+<li><strong> 会死锁</strong></li>
+<li><strong> 机制还不够处理这种状况：</strong><br>
+• <strong> rdt3.0可以工作，但链路容量比较大的情况下，性能很差 链路容量比较大，一次发一个PDU 的不能够充分利用链路的传输能力</strong></li>
+<li><strong>pipelined protocol</strong></li>
+</ul>
+<p><strong>两种通用的流水线协议：回退N步(GBN)和选择重传(SR)</strong></p>
+<p>go-back-n的一个缺点 *是单个分组端差错能够引起大量分组端重传，许多分组其实没必要重传。*为了解决这个缺点， selective repeat来了</p>
+<p>滑动窗口          (slide window)协议</p>
+<ul>
+<li><strong> 发送缓冲区</strong><br>
+ 形式：内存中的一个区域，落入缓冲区的分组可以发送<br>
+ 功能：用于存放<strong>已发送</strong>，但是没有<strong>未经确认</strong>的分组<br>
+ 必要性：需要重发时可用</li>
+<li><strong>发送缓冲区中的分组</strong><br>
+ 未发送的：落入发送缓冲区的分组，可以连续发送出去；<br>
+ 已发送、等待确认的：发送缓冲区的分组只有得到确认才能删除</li>
+</ul>
+<p>selective repeat：</p>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/20190524220207716.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDAyNzg5Nw==,size_16,color_FFFFFF,t_70">https://img-blog.csdnimg.cn/20190524220207716.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDAyNzg5Nw==,size_16,color_FFFFFF,t_70</a></p>
+<p>**sender 端：**接收上层端数据，为 分组 assign 序号，如果 在 window 范围内，则发送，同时为每一个分组起一个逻辑定时器，哪个分组端定时器超时，重传哪个分组。上图中， pkt 2 timeout，只重传 pkt2，对其他 package没有影响。<br>
+pkt3 发送完会有一个wait的动作，因为现在窗口满了，在收到回复之前不会发送下一个分组。</p>
+<p>TCP fast <strong>retransmit:</strong> if the receiver sends triple duplicate ACK for same  data,  sender resend unacked segment</p>
+<p><strong>receiver 端：<strong>确认每一个正确接收的分组，而不管是否乱序，乱序端分组被缓存，直到丢失分组（即序号更小的分组）全部接收，将这一批分组按序交付给上层。上图中，收到 pkt1，交付，收到 pkt2，交付，收到pkt3，缓存。<br>
+需要注意的是，为什么sender 端在收到ack0 时会立即发送pk4，但是收到ack3时没有继续往外发送数据呢，原因是receiver端发送ACK3时，已经知道pkt2还未到到，所以在</strong>ACK3中带端 nextsequence 是pkt2，而此时发送端正在等待pkt2的超时（或者ACK2），所以在pkt2超时之前不会有新端package发出。</strong></p>
+<h3 id="TCP-flow-control"><strong>TCP flow control</strong></h3>
+<p>receiver controls the sender that sender will not overflow receiver by transmit too much</p>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/20210217120510616.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70">https://img-blog.csdnimg.cn/20210217120510616.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70</a></p>
+<p><strong>MTU</strong>：<br>
+Maximum Transmission Unit，最大数据传输单元，网络传输最大报文包；以太网MTU最大值是1500B<br>
+<strong>MSS</strong>：<br>
+Maximum Segment Size ，TCP提交给IP层最大分段大小，不包含TCP Header和 TCP Option，只包含TCP Payload ，MSS是TCP用来限制application层最大的发送字节数。如果底层物理接口MTU= 1500 byte，则 MSS = 1500- 20(IP Header) -20 (TCP Header) = 1460 byte，如果application 有2000 byte发送，需要两个segment才可以完成发送，第一个TCP segment = 1460，第二个TCP segment = 540.要根据MSS的大小进行切分和加TCP头部信息，变成TCP报文段（segment）<br>
+·<br>
+所以，（Message 转换成字节流，再被划分成一个个的MSS）<br>
+MSS+TCP头部信息+IP头部信息 = MTU(比如以太网MTU1500B)，（“于是就存在一个分片的问题？”什么分片…）</p>
+<p><strong>IP分片</strong></p>
+<p>在TCP/IP分层中，数据链路层用MTU（Maximum Transmission Unit，最大传输单元）来限制所能传输的数据包大小，MTU是指一次传送的数据最大长度，不包括数据链路层数据帧的帧头。当发送的IP数据报的大小超过了MTU时，IP层就需要对数据进行分片，否则数据将无法发送成功。</p>
+<p>一个IP数据报的每个分片都具有自己的IP头部信息，它们都具有相同的标识值，但是具有不同的位偏移，且除了最后一个分片fragflag=0外，其他分片都将设置fragflag=1标志。此外，每个分片的IP头部的总长度字段将被设置为该分片的长度。</p>
+<p>例如，以太网帧的MTU是1500字节，因此它的数据部分最大为1480字节(IP头部占用20字节)。</p>
+<h3 id="Nagle算法"><strong>Nagle算法</strong></h3>
+<p>A problem can occur when an application generates data very slowly.<br>
+ Consider, ssh or telnet that generate data only when a user types.<br>
+ This means (for ssh/telnet) one packet sent every time user hits key          ——&gt; Nagle’s algorithm</p>
+<p>\1. 发送 TCP 发送它接收到的第一条数据 - 无论大小</p>
+<ol>
+<li>发送 TCP 在缓冲区中累积数据并等待以下之一，然后再发送该段： • 接收 TCP 发送确认• 数据已累积以填充最大大小的段</li>
+<li>重复步骤 2 注意：有时应关闭 Nagle 算法——例如当快速交互至关重要并且您希望发送小数据包时</li>
+</ol>
+<p>该算法的优越之处在于它是自适应的，确认到达的越快，数据也就发哦送的越快</p>
+<h3 id="Congestion-control"><strong>Congestion control</strong></h3>
+<ul>
+<li><strong> 非正式的定义:“太多的数据需要网络传输，超过了网络的处理能力”</strong></li>
+<li><strong> 拥塞的表现:</strong>
+<ul>
+<li> 分组<strong>丢失</strong> (路由器缓冲区溢出)</li>
+<li> 分组经历比<strong>较长的延迟</strong>(在路由器的队列中排队)</li>
+</ul>
+</li>
+</ul>
+<p>速率控制方法</p>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/20210218100930516.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70">https://img-blog.csdnimg.cn/20210218100930516.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70</a></p>
+<p>如何控制发送端发送的速率？</p>
+<p> (发送方)维持一个拥塞窗口的值：CongWin（CongestionWindow以字节为单位）<br>
+它对一个TCP发送方能向网络中发送流量的速率进行了限制。<br>
+ 发送端限制已发送但是未确认的数据量（的上限）:<br>
+LastByteSent - LastByteAcked &lt;= CongWin<br>
+ 从而粗略地控制发送方的往网络中注入的速率</p>
+<p>TCP reno : loss  indicated by 3 ACKs                  ;</p>
+<p>tcp Tahoe sets cwnd to 1</p>
+<p>rate = cwnd/RTT                          avg TCP throughput = 3Window size /4 RTT</p>
+</li>
+</ul>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/20210216113823842.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70">https://img-blog.csdnimg.cn/20210216113823842.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70</a></p>
+<p>在HTTP的规范内，两台计算机的交互被视为request和response的传递。<strong>而在实际的TCP操作中，信息传递会比单纯的传递request和response要复杂。通过TCP建立的通讯往往需要计算机之间多次的交换信息才能完成一次request或response。</strong></p>
+<p>TCP的传输数据的核心是在于将数据分为若干段并将每段数据按顺序标记。标记后的顺序可以以不同的顺序被另一方接收并集成回完整的数据。计算机对每一段数据的成功接收都会做出相应，确保所有数据的完整性。</p>
+<p>TCP在传递数据时依赖于实现定义好的几个标记（Flags）去向另一方表态传达数据和连接的状态：</p>
+<ul>
+<li>F : FIN - 结束; 结束会话</li>
+<li>S : SYN - 同步; 表示开始会话请求</li>
+<li>R : RST - 复位;中断一个连接 P : PUSH - 推送; 数据包立即发送</li>
+<li>A : ACK - 应答 U : URG - 紧急 E : ECE - 显式拥塞提醒回应</li>
+<li>W : CWR - 拥塞窗口减少</li>
+</ul>
+<p><strong>Connection建立&amp; close</strong></p>
+<p>也是基于这些标志TCP可以实现<a target="_blank" rel="noopener" href="https://blog.csdn.net/qzcsu/article/details/72861891">三次（three ways handshake）和四次握手 (four ways tear down)</a>。三次握手是初步建立连接的机制，而四次握手则是<strong>断开链接</strong>。两者之间大致操作是一样的，A发出建立链接(SYN)或者断开链接(FIN)的请求，B认可(A CK)其请求然后发出同样的请求给A并等待A的认可。在双方认可后，链接正式成立或者断开。</p>
+<p>!<a target="_blank" rel="noopener" href="https://img2020.cnblogs.com/blog/2098532/202105/2098532-20210520103027590-619536232.png">https://img2020.cnblogs.com/blog/2098532/202105/2098532-20210520103027590-619536232.png</a></p>
+<p>!<a target="_blank" rel="noopener" href="https://img2020.cnblogs.com/blog/2098532/202105/2098532-20210520103048249-324869987.png">https://img2020.cnblogs.com/blog/2098532/202105/2098532-20210520103048249-324869987.png</a></p>
+<p>1、为什么建立连接协议是三次握手，而关闭连接却是四次握手呢？</p>
+<p>建立连接时，ACK和SYN可以放在一个报文里来发送。而关闭连接时，<strong>被动关闭方可能还需要发送一些数据后</strong>，再发送FIN报文表示同意现在可以关闭连接了，所以它这里的ACK报文和FIN报文多数情况下都是分开发送的。</p>
+<p>2、为什么TIME_WAIT状态还需要等2MSL后才能返回到CLOSED状态？</p>
+<p>两个存在的理由：1、无法保证最后发送的ACK报文会一定被对方收到，所以需要重发可能丢失的ACK报文。2、关闭链接一段时间后可能会在相同的IP地址和端口建立新的连接，为了防止旧连接的重复分组在新连接已经终止后再现。2MSL足以让分组最多存活msl秒被丢弃。</p>
+<p>3、为什么必须是三次握手，不能用两次握手进行连接？</p>
+<p>记住服务器的资源宝贵不能浪费! 如果在断开连接后，第一次握手请求连接的包才到会使服务器打开连接，占用资源而且容易被恶意攻击！防止攻击的方法，缩短服务器等待时间。两次握手容易死锁。如果服务器的应答分组在传输中丢失，将不知道S建立什么样的序列号，C认为连接还未建立成功，将忽略S发来的任何数据分组，只等待连接确认应答分组。而S在发出的分组超时后，重复发送同样的分组。这样就形成了<strong>死锁</strong>。</p>
+<h3 id="QUIC">QUIC</h3>
+<p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/83f96e4c-b464-4932-a980-04c73797197a/Untitled.png" alt="Untitled"></p>
+<p>QUIC 的目标是几乎等同于 TCP 连接，但<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Network_delay">延迟</a>大大降低。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">它主要通过依赖于对HTTP</a>流量行为的理解的两项更改来实现这一点。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/QUIC#cite_note-ARSnext-20">[20]</a></p>
+<p>第一个变化是大大减少连接建立期间的开销。由于大多数 HTTP 连接都需要<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS</a>，QUIC 将设置密钥和支持的协议的交换作为初始<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Handshake_(computing)">握手过程</a>的一部分。当客户端打开连接时，响应数据包包含未来数据包使用加密所需的数据。这消除了建立 TCP 连接然后通过附加数据包协商安全协议的需要。其他协议可以以相同的方式提供服务，将多个步骤组合成一个请求-响应。然后，此数据可用于初始设置中的后续请求，以及将以其他方式协商为单独连接的未来请求。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/QUIC#cite_note-ARSnext-20">[20]</a></p>
+<p>第二个变化是使用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/User_Datagram_Protocol">UDP</a>而不是 TCP 作为其基础，其中不包括<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Packet_loss">丢失</a>恢复。相反，每个 QUIC 流都是单独进行流量控制的，丢失的数据在 QUIC 级别而不是 UDP 级别重新传输。这意味着如果一个流中发生错误，如上面的图标示例，<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Protocol_stack">协议栈</a>可以继续独立地为其他流提供服务。这对于提高容易出错的链接的性能非常有用，因为在大多数情况下，在 TCP 注意到数据包丢失或损坏之前可能会收到大量额外数据，并且在更正错误时所有这些数据都被阻止甚至刷新。在 QUIC 中，在修复单个多路复用流时，可以自由处理这些数据。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/QUIC#cite_note-27">[27]</a></p>
+<p>QUIC 还包括许多其他更改，这些更改也可以改善整体延迟和吞吐量。例如，数据包被单独加密，因此它们不会导致加密数据等待部分数据包。这在 TCP 下通常是不可能的，其中加密记录在字节<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bytestream">流</a>中，协议栈不知道该流中的高层边界。这些可以由运行在顶层的层协商，但 QUIC 的目标是在一次握手过程中完成所有这些。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/QUIC#cite_note-IETF_QUIC_Intro-8">[8]</a></p>
+<p>QUIC 系统的另一个目标是提高网络切换事件期间的性能，例如当移动设备的用户从本地<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Hotspot_(Wi-Fi)">WiFi 热点</a>移动到<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cellular_network">移动网络</a>时发生的情况。当这种情况发生在 TCP 上时，一个漫长的过程开始，每个现有的连接一个接一个地超时，然后根据需要重新建立。为了解决这个问题，QUIC 包含一个连接标识符，它可以唯一标识与服务器的连接，而不管来源如何。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/IP_address">这允许通过发送始终包含此 ID 的数据包简单地重新建立连接，因为即使用户的IP 地址</a>更改，原始连接 ID 仍然有效。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/QUIC#cite_note-QUICoverview-28">[28]</a></p>
+<p>!<a target="_blank" rel="noopener" href="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/HTTP-1.1_vs._HTTP-2_vs._HTTP-3_Protocol_Stack.svg/336px-HTTP-1.1_vs._HTTP-2_vs._HTTP-3_Protocol_Stack.svg.png">https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/HTTP-1.1_vs._HTTP-2_vs._HTTP-3_Protocol_Stack.svg/336px-HTTP-1.1_vs._HTTP-2_vs._HTTP-3_Protocol_Stack.svg.png</a></p>
+<p>!<a target="_blank" rel="noopener" href="https://en.wikipedia.org/w/extensions/ImageMap/resources/desc-20.png?15600">https://en.wikipedia.org/w/extensions/ImageMap/resources/desc-20.png?15600</a></p>
+<p>HTTP/3 与 HTTP/1.1 和 HTTP/2 对比的协议栈</p>
+<p>QUIC 可以在应用程序空间中实现，而不是在<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Operating_system_kernel">操作系统内核</a>中。当数据在应用程序之间移动时，由于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Context_switch">上下文切换，这通常会调用额外的开销。</a>然而，就 QUIC 而言，协议栈旨在供单个应用程序使用，每个使用 QUIC 的应用程序都有自己的连接托管在 UDP 上。最终差异可能非常小，因为整个 HTTP/2 堆栈的大部分已经在应用程序中（或更常见的是它们的库）。将其余部分放在这些库中，本质上是纠错，对 HTTP/2 堆栈的大小或整体复杂性几乎没有影响。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/QUIC#cite_note-IETF_QUIC_Intro-8">[8]</a></p>
+<p>这种组织允许更容易地进行未来的更改，因为它不需要更改内核<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kernel_(operating_system)">来</a>进行更新。QUIC 的长期目标之一是添加用于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Forward_error_correction">前向纠错</a>(FEC) 和改进拥塞控制的新系统</p>
+<h2 id="Network-layer"><strong>Network layer</strong></h2>
+<p>2functions: forwarding <strong>转发:</strong> (是一种局部的概念/功能…数据平面的…依赖于路由表…)将分组从路由器的<strong>输入接口转发到合适的输出接口</strong></p>
+<p>routing: determine the</p>
+<p>1.router examines header fields in all IP datagram</p>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/20210218141705669.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70">https://img-blog.csdnimg.cn/20210218141705669.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70</a></p>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/20210218174446962.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70">https://img-blog.csdnimg.cn/20210218174446962.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70</a></p>
+<h3 id="路由器"><strong>路由器</strong></h3>
+<p><strong>功能</strong></p>
+<ul>
+<li>运行路由算法/协议（RIP，OSPF，BGP）</li>
+<li>将数据报从入口链路转发到出口链路</li>
+</ul>
+<p>router structure:</p>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/2021021815334083.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70">https://img-blog.csdnimg.cn/2021021815334083.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70</a></p>
+<p>ipv6 IP addr 128bits 16bytes</p>
+<ul>
+<li>实际中的路由器的Router input ports和 output ports <strong>是同一个端口</strong>，</li>
+<li>只是为了方便输入输出端口的讲解才<strong>分成两个“独立的输入输出端口”</strong></li>
+</ul>
+<h3 id="IP"><strong>IP</strong></h3>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/20210218184213704.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70">https://img-blog.csdnimg.cn/20210218184213704.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70</a></p>
+<p>局域网接入Internet的技术有三种<a target="_blank" rel="noopener" href="https://blog.csdn.net/wenqiang1208/article/details/72403785%EF%BC%9A">https://blog.csdn.net/wenqiang1208/article/details/72403785：</a></p>
+<ol>
+<li>直接路由</li>
+<li>代理服务器(proxy)代理服务器（Proxy Server）是一种重要的服务器安全功能，它的工作主要在(OSI)模型的会话层，从而起到防火墙的作用。代理服务器大多被用来连接INTERNET（国际互联网）和Local Area Network（局域网）。<br>
+代理分类：HTTP代理；socks代理；VPN代理；FTP代理</li>
+<li>网络地址转换(NAT)NAT将自动修改IP报文的源IP地址和目的IP地址，Ip地址校验则在NAT处理过程中自动完成。有些应用程序将源IP地址嵌入到IP报文的数据部分中，所以还需要同时对报文的数据部分进行修改，以匹配IP头中已经修改过的源IP地址。否则，在报文数据部分嵌入IP地址的应用程序就不能正常工作。</li>
+</ol>
+<p><strong>NAT类型：</strong></p>
+<ul>
+<li><strong>NAT0（全锥形NAT）：</strong> 您的设备拥有一个真实的公网IP地址，可以直接与互联网上的其他设备通信，无需经过额外的转换。这是最理想的网络类型，适合需要高性能和公网访问的应用场景。</li>
+<li><strong>NAT1（对称型NAT）：</strong> 您的设备可以通过端口映射与互联网上的其他设备通信，但需要手动配置端口映射规则。相对NAT0来说，性能稍差，但仍能满足大多数应用场景的需求。</li>
+<li><strong>NAT2（端口限制型NAT或锥形NAT）：</strong> 您的设备只能与已建立连接的设备通信，无法主动发起连接。这会限制某些应用的使用，例如P2P下载、部分游戏等。</li>
+<li><strong>NAT3（完全端口限制型NAT）：</strong> 您的设备只能与已建立连接的设备通信，且只能使用特定的端口。这是限制最严格的NAT类型，会对大部分应用造成影响。</li>
+</ul>
+<p>IP   <strong>(Fragmentation &amp; Reassembly)</strong></p>
+<p> 网络链路有MTU(最大传输单元) – 链路层帧所携带的最大数据长度 不同的链路类型 不同的MTU</p>
+<p>如果IP层有一个数据报要传，而且<strong>数据帧的长度比链路层的MTU还</strong>大，<br>
+那么IP层就需要进行分片( fragmentation)，即把数据报分成若干片，这样每一片就都小于MTU。<br>
+ 最后一个分片标记为0 “重组”只在最终的目标主机进行 IP头部的信息被用于标识，排序相关分片</p>
+<p><strong>IP（专用）地址 只在局部网络中有意义，区分不同的设备</strong><br>
+ 路由器不对目标地址是专用地址的分组进行转发<br>
+ 专用地址范围（A、B、C类都有）不用向isp申请</p>
+<p>!<a target="_blank" rel="noopener" href="https://img-blog.csdnimg.cn/20210218205701933.png">https://img-blog.csdnimg.cn/20210218205701933.png</a></p>
+<p> Class A 10.0.0.0-10.255.255.255 MASK 255.0.0.0<br>
+ Class B 172.16.0.0-172.31.255.255 MASK 255.255.0.0<br>
+ Class C 192.168.0.0-192.168.255.255 MASK 255.255.255.0</p>
+<p><strong>分类寻址</strong> (Classful Addressing)：将 IP 地址分为 ABCDE 五类，三个主要类为 ABC 三类，区别在于网络号和主机号的长度，网络号和主机号的划分线在八位字节边界，如 C 类地址前 24 bits 为网络号，后 8 bits 为主机号。<br>
+子网分类寻址 (Subnetted Classful Addressing)：在子网寻址系统中，通过从主机号中拿取前端部分 bits 作为子网号，用于识别子网，这将原本的两层划分系统（网络号/主机号）被改为三层划分系统（网络号/子网号/主机号）。<br>
+无类寻址 (Classless Addressing)：将原始的分类寻址抛开，网络号和主机号可以在任意点划分，不需要像分类寻之中那样划分在八位字节边界。这种方案更加灵活有弹性。</p>
+<p><strong>CIDR: Classless InterDomain Routing</strong>（无类域间路由）</p>
+<blockquote>
+<p>网络前缀越短，<br>
+其地址块所包含的地址数就越多。<br>
+而在三级结构的IP地址中，划分子网是使网络前缀变长。</p>
+</blockquote>
+<p>VLSM(<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8F%AF%E5%8F%98%E9%95%BF%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81/9163142">可变长子网掩码</a>) 是为了有效的使用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/15758573">无类别域间路由</a>（CIDR）和路由汇聚(route summary)来控制<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%B7%AF%E7%94%B1%E8%A1%A8/2707408">路由表</a>的大小，它是网络管理员常用的IP寻址技术</p>
+<p>CIDR无类网络是一种相对于有类网络的网络，无类网络IP地址的掩码是变长的。<br>
+在有类网络的基础上，拿出一部分主机ID作为子网ID。<br>
+例如：<br>
+IP地址为192.168.250.44 子网掩码不能是小于24位。<br>
+因为这是一个C类地址（前3Bytes是网络号），子网掩码只能大于24位。<br>
+而掩码255.255.248.0（21位）是不符合规定的。<br>
+·<br>
+如果一个网络中的主机有100台，<br>
+那么，可以用子网掩码/25来划分这个C类网络（“192.168.250.0/24”）：<br>
+划分成192.168.250.0/25 和192.168.250.128/25两个子网。<br>
+—主机192.168.250.44/25 属于子网192.168.250.0/25。</p>
+<p>Subnet</p>
+<p><strong>子网掩码不能单独存在</strong>，它<strong>必须结合IP地址</strong>一起使用。<br>
+子网掩码<strong>只有一个作用</strong>，就是将某个IP地址<strong>划分</strong>成<strong>网络地址</strong>和<strong>主机地址</strong>两部分。</p>
+<p>IP地址分配中的几个特定类别，以下是对它们的解释：</p>
+<ol>
+<li><strong>单播地址（Unicast）：</strong>
+<ul>
+<li>单播地址用于一对一通信，表示数据包从一个发送者传输到一个特定的接收者。它是最常见的IP地址类型。</li>
+<li>A、B、C 类地址都是单播地址，分别用于大型网络、中等大小网络和小型网络。</li>
+</ul>
+</li>
+<li><strong>组播地址（Multicast）：</strong>
+<ul>
+<li>组播地址用于一对多通信，表示数据包从一个发送者传输到一个特定的组中的多个接收者。</li>
+<li>D 类地址是组播地址，用于指示数据流向一组设备。多个主机可以通过加入一个特定的组播组来接收这些数据。</li>
+</ul>
+</li>
+<li><strong>广播地址（Broadcast）：</strong>
+<ul>
+<li>广播地址用于一对所有通信，在一个子网或局域网中向所有设备发送数据包。</li>
+<li>在 IPv4 中，广播地址通常是特定的地址，例如全网广播地址为255.255.255.255，用于发送数据包给同一网络中的所有设备。</li>
+</ul>
+</li>
+<li><strong>E 类地址（Reserved）：</strong>
+<ul>
+<li>E 类地址是保留地址，用于未来可能的用途。这个地址空间暂时没有分配给特定用途，被保留在IP地址分配方案中。</li>
+</ul>
+</li>
+</ol>
+<h3 id="路由器-2">路由器</h3>
+<p><strong>功能</strong></p>
+<ul>
+<li>运行路由算法/协议（RIP，OSPF，BGP）</li>
+<li>将数据报从入口链路转发到出口链路</li>
+</ul>
+<h4 id="结构">结构</h4>
+<p><strong>输入端口(input port)：</strong></p>
+<ul>
+<li>物理层：接收物理信号，将其转换为bit</li>
+<li>与数据链路层交互来执行数据链路层功能</li>
+<li>网络层：查找、转发、排队</li>
+<li>非集中式的交换：转发表的副本已发送给每个输入端口，因此，转发决策由输入端口在本地完成
+<ul>
+<li>根据数据报的目的地址，在输入端口内存的转发表中寻找输出端口</li>
+<li>目标：以线缆一级的速度完成输入端口处理</li>
+<li>队列：如果数据报达到的速率大于处理速率则需要排队</li>
+</ul>
+</li>
+</ul>
+<p>Input queuing caused  by input buffer overflow.</p>
+<p><strong>Output port:  datagram can be lost due to congestion,lack of buffers(arrive rate fabric &gt; transmission rate).</strong></p>
+<p><strong>scheduling discipline: priority scheduling- network neutrality</strong></p>
+<p><strong>交换结构fabric 3种：memory, bus,interconnection network</strong></p>
+<p>交换结构将路由器的输入端口连接到它的输出端口。这种交换结构包含在路由之中，是一个路由器中的"网络"</p>
+<p><strong>输出端口</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210218162449429.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;">
+<p>输出端口存储从交换结构接收到的分组，并在输出链路上传输这些分组。当一条链路是双向的时，输出端口常与该链路输入端口成对出现在同一线路卡上。</p>
+<ul>
+<li>缓冲区：当交换结构速率较快时，就需要缓存，否则，在遇到拥塞时，会导致分组丢失</li>
+<li>分组调度：先来先服务（FCFS）规则，加权公平排队规则（WFQ），遵循“网络中立”原则，为服务质量保障（QoS）起到关键作用</li>
+</ul>
+<p><strong>数据平面、控制平面</strong></p>
+<p>control plane methods:</p>
+<p>1 traditional router algorithm</p>
+<p>2 software-defined networking (SDN): 在远程的服务器中实现<br>
+（Compare to the traditional routing algorithm，SDN is much more flexible.</p>
+<p>router structure:</p>
+<p><img src="https://img-blog.csdnimg.cn/2021021815334083.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 67%;"><img src="https://lh3.googleusercontent.com/proxy/UbaWC9LZvA2qcCc4sJOaCj1mlbaVV_QzDOfS1prFWQ9qpMrnAiL3i1DGa01YhwvxazVI9pjt1ww82_euDQxWf4n1TER0fHFYcT8KTkaIvpCdWKJ6bw6aGA_yUJfQx4pvTw" alt="TCP/IP Ports and Sockets Explained">ipv6 IP addr 128bits 16bytes</p>
+<ul>
+<li>实际中的路由器的Router input ports和 output ports <strong>是同一个端口</strong>，</li>
+<li>只是为了方便输入输出端口的讲解才<strong>分成两个“独立的输入输出端口”</strong></li>
+</ul>
+<p>longest prefix matching</p>
+<p>TCAM with high speed</p>
+<h5 id="scheduling">scheduling</h5>
+<p>Priority scheduling</p>
+<ul>
+<li>
+<p><strong><a target="_blank" rel="noopener" href="https://blog.csdn.net/pzw_0612/article/details/47357221">Round Robin (RR) scheduling（本意环形丝带，其实叫轮询调度</a>）:</strong></p>
+<p><strong>Weighted Fair Queuing (WFQ，加权公平队列):</strong></p>
+</li>
+<li>
+<p>FIFO scheduling</p>
+</li>
+</ul>
+<h3 id="IP-2">IP</h3>
+<img src="https://img-blog.csdnimg.cn/20210218184213704.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:80%;">
+<p>局域网接入Internet的技术有三种<a target="_blank" rel="noopener" href="https://blog.csdn.net/wenqiang1208/article/details/72403785%EF%BC%9A">https://blog.csdn.net/wenqiang1208/article/details/72403785：</a></p>
+<ol>
+<li>
+<p>直接路由</p>
+</li>
+<li>
+<p>代理服务器(proxy)代理服务器（Proxy Server）是一种重要的服务器安全功能，它的工作主要在(OSI)模型的会话层，从而起到防火墙的作用。代理服务器大多被用来连接INTERNET（国际互联网）和Local Area Network（局域网）。<br>
+代理分类：HTTP代理；socks代理；VPN代理；FTP代理</p>
+</li>
+<li>
+<p>网络地址转换(NAT)NAT将自动修改IP报文的源IP地址和目的IP地址，Ip地址校验则在NAT处理过程中自动完成。有些应用程序将源IP地址嵌入到IP报文的数据部分中，所以还需要同时对报文的数据部分进行修改，以匹配IP头中已经修改过的源IP地址。否则，在报文数据部分嵌入IP地址的应用程序就不能正常工作。</p>
+</li>
+</ol>
+<h4 id="IP-分片和重组"><strong>IP 分片和重组</strong></h4>
+<p><strong>(Fragmentation &amp; Reassembly)</strong></p>
+<p> 网络链路有MTU(最大传输单元) – 链路层帧所携带的最大数据长度 不同的链路类型 不同的MTU</p>
+<p>如果IP层有一个数据报要传，而且<strong>数据帧的长度比链路层的MTU还</strong>大，<br>
+那么IP层就需要进行分片( fragmentation)，即把数据报分成若干片，这样每一片就都小于MTU。<br>
+ 最后一个分片标记为0 “重组”只在最终的目标主机进行 IP头部的信息被用于标识，排序相关分片</p>
+<p><strong>IP（专用）地址</strong> 只在局部网络中有意义，区分不同的设备<br>
+ 路由器不对目标地址是专用地址的分组进行转发<br>
+ 专用地址范围（A、B、C类都有）不用向isp申请</p>
+<p><img src="https://img-blog.csdnimg.cn/20210218205701933.png" alt="在这里插入图片描述"></p>
+<p> Class A 10.0.0.0-10.255.255.255 MASK 255.0.0.0<br>
+ Class B 172.16.0.0-172.31.255.255 MASK 255.255.0.0<br>
+ Class C 192.168.0.0-192.168.255.255 MASK 255.255.255.0</p>
+<p><strong>分类寻址</strong> (Classful Addressing)：将 IP 地址分为 ABCDE 五类，三个主要类为 ABC 三类，区别在于网络号和主机号的长度，网络号和主机号的划分线在八位字节边界，如 C 类地址前 24 bits 为网络号，后 8 bits 为主机号。<br>
+子网分类寻址 (Subnetted Classful Addressing)：在子网寻址系统中，通过从主机号中拿取前端部分 bits 作为子网号，用于识别子网，这将原本的两层划分系统（网络号/主机号）被改为三层划分系统（网络号/子网号/主机号）。<br>
+无类寻址 (Classless Addressing)：将原始的分类寻址抛开，网络号和主机号可以在任意点划分，不需要像分类寻之中那样划分在八位字节边界。这种方案更加灵活有弹性。</p>
+<h4 id="编码CIDR">编码CIDR</h4>
+<p><strong>CIDR: Classless InterDomain Routing</strong>（无类域间路由）</p>
+<blockquote>
+<p><strong>网络前缀越短，</strong><br>
+其地址块所<strong>包含的地址数就越多</strong>。<br>
+而在三级结构的IP地址中，<strong>划分子网是使网络前缀变长。</strong></p>
+</blockquote>
+<p>VLSM(<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8F%AF%E5%8F%98%E9%95%BF%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81/9163142">可变长子网掩码</a>) 是为了有效的使用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/15758573">无类别域间路由</a>（CIDR）和路由汇聚(route summary)来控制<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%B7%AF%E7%94%B1%E8%A1%A8/2707408">路由表</a>的大小，它是网络管理员常用的IP寻址技术</p>
+<p>CIDR无类网络是一种相对于有类网络的网络，无类网络IP地址的掩码是变长的。<br>
+在有类网络的基础上，拿出一部分主机ID作为子网ID。<br>
+例如：<br>
+IP地址为192.168.250.44 子网掩码不能是小于24位。<br>
+因为这是一个C类地址（前3Bytes是网络号），子网掩码只能大于24位。<br>
+而掩码255.255.248.0（21位）是不符合规定的。<br>
+·<br>
+如果一个网络中的主机有100台，<br>
+那么，可以用子网掩码/25来划分这个C类网络（“192.168.250.0/24”）：<br>
+划分成192.168.250.0/25 和192.168.250.128/25两个子网。<br>
+—主机192.168.250.44/25 属于子网192.168.250.0/25。</p>
+<h5 id="subnet">subnet</h5>
+<p><strong>子网掩码不能单独存在</strong>，它<strong>必须结合IP地址</strong>一起使用。<br>
+子网掩码<strong>只有一个作用</strong>，就是将某个IP地址<strong>划分</strong>成<strong>网络地址</strong>和<strong>主机地址</strong>两部分。</p>
+<p>A、B、C类的地址叫做单播地址（unicast）——“我到你”。而D 类地址叫组播地址（multicast）——“我到这个D类组的”…<br>
+还以一种叫广播地址（broadcast）——“我到所有”，一般在局域网内部<br>
+E 类地址预留的（Reserved for future use） （但存方寸地,留与子孙耕）<br>
+在<strong>路由信息的通告的过程当中</strong>，还不断地做<strong>路由聚集</strong>。<strong>减少表项，路由减负。</strong><br>
+<strong>路由聚集的作用：</strong><br>
+<img src="https://img-blog.csdnimg.cn/20210218212207583.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MTU2OTAw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;"></p>
+<h5 id="DHCP">DHCP</h5>
+<p>第一步：Client通过广播（broadcast）发送DHCP Discover 报文，Look for服务器端</p>
+<p>第二步：Server通过单播（unicast）发送DHCP Offer 报文向客户端提供IP地址等网络信息</p>
+<p>第三步：Client通过广播<strong>DHCP Request 报文告知服务器端本地选择使用哪个IP地址</strong></p>
+<p>第四步：Server通过DHCP Ack报文告知客户端IP地址是合法可用的<br>
+DHCP返回：<em>ip地址、网关（router、子网掩码、DNS</em></p>
+<h5 id="NAT">NAT</h5>
+<p>network address translation</p>
+<p><strong>动机</strong>（使用NAT的原因）: 本地网络只有一个有效IP地址:<br>
+不需要从ISP分配一块地址，可用一个IP地址用于所有的（局域网）设备 –省钱<br>
+<strong>可以在局域网改变设备的地址情况下而无须通知外界</strong><br>
+可以改变ISP（地址变化）而不需要改变内部的设备地址<br>
+局域网内部的设备没有明确的地址，对外是不可见的 –安全</p>
+<ul>
+<li><strong>如果流量从Inside端口进来，那么先执行路由，后执行NAT(本地 到 全局)。</strong></li>
+<li><strong>如果流量从Outside端口进来，那么先执行NAT(全局 到 本地)，后执行路由。</strong></li>
+</ul>
+<h4 id="Data-plane">Data plane</h4>
+<p>a set of match-action rules send by a controller.</p>
+<p>traditional: longest prefix match forwarding <strong>vs</strong>. SDN allows more flexibility</p>
+<p><strong>openFlow abstraction: match+action</strong></p>
+<ul>
+<li>
+<p>Match，匹配数据包头部</p>
+</li>
+<li>
+<p>Action，根据匹配的结果，做相应的操作，比如修改MAC地址，ACL之类</p>
+</li>
+<li>
+<p>OpenFlow能够启动远程的控制器，经由<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BD%91%E7%BB%9C%E4%BA%A4%E6%8D%A2%E5%99%A8/8534019">网络交换器</a>，决定网络数据包要由何种路径通过<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BD%91%E7%BB%9C%E4%BA%A4%E6%8D%A2%E6%9C%BA/2105356">网络交换机</a>。这个协议的发明者，将它当成<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%BD%AF%E4%BB%B6%E5%AE%9A%E4%B9%89%E7%BD%91%E7%BB%9C">软件定义网络</a>（Software-defined networking）的启动器。 [1] OpenFlow允许从远程控制网络交换器的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E5%8C%85">数据包</a>转送表，透过新增、修改与移除数据包控制规则与行动，来改变数据包转送的路径。比起用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E8%A1%A8">访问控制表</a>(ACLs) 和路由协议，允许更复杂的流量管理。同时，OpenFlow允许不同供应商用一个简单，开源的协议去远程管理交换机（通常提供专有的接口和描述语言）。</p>
+<p>OpenFlow<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8D%8F%E8%AE%AE">协议</a>用来描述控制器和交换机之间交互所用信息的标准，以及控制器和交换机的接口标准。协议的核心部分是用于OpenFlow协议信息结构的集合。OpenFlow<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8D%8F%E8%AE%AE%E6%94%AF%E6%8C%81">协议支持</a>三种信息类型：Controller-to-Switch，Asynchronous和Symmetric，每一个类型都有多个子类型。Controller-to-Switch信息由控制器发起并且直接用于检测交换机的状态。Asynchronous信息由交换机发起并通常用于更新控制器的网络事件和改变交换机的状态。Symmetric信息可以在没有请求的情况下由控制器或交换机发起。</p>
+</li>
+</ul>
+<h4 id="Control-plane">Control plane</h4>
+<p>why logically centralized control plane?</p>
+<p>控制平面在物理上与转发平面分离，控制软件使用开放接口（例如OpenFlow）对转发平面（例如，交换机和路由器）进行编程。</p>
+<h3 id=""></h3>
+<p><strong>data plane:  mainly forwarding . each router contains a flow table by a centralized routing controller</strong></p>
+<ul>
+<li></li>
+</ul>
+<h3 id="routing-protocol">routing protocol</h3>
+<h4 id="link-state">link state</h4>
+<ol>
+<li>​                         <strong>贪心算法</strong>        <strong>global: all routers have complete topology</strong></li>
+</ol>
+<p>Dijkstra算法</p>
+<p><strong>condition：any 路径&gt;0  &amp; 单源 已知出发点</strong></p>
+<p>/临近，标记！<img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20211222155611157.png" alt="image-20211222155611157" style="zoom:50%;"></p>
+<p>直到全部点标记结束，回溯找出路径</p>
+<h4 id="distance-vector">distance vector</h4>
+<ol start="2">
+<li>
+<p>距离矢量算法(distance vector routing)                 <strong>动态规划</strong>  decentralized	<br>
+  每个路由器维护一张表（即一个矢量），表中列出了当前已知的到每个目标的最佳距离，以及所用的链路。这些表通过邻居之间交换信息而不断被更新，最终每个路由器都了解到达每个目的地的最佳链路。也叫分布式Bellman-Ford路由算法</p>
+<p>可以参考：距离矢量算法简介 和 距离矢量算法示例</p>
+<p>这个算法存在一个严重的缺陷：虽然它总是能够收敛到正确的答案，但<strong>速度可能非常慢</strong>。尤其是，它对于好消息的反应非常迅速，而对于坏消息的反应异常迟钝。这个算法存在无穷计数的问题。可扩展性很差，越大的网络收敛的越慢。而且，会占用比较大的网络带宽。</p>
+</li>
+</ol>
+<p>相比于距离矢量算法，<strong>链路状态路由算法需要更多的内存和计算</strong>，在大型网络中运行这个算法依然是个问题。不过，在许多现实场合，链路状态路由算法工作得非常好，因为它没有慢收敛得问题。</p>
+<p>OSPF和IS-IS的出现，许多人认为RIP（distance vector）已经过时了。但事实上RIP也有它自己的优点。对于小型网络，RIP就所占带宽而言开销小，易于配置、管理和实现，并且RIP还在大量使用中。链路状态路由算法被广泛应用于实际网络中。IS-IS，Intermediate System-Intermediate System，被很多的ISP使用。后来它被ISO采纳用于OSI协议；然后它被修改多次以便能够处理多种协议，比如IP协议。<strong>OSPF，Open Shortest Path First，是另一个主流的链路状态协议</strong>。</p>
+<h3 id="AS">AS</h3>
+<p><strong>Intra-AS routing:         aka IGP</strong></p>
+<p><strong>OSPF</strong>(Open Shortest Path First<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%BC%80%E6%94%BE%E5%BC%8F%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E4%BC%98%E5%85%88/8966505">开放式最短路径优先</a>）是一个<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%86%85%E9%83%A8%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AE/167192">内部网关协议</a>(Interior Gateway Protocol，简称IGP），用于在单一<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%87%AA%E6%B2%BB%E7%B3%BB%E7%BB%9F">自治系统</a>（autonomous system,AS）内决策<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%B7%AF%E7%94%B1">路由</a>。是对<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E9%93%BE%E8%B7%AF%E7%8A%B6%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/1219386">链路状态路由协议</a>的一种实现，隶属内部网关协议（IGP），故运作于自治系统内部。著名的迪克斯彻（Dijkstra）算法被用来计算<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E6%A0%91">最短路径树</a>。OSPF支持负载均衡和基于服务类型的选路，也支持多种路由形式，如特定主机路由和子网路由等</p>
+<p>inter-AS routing:</p>
+<p>job: learn which dests are reachable in other inter-AS system<strong>系统间传播(eBGP) ,</strong></p>
+<p>and propagate the reachability info to all routers in AS1.<strong>内(iBGP)</strong></p>
+<p>intra-AS: <strong>IGP</strong>             CONTAIN: RIP OSPF IGRP</p>
+<p><strong>BGP</strong> inter domain routing protocol</p>
+<p>网关就是路由器的IP</p>
+<h3 id="SDN-control-plane">SDN control plane</h3>
+<p>logically centralized : easy management:avoid router mis configurations</p>
+<h3 id="ICMP">ICMP</h3>
+<p>ICMP enables a router or destination host to communicate with a source host, for example,to report an error in datagram processing. (2 marks)Path MTU discovery uses the Type-3 Destination Unreachable ICMP messages as follows: TCP negotiates initial MTU size – usually TCP/IP sends datagram with Don’t Fragment flag set If datagram is too large an ICMP Destination Unreachable is received Reduce Maximum Transfer Unit.</p>
+<p>Internet控制<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%8A%A5%E6%96%87/3164352">报文</a>协议。它是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/TCP%2FIP%E5%8D%8F%E8%AE%AE%E7%B0%87">TCP/IP协议簇</a>的一个子协议，用于在IP<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%B8%BB%E6%9C%BA/455151">主机</a>、<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%B7%AF%E7%94%B1">路由</a>器之间传递控制消息。控制消息是指<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BD%91%E7%BB%9C%E9%80%9A">网络通</a>不通、<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%B8%BB%E6%9C%BA/455151">主机</a>是否可达、<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%B7%AF%E7%94%B1/363497">路由</a>是否可用等网络本身的消息。这些控制消息虽然并不传输用户数据，但是对于用户数据的传递起着重要的作用。ICMP使用IP的基本支持，就像它是一个更高级别的协议，但是，ICMP in IP datagram.</p>
+<p>above “IP” error reporting and echo request/reply</p>
+<p><strong>traceroute</strong> (<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Windows/165458">Windows</a> 系统下是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/tracert/7578188">tracert</a>) 命令利用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/ICMP/572452">ICMP</a> 协议定位您的计算机和目标计算机之间的所有<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%B7%AF%E7%94%B1%E5%99%A8/108294">路由器</a>。TTL 值可以反映数据包经过的路由器或网关的数量，通过操纵独立ICMP 呼叫报文的TTL 值和观察该报文被抛弃的返回信息，traceroute命令能够遍历到数据包传输路径上的所有路由器。</p>
+<h2 id="Datalink-layer">Datalink layer</h2>
+<h3 id="Service">Service</h3>
+<p><strong>组帧framing,链路接入 link access</strong></p>
+<p>封装数据报构成数据帧，加首部和尾部帧同步</p>
+<p>如果是共享介质，需要解决信道接入</p>
+<p>帧首部的“MAC”地址，用于标识帧的源和目的</p>
+<ul>
+<li>不同于IP地址</li>
+</ul>
+<p><strong>相邻结点间可靠交付</strong></p>
+<ul>
+<li>在低误码率的有线链路很少采用</li>
+</ul>
+<p><strong>流量控制</strong></p>
+<ul>
+<li>协调相邻的发送结点和接收</li>
+</ul>
+<p><strong>差错纠正</strong></p>
+<ul>
+<li>接收端直接纠正比特差错</li>
+</ul>
+<p><strong>全双工和半双工通信控制</strong></p>
+<ul>
+<li>全双工：链路两端结点同时双向传输</li>
+<li>半双工：链路两端结点交替双向传输</li>
+</ul>
+<p><strong>MAC地址</strong>（<strong>英语：Media Access Control Address）</strong>，直译为<strong>媒体存取控制位址</strong>，也称为<strong>局域网地址</strong>（LAN Address），<strong>MAC位址</strong>，<strong>以太网地址</strong>（Ethernet Address）或<strong>物理地址</strong>（Physical Address），它是一个用来确认网络设备位置的位址。在<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/OSI%E6%A8%A1%E5%9E%8B">OSI模型</a>中，第三层网络层负责<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/IP%E5%9C%B0%E5%9D%80">IP地址</a>，第二层数据链路层则负责MAC位址 [1] 。MAC地址用于在网络中唯一标示一个<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BD%91%E5%8D%A1">网卡</a>，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的MAC地址</p>
+<p>循环冗余检验CRC(Cyclic Redundancy Check)</p>
+<h3 id="Multiple-access-protocol">Multiple access protocol</h3>
+<p>多路访问控制协议</p>
+<p>冲突(collision)：结点同时接收到两个或者多个信号→接收失败！</p>
+<p>MAC协议采用分布式算法决定结点如何共享信道，即决策结点何时可以传输数据。</p>
+<p>其必须基于信道本身，通信信道共享协调信息。无带外信道用于协调。</p>
+<ul>
+<li><strong>信道划分(channel partitioning)MAC协议</strong></li>
+</ul>
+<p><strong>TDMA: time division multiple access</strong></p>
+<p>TDM 将时间划分为时间帧(timeframe),并进一步划分每个时间帧为N个时隙(slot)</p>
+<p>每个站点在每个时间帧，占用固定长度的时隙(长度=分组传输时间)；未用时隙空闲(idle)</p>
+<p>如图：6站点LAN，134传输分组，256空闲</p>
+<p><a target="_blank" rel="noopener" href="https://images2018.cnblogs.com/blog/1424868/201807/1424868-20180712103350498-1397118573.png"><img src="https://images2018.cnblogs.com/blog/1424868/201807/1424868-20180712103350498-1397118573.png" alt="img"></a></p>
+<p><strong>FDMA: frequency division multiple access</strong></p>
+<p>信道频谱划分为若干频带(frequency bands)</p>
+<p>每个站点分配一个固定的频带，不会冲突但信道利用率可能不高；无传输频带空闲</p>
+<p>如图：6站点LAN, 134频带传输数据，256频带空闲。</p>
+<p><a target="_blank" rel="noopener" href="https://images2018.cnblogs.com/blog/1424868/201807/1424868-20180712103357376-1532136065.png"><img src="https://images2018.cnblogs.com/blog/1424868/201807/1424868-20180712103357376-1532136065.png" alt="img" style="zoom:67%;"></a></p>
+<h4 id="Random-access-protocol">Random access protocol</h4>
+<p>包括 ALOHA,CSMA,CSMA/CA,CSMA/CD             (t<em>ransmit entire frame</em>)</p>
+<p>Specify 如何检测collision 如何恢复</p>
+<h5 id="slotted-ALOHA">slotted ALOHA</h5>
+<p>结点只能在时隙开始时刻发送帧，当结点有新的帧时在下一个时隙(slot)发送如果2个或2个以上结点在同一时隙发送帧，结点即检测到冲突.如果无冲突：该结点可以在下一个时隙继续发送新的帧.  如果冲突：该结点在下一个时隙以概率p重传该帧，直至成功.Slotted aloha reduces the number of collisions to half and doubles the efficiency of pure aloha.</p>
+<p>** pure ALOHA**</p>
+<p>no synchronization(CLOCK) but only half as efficient as slooted</p>
+<p><strong>载波侦听多路访问协议 CSMA(carrier sense multiple access)协议</strong></p>
+<p>Listen before transmit</p>
+<h5 id="CSMA-CD">CSMA/CD</h5>
+<p>easy in wired LAN (ethernet)     <strong>reduce channel wastage, improve effiency</strong></p>
+<p><strong>避免冲突的载波侦听多路访问协议  CSMA/CA(CSMA with Collision Avoidance)协议</strong></p>
+<p><strong>802.11无线</strong>局域网中，不能像CSMA/CD那样，边发送、边检测冲突，原因为：</p>
+<p>（1）检测碰撞的能力要求站点具有同时发送（站点自己的信号）和接收（检测其他站点是否也在发送）的能力。因为在802. 11适配器上，接收信号的强度通常远远小于发送信号的强度，制造具有检测碰撞能力的硬件代价较大。</p>
+<p>802.11发送端：</p>
+<p>（1）如果监听到信道空闲了分布式帧间间隔DIFS后，则在发送整个帧（发送的同时不检测冲突）</p>
+<p>发送端首先利用CSMA向BS发送一个很短的请求发送（request-to-send，RTS）控制帧预约信道，而不是随机发送数据帧，利用小预约帧避免长数据帧的冲突。RTS帧仍然可能彼此冲突（但RTS帧很短）</p>
+<p>AP广播一个很短的允许发送（clear-to-send，CTS）控制帧作为对RTS的响应，CTS帧可以被所有结点接收，以消除隐藏站影响</p>
+<p>发送端可以发送数据帧，其他结点推迟发送</p>
+<p>（2）如果监听到信道忙，则选取随机回退值</p>
+<p>​       当信道空闲时，计时器倒计时;       当计时器超时时，发送帧</p>
+<p>（3）如果没有收到ACK，则增加随机退避间隔时间，重复（2）</p>
+<p>802.11接收端：</p>
+<p>如果正确接收帧，则在延迟短帧间间隔SIFS后，向发送端发送ACK（由于存在隐藏站问题）</p>
+<h3 id="ARP">ARP</h3>
+<p><strong>MAC(LAN,or physical or ethernet) address and ARP</strong></p>
+<p>48 MAC address in <strong>NIC</strong> ROM</p>
+<p>MAC flat address <strong>portable</strong> (IP hierarchical not portable)</p>
+<p>地址解析协议，即ARP（Address Resolution Protocol），是根据<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/IP%E5%9C%B0%E5%9D%80">IP地址</a>获取<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80/2129">物理地址</a>的一个<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/TCP%2FIP%E5%8D%8F%E8%AE%AE">TCP/IP协议</a>。<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%B8%BB%E6%9C%BA/455151">主机</a>发送信息时将包含目标IP地址的ARP请求广播到<strong>局域网</strong>络上的所有主机，并接收返回消息，以此确定目标的物理地址.  <strong>PLUG and PLAY</strong></p>
+<p>802.11 all use CSMA/CA</p>
+<h3 id="LAN">LAN</h3>
+<img src="C:\Users\Stan\AppData\Roaming\Typora\typora-user-images\image-20211222203321725.png" alt="image-20211222203321725" style="zoom:67%;">
+<h3 id="switch">switch</h3>
+<h4 id="self-learning-plug-and-play">self learning plug and play</h4>
+<p>frame forwarding, storing ; don’t need to be configured</p>
+<h3 id="VLAN">VLAN</h3>
+<p>建立<strong>逻辑</strong>上独立的虚拟网络：于是交换机可以很方便实现<strong>虚拟局域网</strong><br>
+<strong>将连在Switch上的站点更具自己的喜好划分逻辑组</strong>：且与物理位置无关<br>
+<strong>VLAN隔离广播域</strong> ：于是也可以对网络安全隔离、控制广播风暴</p>
+<p>一般接终端设备使用access port 需要多VLAN透传的使用trunk port</p>
+<h3 id="MPLS">MPLS</h3>
+<p>是一种在开放的通信网上利用标签引导数据高速、高效传输的新技术。多协议的含义是指<em>MPLS</em>不但可以支持多种网络层层面上的协</p>
+<p>goal to fast lookup and borrow ideas from VC</p>
+<h3 id="security-management">security management</h3>
+<p>FIrewall</p>
+<p>stateless pkt filter, application gateways</p>
+<p>stateful contains stateless filter, which is the most flexible but cost more.</p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        Author:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Stan ke</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        Link:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://stan370.github.io/2025/02/28/Network/network/">https://stan370.github.io/2025/02/28/Network/network/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        Reprint policy:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    All articles in this blog are used except for special statements
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    reprint policy. If reproduced, please indicate source
+                    <a href="/about" target="_blank">Stan ke</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+                                    <span class="chip bg-color">计算机网络</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                    </ul>
+                    
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/reward/wechat.JPG" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        TBD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2025/03/05/poem/index/">
+                    <div class="card-image">
+                        
+                        <img src="https://www.telegraph.co.uk/content/dam/films/2017/10/05/TearsInRain-8_trans_NvBQzQNjv4Bq40NVKkzKgy7iV1BEZjiceW48E5hk3wG0G0anVB7mS8E.jpg?imwidth=680" class="responsive-img" alt="The Roads I Couldn’t Take">
+                        
+                        <span class="card-title">The Roads I Couldn’t Take</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2025-03-05
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%84%9F%E6%83%B3/" class="post-category">
+                                    感想
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2025/02/06/shannon/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="美剧硅谷的middle-out algorithm 压缩算法">
+                        
+                        <span class="card-title">美剧硅谷的middle-out algorithm 压缩算法</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2025-02-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E9%9A%8F%E8%B0%88/" class="post-category">
+                                    随谈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/">
+                        <span class="chip bg-color">概率论</span>
+                    </a>
+                    
+                    <a href="/tags/%E4%BF%A1%E6%81%AF%E8%AE%BA/">
+                        <span class="chip bg-color">信息论</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+
+    <div class="container row center-align"
+         style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2025</span>
+            
+            <a href="/about" target="_blank">Stan ke</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/Stan370/stan370.github.io" target="_blank">Matery</a>
+            <br>
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:&nbsp;<span
+                        class="white-color">293.4k</span>
+            <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;Total visits:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;Total visitors:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            <br>
+            <!-- Matomo -->
+            <script>
+                var _paq = window._paq = window._paq || [];
+                /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+                _paq.push(['trackPageView']);
+                _paq.push(['enableLinkTracking']);
+                (function() {
+                    var u="https://your-matomo-instance.com/";
+                    _paq.push(['setTrackerUrl', u+'matomo.php']);
+                    _paq.push(['setSiteId', '1']);
+                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+                })();
+            </script>
+            <!-- End Matomo Code -->
+            <!-- Privacy Notice -->
+            <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+                <i class="fas fa-shield-alt"></i> This site uses Matomo for privacy-friendly analytics.
+            </div>
+            <!-- 运行天数提醒. -->
+            
+                <span id="sitetime"> Loading ...</span>
+                <script>
+                    var calcSiteTime = function () {
+                        var seconds = 1000;
+                        var minutes = seconds * 60;
+                        var hours = minutes * 60;
+                        var days = hours * 24;
+                        var years = days * 365;
+                        var today = new Date();
+                        var startYear = "2019";
+                        var startMonth = "6";
+                        var startDate = "28";
+                        var startHour = "0";
+                        var startMinute = "0";
+                        var startSecond = "0";
+                        var todayYear = today.getFullYear();
+                        var todayMonth = today.getMonth() + 1;
+                        var todayDate = today.getDate();
+                        var todayHour = today.getHours();
+                        var todayMinute = today.getMinutes();
+                        var todaySecond = today.getSeconds();
+                        var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                        var diff = t2 - t1;
+                        var diffYears = Math.floor(diff / years);
+                        var diffDays = Math.floor((diff / days) - diffYears * 365);
+
+                        // 区分是否有年份.
+                        var language = 'en';
+                        if (startYear === String(todayYear)) {
+                            document.getElementById("year").innerHTML = todayYear;
+                            var daysTip = 'This site has been running for ' + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                daysTip = '本站已运行 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                daysTip = '本站已運行 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = daysTip;
+                        } else {
+                            document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                            var yearsAndDaysTip = 'This site has been running for ' + diffYears + ' years and '
+                                + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                yearsAndDaysTip = '本站已运行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                yearsAndDaysTip = '本站已運行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+                        }
+                    }
+
+                    calcSiteTime();
+                </script>
+            
+            <br>
+            
+        </div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+  <div class="modal-content">
+    <div class="search-header">
+      <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span  >
+      <input
+        type="search"
+        id="searchInput"
+        name="s"
+        placeholder="Please enter a search keyword"
+        class="search-input"
+      />
+    </div>
+    <div id="searchResult"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems, {
+        dismissible: true,    // Allow modal to be dismissed by clicking outside
+        preventScrolling: false, // Allow scrolling while modal is open
+        opacity: 0.5,        // Opacity of modal background
+        inDuration: 250,     // Transition in duration
+        outDuration: 250,    // Transition out duration
+        onOpenStart: function() {
+            document.body.style.overflow = 'auto';
+        },
+        onCloseEnd: function() {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Get modal instance
+    const searchModal = document.getElementById("searchModal");
+    const modalInstance = M.Modal.getInstance(searchModal);
+    
+    // Only open modal when search button is clicked
+    document.getElementById("openSearchBtn")?.addEventListener("click", function() {
+        modalInstance.open();
+        searchInput.focus(); 
+    });
+    function closeSearchModal() {
+        modalInstance.close();
+    }
+
+    // Handle clicks outside modal
+    document.addEventListener("click", function(event) {
+        const modalContent = searchModal.querySelector(".modal-content");
+        // Check if click is outside modal content
+        if (event.target === searchModal && !modalContent.contains(event.target)) {
+            closeSearchModal();
+        }
+    });
+
+    // Add ESC key to close modal
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape" && searchModal.classList.contains('open')) {
+            closeSearchModal();
+        }
+    });
+
+    var searchFunc = function (path, search_id, content_id) {
+      "use strict";
+      function debounce(func, wait) {
+        let timeout;
+        return function () {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, arguments), wait);
+        };
+      }
+      $.ajax({
+        url: path,
+        dataType: "json",
+        success: function (jsonData) {
+          // 获取所有文章数据
+          console.log(jsonData);
+          var datas = jsonData.map(function (post) {
+            return {
+              title: post.title,
+              content: post.content,
+              url: post.url,
+            };
+          });
+
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+
+          // 搜索输入监听
+          $input.addEventListener(
+            "input",
+            debounce(function () {
+              var str = '<ul class="search-result-list">';
+              var keywords = this.value
+                .trim()
+                .toLowerCase()
+                .split(/[\s\-]+/);
+              $resultContent.innerHTML = "";
+              if (this.value.trim().length <= 0) {
+                return;
+              }
+              // Perform local searching
+              datas.forEach(function (data) {
+                var isMatch = true;
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content
+                  .trim()
+                  .replace(/<[^>]+>/g, "")
+                  .toLowerCase();
+                var data_url =
+                  data.url.indexOf("/") === 0 ? data.url : "/" + data.url;
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                console.log(data_title, data_content, data_url);
+                if (data_title !== "" && data_content !== "") {
+                  for (let i = 0; i < keywords.length; i++) {
+                    let keyword = keywords[i];
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+
+                    if (index_title < 0 && index_content < 0) {
+                      isMatch = false;
+                      break; // 直接退出关键词遍历
+                    } else {
+                      if (index_content < 0) {
+                        index_content = 0;
+                      }
+                      if (i === 0) {
+                        first_occur = index_content;
+                      }
+                    }
+                  }
+                }
+
+                // Show search results
+                if (isMatch) {
+                  str += `<li>
+                <a href="${data_url}" class="search-result-title">${data_title}</a>`;
+                  var content = data.content.trim().replace(/<[^>]+>/g, "");
+                  if (first_occur >= 0) {
+                    var start = Math.max(0, first_occur - 20);
+                    var end = Math.min(content.length, first_occur + 80);
+                    var match_content = content.substring(start, end);
+
+                    keywords.forEach(function (keyword) {
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(
+                        regS,
+                        '<em class="search-keyword">$&</em>'
+                      );
+                    });
+
+                    str += `<p class="search-result">${match_content}...</p>`;
+                  }
+                  str += "</li>";
+                }
+              });
+
+              str += "</ul>";
+              $resultContent.innerHTML = str;
+            }, 300)
+          ); // 设置 300 毫秒延迟
+        },
+        error: function (xhr, status, error) {
+          console.error("Search failed:", error);
+          document.getElementById(content_id).innerHTML =
+            '<p class="search-error">Search failed to load. Please try again.</p>';
+        },
+      });
+    };
+
+    // 初始化搜索
+    searchFunc('/search.json', "searchInput", "searchResult");
+  });
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/js/matery.js"></script>
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/clicklove.js" async="async"></script>
+    <script async src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

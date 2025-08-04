@@ -1,0 +1,1782 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="网络安全实践, StanBlog">
+    <meta name="description" content="Web Security
+在广阔的互联网领域，信息源源不断，交易瞬息万变，一场无声的战斗正在上演。网络威胁潜伏在阴影中，试图利用漏洞并破坏我们建造的数字堡垒。这就是网络安全的领域，一个动态且不断发展的领域，它是用户与渗透到网络世界的无数风险">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+    <title>网络安全实践 | StanBlog</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/atom.xml" title="StanBlog" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3592614110969127"
+     crossorigin="anonymous"></script>
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">StanBlog</span>
+                </a>
+            </div>
+            
+<style>
+  #openSearchBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+#openSearchBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+  #searchIcon {
+    color: white;
+  }
+</style>
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>Index</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>Tags</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>Categories</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>Archives</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>About</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>Contact</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <button id="openSearchBtn" type="button" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </button>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">StanBlog</div>
+        <div class="logo-desc">
+            
+            A popular long-form, stick-figure-illustrated blog about almost everything. Material Themes / GitHub Pages 个性化定制的Hexo-Matery主题 
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			Index
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			Tags
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			Categories
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			Archives
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			About
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			Contact
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Stan370/stan370.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Stan370/stan370.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://raw.githubusercontent.com/Stan370/stan370.github.io/main/themes/hexo-theme-matery/source/medias/featureimages/1.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">网络安全实践</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                                <span class="chip bg-color">网络安全</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    2025-01-06
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
+                    12.3k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
+                    44 Min
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1>Web Security</h1>
+<p>在广阔的互联网领域，信息源源不断，交易瞬息万变，一场无声的战斗正在上演。网络威胁潜伏在阴影中，试图利用漏洞并破坏我们建造的数字堡垒。这就是网络安全的领域，一个动态且不断发展的领域，它是用户与渗透到网络世界的无数风险之间的守护者。</p>
+<p>Consider this: Beyond the visible web lies an untamed and uncharted area akin to the Wild West, where data bandits and cyber outlaws reign supreme. These ne’er-do-wells constantly innovate their nefarious methods to breach firewalls, hijack sessions, and steal sensitive data. Web security is the marshal that stands in their way, brandishing the latest cryptographic shields and a sharp strategy to enforce the law of the land.</p>
+<p>**对称加密 (DES, 3DES, AES)：<strong>如果要加密一串消息，很自然的想法是，加密和解密用的同一个密码。如同现实生活中，一把钥匙既可以锁上一把锁，也可以打开一把锁，这就是密码学中的对称加密 (Symmetric Encryption)：加密和解密用的是同一串密钥 (Secret Key)。实际应用中的<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E6%95%B0%E6%8D%AE%E5%8A%A0%E5%AF%86&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22465894109%22%7D">数据加密</a>，通常都是使用的对称加密，因为<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22465894109%22%7D">**对称加密算法</a>很多对硬件特别友好，所以在硬件加密模块上运行效率非常高</strong>。</p>
+<p><strong>非对称加密 (RSA), 非对称加密是为了解决对称加密无法解决的问题。例如，怎么才能保证使用密钥的人是可信的呢？</strong></p>
+<p>公钥加密私钥解，私钥签名公钥验。</p>
+<ol>
+<li>
+<p><strong>公钥加密，私钥解密</strong>：</p>
+<p>这是非对称加密的基本应用场景。当A想向B发送加密信息时，A使用B的公钥对信息进行加密。由于公钥可以公开，A无需担心公钥的安全性。B收到加密信息后，使用自己的私钥进行解密，因为只有B持有对应的私钥，所以只有B能够解密并读取信息内容。这一过程确保了信息的机密性。</p>
+</li>
+<li>
+<p><strong>私钥签名，公钥验证</strong>：</p>
+<p>数字签名技术用于验证信息的完整性和发送方的身份。当A发送信息给B时，A使用自己的私钥对信息的摘要进行加密，生成数字签名。B收到信息和签名后，使用A的公钥对签名进行解密，验证签名的正确性。如果验证通过，B可以确信信息没有被篡改，且确实来自持有对应私钥的A，增强了信息的完整性和不可抵赖性。</p>
+</li>
+</ol>
+<p>消息认证码系统由三种算法组成：</p>
+<ul>
+<li>
+<p>密钥生成算法从密钥空间中均匀随机地选择一个密钥。</p>
+</li>
+<li>
+<p>签名算法根据密钥和消息有效地返回标签。</p>
+</li>
+<li>
+<p>验证算法在给定相同密钥和标签的情况下，可以高效地验证消息的真实性。也就是说，当消息和标签未被篡改或伪造时，返回<em>接受，否则返回拒绝</em></p>
+<p>。</p>
+</li>
+</ul>
+<p>安全的消息认证代码必须能够抵御攻击者<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Digital_signature_forgery">伪造任意、选定或所有消息的标签的</a>企图，包括在<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Digital_signature_forgery">已知消息</a>或<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Digital_signature_forgery">选定消息</a>的情况下。在不知道密钥的情况下，计算给定消</p>
+<h3 id="MITM">MITM</h3>
+<p>以下是MITM攻击的一些常见形式：</p>
+<ol>
+<li><strong>窃听（Eavesdropping）：</strong><br>
+中间人通过监听网络通信，获取传输的敏感信息，如用户名、密码等。</li>
+<li><strong>数据篡改（Data Modification）：</strong><br>
+中间人可以修改传输的数据，导致接收方收到被篡改过的信息，可能会对系统产生负面影响。</li>
+<li><strong>欺骗（Spoofing）：</strong><br>
+攻击者可以伪装成合法的通信方，使得通信的两端都认为他们正在与合法的对方通信。</li>
+<li><strong>中继攻击（Relay Attack）：</strong><br>
+攻击者在通信的两端之间传递信息，以模拟两者直接通信，同时记录或修改信息。</li>
+<li><strong>SSL Stripping：</strong><br>
+中间人可能试图降级加密通信，将加密连接转换为非加密连接，以便更容易地窃听敏感信息。</li>
+</ol>
+<p>MITM攻击可以在各种通信协议中发生，包括HTTP、HTTPS、SMTP等。防范MITM攻击的方法包括使用加密通信（如HTTPS）、数字签名、使用安全的认证机制等。使用公共Wi-Fi网络时，特别需要注意MITM攻击，因为这样的网络更容易受到攻击者的窃听。</p>
+<p>Hacker劫持user DNS解析到黑客的服务器之后，如果黑客服务器上没有合法签发的SSL证书，浏览器会提示这个DNS指向的服务器不可信任，然后弹出警告画面阻止你访问，所以要<strong>劫持DNS+合法证书</strong>两个问题同时解决才算完美的中间人攻击。用户电脑上的证书大部分由操作系统颁发，可以离线信任链</p>
+<p><strong>单独说DH协商算法不能防止中间人没有意义。因为密钥协商算法要解决的是在不可靠链路上安全地协商密钥。而通信双方身份认证又是另外一个体系的东西。</strong></p>
+<p>在 MITM 攻击中，攻击者拦截客户端和服务器之间的通信，冒充双方拦截或更改它们之间交换的数据。<br>
+虽然 HTTPS 对传输中的数据进行加密，但攻击者可能会插入客户端和服务器之间，拦截加密流量并使用各种技术对其进行解密，例如获取受损的 SSL/TLS 证书或利用 SSL/TLS 协议本身的漏洞。</p>
+<p>MITM:</p>
+<ol>
+<li>服务器向客户端发送公钥。</li>
+<li>攻击者截获公钥，保留在自己手上。</li>
+<li>然后攻击者自己生成一个【伪造的】公钥，发给客户端。</li>
+<li>客户端收到伪造的公钥后，生成加密hash值发给服务器。</li>
+<li>攻击者获得加密hash值，用自己的私钥解密获得真秘钥。</li>
+<li>同时生成假的加密hash值，发给服务器。</li>
+<li>服务器用私钥解密获得假秘钥。</li>
+<li>服务器用加秘钥加密传输信息</li>
+</ol>
+<p>可以看出我们这里数据是明文传输的，存在窃听风险。但是我们为了阐述数字签名机制是如何运转的，故意将保证信息机密性的机制省略了。</p>
+<p>如果想要保证数据的机密性，我们常见的做法是，通信双方通过非对称加密安全交换对称加密的密钥，后续通信过程的数据都使用对称加密保证数据机密性。</p>
+<p>并且「签名」的作用本身也不是用来保证数据的机密性，而是用于验证数据来源的防止数据被篡改的，也就是确认发送者的身份。接受者 Alice 收到后，取下数字签名，同时用 Bob 的公钥解密，得到「摘要1」，<strong>证明确实是 Bob 发的</strong>。</p>
+<p>再对邮件内容使用相同的散列函数计算「摘要2」，与上面得到的「摘要1」进行对比，<strong>两者一致就说明信息未被篡改。</strong></p>
+<h2 id="HTTPS">HTTPS</h2>
+<p>主要三个作用：1. 加密通信 2.认证服务器的身份，防止mitm 窃听 3. 防止篡改，integrity</p>
+<p>HTTPS（Hypertext Transfer Protocol Secure）使用了混合加密机制，包括非对称加密和对称加密，以确保安全的数据传输。ssl3.0 1998</p>
+<p><strong>TLS（传输层加密协议） 1.2 升级成 TLS 1.3，TLS 1.3 大幅度简化了握手的步骤，完成 TLS 握手只要 1 RTT，而且安全性更高。在 TLS 1.2 的握手中，一般是需要 4 次握手，先要通过 Client Hello （第 1 次握手）和 Server Hello（第 2 次握手） 消息</strong>协商<strong>出后续使用的加密算法，再互相交换公钥（第 3 和 第 4 次握手）</strong></p>
+<ol>
+<li><strong>客户端发起请求</strong>：
+<ul>
+<li>客户端向服务器发起 HTTPS 请求。</li>
+</ul>
+</li>
+<li><strong>服务器响应并发送证书</strong>：
+<ul>
+<li>服务器响应请求并发送 SSL/TLS 证书。证书中包含服务器的公钥，该公钥由受信任的证书颁发机构（CA）签名。</li>
+</ul>
+</li>
+<li><strong>客户端验证证书</strong>：
+<ul>
+<li>客户端验证服务器的证书，确保证书由受信任的 CA 签发，证书未过期，且证书中的域名与请求的域名匹配。</li>
+<li><strong>验证证书链</strong>：客户端通过验证证书链来确认证书是否由受信任的 CA 签发。证书链由服务器证书、中间证书（如果有）、根证书组成。</li>
+<li><strong>检查证书有效期</strong>：客户端检查证书的有效期，确保当前日期在证书的有效期内。</li>
+<li><strong>验证证书的域名</strong>：客户端验证证书中的域名是否与请求的域名匹配。</li>
+<li><strong>检查证书吊销状态</strong>：客户端可以通过在线证书状态协议（OCSP）或证书吊销列表（CRL）来检查证书是否被吊销。</li>
+</ul>
+</li>
+<li><strong>协商 SSL/TLS 版本和加密算法</strong>：
+<ul>
+<li>客户端和服务器协商选择双方都支持的 SSL/TLS 版本和加密算法套件（cipher suite）。这些算法套件定义了具体使用的对称加密算法、非对称加密算法、哈希算法等。</li>
+</ul>
+</li>
+<li><strong>密钥交换和会话密钥生成</strong>：
+<ul>
+<li><strong>Ephemeral Diffie-Hellman（DHE）或 Ephemeral Elliptic Curve Diffie-Hellman（ECDHE）</strong>：客户端和服务器使用临时的 Diffie-Hellman 或椭圆曲线 Diffie-Hellman 参数生成一个共享的预主密钥（pre-master secret）。这涉及使用服务器的临时公钥（通常是服务器基于 ECC 生成的）和客户端生成的临时公钥。</li>
+<li><strong>RSA</strong>：如果使用 RSA 密钥交换，客户端生成一个随机的预主密钥，并使用服务器证书中的公钥对其进行加密，然后发送给服务器。服务器使用其私钥解密预主密钥。</li>
+</ul>
+</li>
+<li><strong>生成会话密钥</strong>：
+<ul>
+<li>双方使用共享的预主密钥生成会话密钥。会话密钥用于对通信数据进行对称加密。</li>
+</ul>
+</li>
+<li><strong>数据加密</strong>：
+<ul>
+<li>使用协商好的对称加密算法（如 AES、ChaCha20 等），客户端和服务器使用会话密钥对传输的数据进行加密和解密。</li>
+</ul>
+</li>
+<li><strong>完整性验证</strong>：
+<ul>
+<li>使用消息认证码（MAC）或哈希函数（如 SHA-256）来验证数据的完整性，确保数据在传输过程中未被篡改。<br>
+证书验证的技术<br>
+浏览器验证证书: 浏览器验证证书的合法性，包括：<br>
+证书颁发机构: 浏览器检查证书是否由一个受信任的证书颁发机构（CA）颁发。<br>
+证书有效期: 浏览器检查证书是否在有效期内。<br>
+证书与域名匹配: 浏览器检查证书是否与网站的域名匹配。<br>
+证书签名: 浏览器检查证书的签名是否正确。<br>
+浏览器检查证书链: 浏览器检查证书链，确保证书是由一个受信任的 CA 颁发的。<br>
+浏览器验证证书的公钥: 浏览器验证证书的公钥，确保它与服务器的公钥匹配。</li>
+</ul>
+</li>
+</ol>
+<p>证书验证使用了以下技术：</p>
+<p>X.509: X.509 是一种证书格式，用于存储证书信息。<br>
+SSL/TLS: SSL/TLS 是一种加密协议，用于建立安全连接。<br>
+公钥加密: 公钥加密是一种加密算法，用于加密数据。<br>
+数字签名: 数字签名是一种加密算法，用于验证证书的合法性。<br>
+证书验证的工具</p>
+<p>证书验证可以使用以下工具：</p>
+<p>浏览器: 浏览器内置了证书验证功能。<br>
+openssl: openssl 是一种命令行工具，用于验证证书。<br>
+certutil: certutil 是一种命令行工具，用于验证证书。<br>
+<strong>安全外壳协议</strong>( SSH **)**是一种<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cryptography">加密</a> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Network_protocol">网络协议</a>，用于在不安全的网络上安全地运行<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Network_service">网络服务。</a><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Secure_Shell#cite_note-rfc4251-1">[1]</a>其最著名的应用是 remote <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Login">login</a> and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Command-line_interface">command-line</a> execution.</p>
+<p>SSH 应用程序基于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Client%E2%80%93server_model">客户端-服务器</a>架构，将<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/SSH_client">SSH 客户端</a>实例与<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/SSH_server">SSH 服务器</a>连接。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Secure_Shell#cite_note-rfc4252-2">[2]</a> SSH 作为分层协议套件运行，包含三个主要分层组件：<em>传输层</em>提供服务器身份验证、机密性和完整性；用户<em>认证协议</em>向服务器验证用户；连接<em>协议</em>将加密隧道复用为多个逻辑通信通道。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Secure_Shell#cite_note-rfc4251-1">[1]</a></p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Unix-like">SSH 是在类 Unix</a>操作系统上设计的，作为<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Telnet">Telnet</a>和<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Computer_security">不安全的</a>远程<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Unix_shell">Unix shell</a>协议的替代品</p>
+<h3 id="Across-the-Wall">Across the Wall</h3>
+<p>12.15问题：router设置为ipv6 解析时间长 infra建设没跟上，放弃。 想完全保证安全性和国内访问速率：刷openwrt，smartdns实现国内国外 dns 分流，需要另一台软路由。 折衷方案：全局代理？</p>
+<p>代理模式： HTTP/socks系统代理 （开发者决定 大部分只使用browser）， TUN tap代理， 真VPN</p>
+<p>TUN： 手机代理，软路由的模式</p>
+<p>TUN虚拟网卡只能说非常接近 VPN还不是真正的VPN 因为我们用的ss vmess trojan等主流的翻墙协议 都无法<strong>封装网络层的数据包</strong> 最直观的感受就是ping命令这个网络层的工具 当我们使用clash的tun模式ping谷歌的话 会返回一个假的延迟 这个一毫秒的延迟是直接从虚拟网卡返回的 并且 如果使用下节要讲的fakeIP模式的话 还会直接返回一个假的IP 因为ss vmess等协议无法代理网络层的icmp协议 而ping就是icmp协议的工具 真正的VPN可以代理网络层 所以我使用真正的VPN wireguard是可以ping通谷歌的 可以看到延迟是真实的</p>
+<p>目前来讲 tun模式是比较完美的客户端代理方式 既能实现在网络层接管系统所有流量 又能在此基础上实现分流 美中不足的地方就是使用ping命令 来测试网络延迟的时候就不太方便了 如果你平时只是用来浏览网页的话 第一种系统代理的方式也是一个不错的选择 至于真VPN的话 并不推荐用来科学上网 更适合有内网穿透需求的用户</p>
+<p>VPN协议和NAT协议都是通过重新构建一个IP首部来实现的，但他们的实现又有<strong>区别</strong>，VPN是将内部IP数据报加密后打包成外部IP数据报的数据部分，它的主要目的是为了数据的保密性，而NAT是纯进行地址转换，它的目的是为了解决本地编址的内部网络与外网通信的问题。</p>
+<p><strong>VPN的实现主要使用了两种基本技术：隧道传输 和 加密技术</strong></p>
+<p><strong>VPN</strong> 通常处于网络层（第三层）或数据链路层（第二层）：</p>
+<ul>
+<li><strong>IP层的VPN</strong>，如IPsec或L2TP，通常工作在网络层，它们通过创建虚拟的私有网络来路由IP数据包。</li>
+<li><strong>数据链路层的VPN</strong>，如PPTP，工作在数据链路层，通常用于点对点通信。</li>
+</ul>
+<p>Virtual Private Network 译为虚拟专用网络或者虚拟私有网络 什么网络是私有网络 你家里的局域网就是你的私有网络 我们无法直接和你没有公网ip的电脑进行通信 除非到你家里连上你家的路由器 那我们就能在同一个私有网络里 那什么是虚拟 顾名思义 虚拟的意思就是虚拟 就是物理不存在 虚拟私有网络的意思就是我不需要物理的跑到你家里去 物理的连接上你家的路由器 就可以实现与你没有公网IP的电脑进行通信 而要实现这个功能的话 就必须要能够封装网络层的数据包 只有能够封装网络层的数据包 才能实现异地组网 才能实现内网穿透 才能实现虚拟的和你在同一内网里 才能称之为VPN</p>
+<p>VPN是一种技术 而不是某个具体的协议 VPN有很多技术实现 PPTP VPN IPSEC VPN OPENVPN WIREGUARD等等 具体实现细节都不太一样</p>
+<p>但有一个是必须要支持的 就是<strong>封装网络层 如果ss协议也能够封装网络层 实现异地组网 那也能称之为VPN</strong></p>
+<p>当然 我这里并不是说VPN就更高级 相反的 对于科学上网来讲 它可是一点都不高级 因为VPN并不是为翻墙而生的 只是因为它能对数据进行加密 顺便实现了翻墙功能 相较于<strong>ss这种专门为翻墙而生 将流量特征隐藏</strong>的协议 VPN的流量清晰明了的写着它就是VPN的流量 而且VPN分流很不方便 所以用来科学上网并不合适 这里就不再深入了 以后有机会出内网穿透的教程再来详细介绍</p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/ea503cf6-9325-47ab-9fb3-3e33e40583ef/4ea5941a-a013-41e5-b7ef-33fae9328bc2/Untitled.png" alt="Untitled"></p>
+<ol>
+<li>Clash 的 DNS和代理两个模块是独立的. 日常终端PC使用 Clash for Windows 开启Systerm Proxy( HTTPS/SOCKS5代理) 并不需要 DNS enable: true, TUN 模式 是虚拟了网卡, 接管一切流量. OpenClash 实现虚拟网关用的是 TUN 模式, 而 Fake-IP /Redir-Host 的TUN模式、游戏模式 是(TAP 模式 很绕口 而 <a target="_blank" rel="noopener" href="https://docs.cfw.lbyczf.com/contents/tap.html#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86">TAP 模式更推荐使用 Redir-Host 模式</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.v2ex.com/t/939660">OpenClash 的绕过大陆IP 主要由两个模块组成</a> . 使用一份国内站点域名表 2w多条，添加至 Dnsmasq 中，在这个域名表中的 将会使用 默认114.114.114.114 来进行解析为真实的 IP ，在 iptables 中添加中国大陆 IP 段（ ipset ；直接绕过的规则并不使用 Clash 核心的 DNS 解析. <a target="_blank" rel="noopener" href="https://songchenwen.com/tproxy-split-by-dns">由此解决了 <em>所有流量都经 Clash 核心转发，性能损耗过大</em> 的问题</a></li>
+<li>插件设置-DNS设置中 *本地 DNS 劫持 使用防火墙转发 才能有黑白名单不走代理的局域网IP/MAC 选项. <em>我不清楚为何Redir-Host 模式 两种转发都能选黑白名单. Fake-IP 模式只在使用防火墙转发才能选择黑白名单</em>. issue区有两种方法 <a target="_blank" rel="noopener" href="https://github.com/vernesong/OpenClash/issues/2506">[Feature] fakeIP模式下访问控制也有“不走代理的局域网设备 IP” #2506</a> <a target="_blank" rel="noopener" href="https://github.com/vernesong/OpenClash/issues/3319">[Feature] Fake-IP模式下对于MAC/IP黑白名单、绕过大陆IP，可否提供更多选项？ #3319</a> 也有回复说 绕过中国大陆 IP 的实现是靠 Dnsmasq 先 DNS 分流判断实现的, 选择使用防火墙转发会使此功能失效</li>
+<li>上游 Clash 官方已弃用 Redir-Host <a target="_blank" rel="noopener" href="https://lancellc.gitbook.io/clash/clash-config-file/dns#enhanced-mode">(redir-host mode no longer available from Premium 2023.02.16)</a> Clash.Meta 还在使用两者; Clash for Windows 不换核情况下 遵循上游 Clash 默认TUN Mode 是Fake IP Mode ; 两者的区别只是 Fake-IP-filter: - ‘+.*’ 绕过所有域名 就变成 Redir-Host Mode</li>
+<li>Fake-IP 模式 用假IP映射是为了使用 Rule 域名规则, 需要代理域名的解析均传递真实域名到代理服务器上 所以并无必要获得无污染DNS的解析 IP. Clash.Meta 的嗅探功能是为了把 Redir-Host 模式的 “真实IP” 变回域名. (实现CDN优化 解锁Netflix 等. 所以 Fake-IP 模式只需要配置 nameserver 并无必要配置 fallback 以及 fallback filter ; 配置nameserver 仅为了直连和fakeip filter 内的国内加速.</li>
+</ol>
+<h3 id="WARP原理">WARP原理</h3>
+<p>WARP是CloudFlare提供的一项基于WireGuard的网络流量安全及加速服务，能够让你通过连接到CloudFlare的边缘节点实现隐私保护及链路优化。WireGuard 是由 Jason Donenfeld 等人用 C 语言编写的一个开源 VPN 协议，被视为下一代 VPN 协议，旨在解决许多困扰 IPSec/IKEv2、OpenVPN 或 L2TP 等其他WireGuard 就是采用 UDP 转发流量的 VPN 工具。他最大的优点也就是最大的缺点，采用 UDP 转发流量确实是能够有效的干扰墙的封锁，但是其稳定性实在是不敢恭维。</p>
+<p>其连接入口为双栈（IPv4/IPv6均可），且连接后能够获取到由CF提供基于NAT的IPv4和IPv6地址，因此我们的单栈服务器可以尝试连接到WARP来获取额外的网络连通性支持。这样我们就可以让仅具有IPv6的服务器访问IPv4，也能让仅具有IPv4的服务器获得IPv6的访问能力。</p>
+<ul>
+<li>为仅IPv6服务器添加IPv4</li>
+</ul>
+<p>原理如图，IPv4的流量均被WARP网卡接管，实现了让IPv4的流量通过WARP访问外部网络。</p>
+<ul>
+<li>为仅IPv4服务器添加IPv6</li>
+</ul>
+<p>原理如图，IPv6的流量均被WARP网卡接管，实现了让IPv6的流量通过WARP访问外部网络。</p>
+<ul>
+<li>双栈服务器置换网络</li>
+</ul>
+<p>有时我们的服务器本身就是双栈的，但是由于种种原因我们可能并不想使用其中的某一种网络，这时也可以通过WARP接管其中的一部分网络连接隐藏自己的IP地址。至于这样做的目的，最大的意义是减少一些滥用严重机房出现验证码的概率；同时部分内容提供商将WARP的落地IP视为真实用户的原生IP对待，能够解除一些基于IP识别的封锁。</p>
+<p>WARP是建立在Cloudflare 1.1.1.1的免费DNS服务器上。从技术上讲，Warp本质上就是一款VPN服务，Warp使用来自1.1.1.1的DNS服务器，并对它们之间的所有流量进行加密。</p>
+<p>通常，当你访问<a target="_blank" rel="noopener" href="http://baidu.com/">http://Baidu.com</a>时，URL会被翻译成网站所在服务器的IP地址，由ISP的DNS服务器托管。当你使用Warp时，Warp将手机上的DNS服务器固定为1.1.1.1。因此，所有请求都转到Cloudflare的安全服务器。</p>
+<p>Warp在此基础上增加了一个额外的流程，使得设备和Cloudflare服务器之间的所有流量都是加密流量。<strong>但Warp是基于WireGuard隧道的UDP协议，中国大陆绝大部分运营商都会对这类流量进行惩罚式、限速式的限制策略，导致Warp在大陆使用上突发很高，但均速很低。(只能用于failover</strong> 😅 再加上Cloudflare的许多IP被国内Block，使得Warp在大陆接近一个不可用的状态。</p>
+<p>Clash是一个开源的多协议代理工具，可以用于实现网络流量的代理和转发。它支持多种代理协议（如Shadowsocks、VMess、Trojan、Socks5等）和路由规则，能够实现灵活的网络流量控制和代理功能。</p>
+<p>当使用 clash 作为系统代理或者直接将浏览器的代理设置为 clash 时, 请求会交给 clash 来处理, 包括 dns 解析, 当然 clash 拿到请求之后, 并不会先 dns 解析 ip, 它会先根据规则一条一条匹配, 如果有命中规则, 则根据相应的规则去处理.</p>
+<p>这里要注意一下 <code>IP-CIDR</code>, 如果后面没有 <code>no-resolve</code>, 则需要 dns 解析 ip, 解析到 ip (可能被污染)后再根据此条进行对比, 如果没命中则进行下一条规则. 如果命中了, 走代理, 则不管它有没有被污染, 请求都会转发到节点服务器; 如果走直连, 则可能会被污染影响. 当然加上 <code>no-resolve</code> 之后, 就会让 clash 不进行 dns 解析, 所以此条 <code>IP-CIDR</code> 的直接 pass 掉, 可以这么说, 只有当浏览器直接对 ip 地址发起请求的时候, <code>IP-CIDR</code> 才会有效果.</p>
+<p>接下来再讨论下手机上的 qx / surge 等工具, 或者 clash 开启了 enhanced mode 后, dns 解析这一块发生的变化.</p>
+<p>由于请求并不是直接交给代理去处理, 所以浏览器需要先构建 dns 查询请求, 请求来到了 qx 或者软路由上面的 clash (透明代理)后, 被它劫持, 它有两种处理方式, redir-host 和 fake-ip, 前者已经被遗弃, 因为前者是要去获取 dns 解析的, dns 解析可能会解析到污染的 ip, 并且大多时候并不需要它进行 dns 解析. 所以 fake-ip 是主流, fake-ip 直接返回一条假的 ip, 并且对 ip 和域名进行了映射关系缓存, 这样浏览器拿到假的 ip 后进行 tcp 连接, 请求再次到达 qx / clash, 被截获后, 找到对应的域名, 接下来就是针对域名的规则匹配.</p>
+<p><strong>trojan</strong>是近些年兴起的网络工具，项目官网 <a target="_blank" rel="noopener" href="https://github.com/trojan-gfw%E3%80%82%E4%B8%8E**%E5%BC%BA%E8%B0%83%E5%8A%A0%E5%AF%86**%E5%92%8C%E6%B7%B7%E6%B7%86%E7%9A%84SS/SSR%E7%AD%89%E5%B7%A5%E5%85%B7%E4%B8%8D%E5%90%8C%EF%BC%8Ctrojan%E5%B0%86%E9%80%9A%E4%BF%A1%E6%B5%81%E9%87%8F%E4%BC%AA%E8%A3%85%E6%88%90%E4%BA%92%E8%81%94%E7%BD%91%E4%B8%8A%E6%9C%80%E5%B8%B8%E8%A7%81%E7%9A%84https%E6%B5%81%E9%87%8F%EF%BC%8C%E4%BB%8E%E8%80%8C%E6%9C%89%E6%95%88%E9%98%B2%E6%AD%A2%E6%B5%81%E9%87%8F%E8%A2%AB%E6%A3%80%E6%B5%8B%E5%92%8C%E5%B9%B2%E6%89%B0%E3%80%82%E5%9C%A8%E6%95%8F%E6%84%9F%E6%97%B6%E6%9C%9F%EF%BC%8C%E5%9F%BA%E6%9C%AC%E4%B8%8A%E5%8F%AA%E6%9C%89**trojan%E5%92%8C">https://github.com/trojan-gfw。与**强调加密**和混淆的SS/SSR等工具不同，trojan将通信流量伪装成互联网上最常见的https流量，从而有效防止流量被检测和干扰。在敏感时期，基本上只有**trojan和</a> <a target="_blank" rel="noopener" href="https://itlanyan.com/v2ray-traffic-mask/">v2ray伪装</a> 能提供稳如狗的体验**。</p>
+<p>想要长期稳定高效的科学上网，socks5 类型的代理基本是必须要掌握的。Clash 支持的代理类型有 <code>ss</code>、<code>vmess</code>、<code>socks5</code>、<code>http</code> 和 <code>snell</code></p>
+<p><strong>SOCKS</strong>是一种<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Internet">Internet</a> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Protocol_(computing)">协议</a>，它通过<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Proxy_server">代理服务器在</a><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Client_(computing)">客户端</a>和<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Server_(computing)">服务器</a>之间交换<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Packet_(information_technology)">网络数据包</a>。<strong>SOCKS5</strong>可选择提供<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Authentication">身份验证</a>，因此只有授权用户才能访问服务器。实际上，SOCKS 服务器将 TCP 连接代理到任意 IP 地址，并提供一种转发 UDP 数据包的方法。</p>
+<p>SOCKS 执行在<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/OSI_model">OSI 模型</a>的第 5 层（<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Session_layer">会话层，</a><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Presentation_layer">表示层</a>和<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Transport_layer">传输层</a>之间的中间层）。SOCKS 服务器接受 TCP 端口 1080 上的传入客户端连接，如<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RFC_(identifier)">RFC</a>  <a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc1928">1928</a>中所定义。</p>
+<p>SOCKS使用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=%E6%8F%A1%E6%89%8B%E5%8D%8F%E8%AE%AE&amp;action=edit&amp;redlink=1">握手协议</a>来通知代理软件其客户端试图进行的SOCKS连接，然后尽可能透明地进行操作，而常规代理可能会解释和重写报头（例如，使用另一种底层协议，例如<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE">FTP</a>；然而，HTTP代理只是将HTTP请求转发到所需的HTTP服务器）。虽然HTTP代理有不同的使用模式，<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE">HTTP CONNECT</a>方法允许转发TCP连接；然而，SOCKS代理还可以转发<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E6%8A%A5%E5%8D%8F%E8%AE%AE">UDP</a>流量（仅SOCKS5），而HTTP代理不能。HTTP代理通常更了解HTTP协议，执行更高层次的过滤（虽然通常只用于GET和POST方法，而不用于CONNECT方法）。</p>
+<p><strong>socks5</strong> 类型的代理服务器在网络层级上是工作于应用层的<strong>会话层</strong>，很多流量都无法代理，因从即便是开了所谓的全局，也不能给游戏加速，毕竟游戏的网络传输一般都是跑在传输层的。<strong>像 Ping 和 Trace 这些 ICMP 命令自然也是无法通过代理的</strong>。（当然也有方法可以用软件强制接管虚拟网卡达到真全局的目的，比如 SSTAP，tun2socks 等等）</p>
+<p>如果客户端和服务器都可以独立发包，但是偶尔发生延迟可以容忍（比如：在线的纸牌游戏，许多MMO类的游戏），那么可考虑使用TCP长连接如果客户端和服务器都可以独立发包，而且无法忍受延迟（比如：大多数的多人动作类游戏，一些MMO类游戏），那么考虑使用UDP加速器原理 加速器的原理很简单，就是UDP代理</p>
+<p><strong>主要难在两点，其一是怎么处理游戏客户端到加速器服务器之间的UDP连接，其二是怎么让游戏客户端去连接这个加速器（一般游戏客户端是没有设置代理服务器的功能的）</strong></p>
+<p>处理UDP有两种思路，一种是协议套娃，将游戏的UDP包外面套一层TCP（UDP over TCP ），到了目的地再把TCP解包成UDP，最后在发送到游戏服务器，返回的数据包也做同样处理；另外一种是伪造TCP（FakeTCP），对UDP数据包加上伪造的TCP包头，让其看起来像是TCP协议，欺骗运营商。</p>
+<p>主动检测<br>
+HTTP所有没有正确结构和密码的连接都将被重定向到预设端点,因此,如果可疑探针连接(或者只是您的粉丝连接到您的博客XD),木马服务器的行为与该端点完全相同(默认情况下)。<br>
+被动检测<br>
+因为流量受到保护TLS(用户有责任使用有效的证书),所以如果你正在访问一个HTTP站点,流量看起来<br>
+是一样的(握手后HTTPS只有一个);如果您没有访问某个站点,那么流量看起来与“保持活动状态”或“保持活动状态“相同。因此,木马还可以绕过ISP限制。RTT TLS HTTP HTTPS WebSocket QoS</p>
+<p><strong>常见端口扫描技术</strong></p>
+<p><strong>3.3.2.1. 全扫描</strong></p>
+<p>扫描主机尝试使用三次握手与目标主机的某个端口建立正规的连接，若成功建立连接，则端口处于开放状态，反之处于关闭状态。</p>
+<p>全扫描实现简单，且以较低的权限就可以进行该操作。但是在流量日志中会有大量明显的记录。</p>
+<p><strong>3.3.2.2. 半扫描</strong></p>
+<p>半扫描也称SYN扫描，在半扫描中，仅发送SYN数据段，如果应答为RST，则端口处于关闭状态，若应答为SYN/ACK，则端口处于监听状态。不过这种方式需要较高的权限，而且现在的大部分防火墙已经开始对这种扫描方式做处理。</p>
+<p><strong>3.3.2.3. FIN扫描</strong></p>
+<p>FIN扫描是向目标发送一个FIN数据包，如果是开放的端口，会返回RST数据包，关闭的端口则不会返回数据包，可以通过这种方式来判断端口是否打开。</p>
+<p>这种方式并不在TCP三次握手的状态中，所以不会被记录，相对SYN扫描要更隐蔽一些。</p>
+<h3 id="HTTPS加密">HTTPS加密</h3>
+<p>是的，HTTPS（Hypertext Transfer Protocol Secure）使用了混合加密机制，包括非对称加密和对称加密，以确保安全的数据传输。</p>
+<p><strong>TLS 1.2 升级成 TLS 1.3，TLS 1.3 大幅度简化了握手的步骤，完成 TLS 握手只要 1 RTT，而且安全性更高。在 TLS 1.2 的握手中，一般是需要 4 次握手，先要通过 Client Hello （第 1 次握手）和 Server Hello（第 2 次握手） 消息</strong>协商<strong>出后续使用的加密算法，再互相交换公钥（第 3 和 第 4 次握手）</strong></p>
+<p>SSL握手的步骤如下：</p>
+<ol>
+<li>SSL或TLS客户端先向服务端发送一个加密通信请求，叫做ClientHello请求。该请求包含以下信息：
+<ul>
+<li>客户端支持的SSL或者TLS版本</li>
+<li>客户端生成的随机数，用于生成后续通信的随机字符串（“对话密钥”）</li>
+<li>客户端支持的加密算法</li>
+</ul>
+</li>
+<li>SSL或TLS服务端收到客户端请求后，向客户端发出响应，叫做ServerHello。该响应包含以下信息：
+<ul>
+<li>服务端从客户端提供的SSL或TLS列表中选择的版本</li>
+<li>Sesstion ID 和 另外生成的随机数</li>
+<li>服务端的数字证书（如果服务端需要用于客户端身份验证的数字证书，则服务端发送一个客户端证书请求，其中包含受支持的证书类型列表和可接受的认证机构(CAs)的专有名称。）</li>
+<li>确认使用的加密算法</li>
+</ul>
+</li>
+<li>客户端收到服务端响应后，首先校验服务端发来的数字证书决定是否继续通信。</li>
+<li><strong>TLS 第三次握手</strong>    客户端验证完证书后，认为可信则继续往下走。 接着，客户端就会生成一个新的<strong>随机数 (<em>pre-master</em>)</strong>，用服务器的 RSA 公钥加密该随机数，通过「<strong>Client Key Exchange</strong>」消息传给服务端。 服务端收到后，用 RSA 私钥解密，得到客户端发来的随机数 (pre-master)。 至此，<strong>客户端和服务端双方都共享了三个随机数，分别是 Client Random、Server Random、pre-master</strong>。 于是，双方根据已经得到的三个随机数，生成<strong>会话密钥（Master Secret）</strong>，它是对称密钥，用于对后续的 HTTP 请求/响应的数据加解密。 生成完「会话密钥」后，然后客户端发一个「<strong>Change Cipher Spec</strong>」，告诉服务端开始使用加密方式发送消息。</li>
+<li>如果服务端发送了一个客户端证书请求，客户端将会发送一个用客户端私钥加密的随机字符串和客户端的数字证书，或者没有数字证书的警告。在某些强制客户端证书的实现中，如果客户端没有数字证书，则握手会失败.</li>
+<li>服务端接受并验证客户端证书</li>
+<li>客户端向服务端发送一条完成的消息，该消息使用密钥加密，表示握手的客户端部分已经完成。</li>
+<li>服务端向客户端发送一条完成的消息，该消息使用密钥加密，表示握手的服务端部分已经完成</li>
+<li>在SSL或TLS会话期间，服务端和客户端现在可以交换使用共享密钥对称加密的消息</li>
+</ol>
+<p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e8136f52-d35d-46c6-964e-ab05e6590e71/Untitled.png" alt="Untitled"></p>
+<p>A rainbow table is a precomputed table of passwords and their hashes,</p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Salt_(cryptography)">彩虹表对包含大量盐</a>的单向哈希无效。例如，考虑使用以下函数生成的密码哈希（其中“ + ”是<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Concatenation">串联</a>运算符）：</p>
+<p><code>saltedhash(password) = hash(password + salt)</code></p>
+<p>要么</p>
+<p><code>saltedhash(password) = hash(hash(password) + salt)</code></p>
+<p>salt 值不是秘密的，可以随机生成并与密码哈希一起存储。大盐值通过确保每个用户的密码被唯一地散列来防止预计算攻击，包括彩虹表。这意味着具有相同密码的两个用户将具有不同的密码哈希值（假设使用不同的盐）。为了成功，攻击者需要为每个可能的盐值预先计算表。salt 必须足够大，否则攻击者可以为每个 salt 值制作一个表。对于使用 12 位盐的旧<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Crypt_(C)">Unix 密码，这将需要 4096 个表，这会显着增加攻击者的成本，但对于 TB 硬盘驱动器来说并非不切实际。</a><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Crypt_(C)#SHA2-based_scheme">SHA2-crypt</a>和<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Crypt_(C)#Blowfish-based_scheme">bcrypt</a>方法——用于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linux">Linux</a>、<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/BSD">BSD</a> Unixes 和<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Solaris_(operating_system)">Solaris</a> — 有 128 位的盐。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Rainbow_table#cite_note-alexander-4">[4]</a>这些较大的盐值使得针对这些系统的预计算攻击对于几乎任何长度的密码都不可行。即使攻击者可以每秒生成一百万张表，他们仍然需要数十亿年才能为所有可能的盐生成表。 Or by key  strengthening</p>
+<p>Injection—     Could try to “sanitise” (clean/make safe) data input, but there is a better solution. • Do not create SQL (or similar statements) by adding together strings. • Can use special routines designed to produce these statements. • Languages designed for the web contain functions to help with this. • In Java, PreparedStatement is a class to do this.</p>
+<h3 id="Socket">Socket</h3>
+<p>HTTP是构建在TCP协议之上的，而TCP可以使用Socket来实现网络通信。基于这一点，可以使用Socket编程来创建HTTP客户端或服务器。<strong>Socket API提供了对底层网络通信的访问，可以使用不同的编程语言（如Python、Java、C++等）的Socket库来实现HTTP客户端和服务器</strong>。Socket APi 也可以实现UDP通信</p>
+<p>对于HTTP客户端：</p>
+<ul>
+<li>客户端可以使用Socket建立与服务器的TCP连接。</li>
+<li>客户端通过Socket发送HTTP请求（如GET、POST等）给服务器。</li>
+<li>服务器接收到请求后，通过Socket发送HTTP响应给客户端。</li>
+<li>客户端通过Socket接收服务器的响应数据。</li>
+</ul>
+<p>对于HTTP服务器：</p>
+<ul>
+<li>服务器可以使用Socket监听指定端口，接收客户端的连接请求。</li>
+<li>服务器接收到连接后，创建Socket连接到客户端。</li>
+<li>服务器通过Socket接收来自客户端的HTTP请求。</li>
+<li>服务器处理请求，并通过Socket发送HTTP响应给客户端。</li>
+</ul>
+<p>分层模型中的精华思想之一是封装（Encapsulation）。在网络协议的分层设计中，封装指的是<strong>每一层向上一层提供服务</strong>时，将上一层的数据进行封装，隐藏了底层协议的实现细节，形成一个黑盒子，<strong>上层协议不需要了解下层协议的任何细节</strong>。封装使得分层模型中的每一层都像一个黑盒，只暴露出相应的接口和功能，而隐藏了内部实现的细节，这样有利于提高系统的可靠性、可维护性和可扩展性，同时促进了协议的标准化和互操作性。</p>
+<p>一个是 fread/fwrite 读写，一个是 recv 和 send 读写（在 Linux 下你用 read 和 write 的话，文件和 socket 两者都能读写，只是无法直接设置一些特殊的 flag）</p>
+<p>一般的文件以及 socket 客户端读写的都是数据，而 socket 服务端 accept 读出来的是可以读写的客户端文件。</p>
+<ol>
+<li><strong>监听套接字 (Listening Socket)</strong>：这是服务器端的套接字，通过调用**<code>bind</code><strong>、</strong><code>listen</code><strong>和</strong><code>accept</code><strong>函数来建立。监听套接字用于等待客户端的连接请求，当客户端请求连接时，</strong><code>accept</code>**函数会返回一个新的已完成连接套接字。</li>
+<li><strong>已完成连接套接字 (Connected Socket)</strong>：这是服务器端的套接字，也是客户端的套接字。它们通过**<code>connect</code><strong>函数（客户端）或</strong><code>accept</code><strong>函数（服务器端）建立连接后，用于实际的数据传输。这些套接字可以通过</strong><code>read</code><strong>和</strong><code>write</code>**函数来进行数据的读取和写入。</li>
+</ol>
+<p>成功连接建立之后，双方开始通过 read 和 write 函数来读写数据，就像往一个文件流里面写东西一样。</p>
+<p>严格来讲，“网关”是一个逻辑概念，【不要】把它当成具体的网络设备。充当“网关”的东东，可能是：路由器 or XX层交换机 or XX层防火墙 or 代理服务器 …</p>
+<p>“网关”也分不同的层次。如果不加定语，通常指的是“3层网关”（网络层网关）。列几种比较常见的，供参考：</p>
+<p>路由器充当网关——3层（网络层）</p>
+<p>3层交换机充当网关——3层（网络层）</p>
+<p>4层交换机充当网关——4层（传输层）</p>
+<p>应用层防火墙充当网关——7层（应用层）</p>
+<p>代理服务器充当网关——（取决于代理的层次，参见前一个小节）</p>
+<p>“隧道协议”可以做到更灵活的包裹——既可以对层次相隔很远的协议进行包裹，也可以对同一层的协议进行包裹，甚至可以“倒挂”——所谓的“倒挂”就是让【上】层反过来包裹【下】层。</p>
+<p>举例：</p>
+<p>俺曾经写过一篇《<a target="_blank" rel="noopener" href="https://program-think.blogspot.com/2019/04/Proxy-Tricks.html">如何让【不支持】代理的网络软件，通过代理进行联网（不同平台的 N 种方法）</a>》，其中介绍了“HTTP 代理”的两种模式：“转发模式 ＆ 隧道模式”。对于“HTTP 代理”的隧道模式，可以实现【TCP over HTTP】（把 TCP 协议打包到 HTTP 协议内部）</p>
+<p>##<strong>Network层</strong></p>
+<p>网络层的两种交换技术：电路交换（有连接） VS 分组交换（无连接）。</p>
+<p>IP/ARP 是根据IP地址获取MAC地址的一种协议。/ICMP</p>
+<ol>
+<li><strong>IP地址：</strong> IP协议使用IP地址来唯一标识网络上的每个设备。IPv4和IPv6是两个常见的IP地址版本。IPv4使用32位地址，而IPv6使用128位地址，提供了更广泛的地址空间以应对互联网的增长需求。</li>
+<li><strong>面向无连接：</strong> IP是一种面向无连接的协议，这意味着每个数据包（或数据报）都是独立的，不需要在通信之前建立连接。每个数据包独立传输，因此不会维护通信状态。</li>
+<li><strong>不可靠传输：</strong> IP提供了不可靠的传输，这意味着它不保证数据包的传输顺序、可靠性或交付。数据包可能会在传输过程中丢失、重复、延迟或乱序，因此上层协议（如TCP）负责处理可靠性和顺序问题。</li>
+</ol>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/ea503cf6-9325-47ab-9fb3-3e33e40583ef/b91e7cce-3503-4dad-b95e-3b5a338d858a/Untitled.png" alt="Untitled"></p>
+<p>根据RFC 791，IP地址是一个32位的二进制数字，通常表示为四个八位字节的点分十进制表示法，<a target="_blank" rel="noopener" href="http://xn--xxx-eo8e.xxx.xxx.xxx">如xxx.xxx.xxx.xxx</a>。</p>
+<ol>
+<li><strong>A类地址：</strong>
+<ul>
+<li>A类地址的第一个字节的最高位始终为0，这表示A类地址的范围是1.0.0.0到126.0.0.0。</li>
+<li>这类地址通常用于大型网络，因为其范围允许约1670万个主机地址。</li>
+</ul>
+</li>
+<li><strong>B类地址：</strong>
+<ul>
+<li>B类地址的前两个字节的最高两位始终为10，这表示B类地址的范围是128.0.0.0到191.255.0.0。</li>
+<li>B类地址通常用于中等规模的网络，可容纳约6.5万个主机地址。</li>
+</ul>
+</li>
+<li><strong>C类地址：</strong>
+<ul>
+<li>C类地址的前三个字节的最高三位始终为110，这表示C类地址的范围是192.0.0.0到223.255.255.0。</li>
+<li>C类地址通常用于小型网络，每个C类网络可以容纳约254个主机地址。</li>
+</ul>
+</li>
+</ol>
+<p>在实际网络中，已经有许多其他IP地址分配方案和规则，包括子网掩码、无类域间路由（CIDR）等，这些使得IP地址的分配更加灵活和高效。所以，不再严格使用A、B、C类地址来划分网络规模。</p>
+<p>VLSM(<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8F%AF%E5%8F%98%E9%95%BF%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81/9163142">可变长子网掩码</a>) 是为了有效的使用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/15758573">无类别域间路由</a>（CIDR）和路由汇聚(route summary)来控制<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%B7%AF%E7%94%B1%E8%A1%A8/2707408">路由表</a>的大小，它是网络管理员常用的IP寻址技术</p>
+<p>CIDR无类网络是一种相对于有类网络的网络，无类网络IP地址的掩码是变长的。<br>
+在有类网络的基础上，拿出一部分主机ID作为子网ID。<br>
+例如：<br>
+IP地址为192.168.250.44 子网掩码不能是小于24位。<br>
+因为这是一个C类地址（前3Bytes是网络号），子网掩码只能大于24位。<br>
+而掩码255.255.248.0（21位）是不符合规定的。<br>
+·<br>
+如果一个网络中的主机有100台，<br>
+那么，可以用子网掩码/25来划分这个C类网络（“192.168.250.0/24”）：<br>
+划分成192.168.250.0/25 和192.168.250.128/25两个子网。<br>
+—主机192.168.250.44/25 属于子网192.168.250.0/25。</p>
+<p>**路由器用于不同网络之间的通信，进行跨网络的路由决策，而交换机用于内部网络的局域网络通信，将数据帧从一个接口转发到另一个接口。**在许多网络中，路由器和交换机通常是一起使用的，以实现内部通信和与外部网络的连接。</p>
+<p><strong>路由器（Router）</strong>：</p>
+<ol>
+<li><strong>网络层设备：</strong> 路由器位于OSI模型的网络层，负责在不同网络之间进行数据包的转发和路由选择。</li>
+<li><strong>跨网络通信：</strong> 路由器用于将数据包从一个网络传送到另一个网络，通常在不同IP子网之间执行路由操作。</li>
+<li><strong>决策基于IP地址：</strong> 路由器的路由决策是基于目标IP地址进行的，它查找路由表以确定数据包应该被转发到哪个接口或下一个路由器。</li>
+<li><strong>网络分割和隔离：</strong> 路由器可以分隔不同的网络，提供网络隔离和安全性。</li>
+<li><strong>网络地址转换（NAT）：</strong> 一些路由器支持NAT，允许多个设备共享一个公共IP地址。</li>
+</ol>
+<p><strong>交换机（Switch）</strong>：</p>
+<ol>
+<li><strong>数据链路层设备：</strong> 交换机位于OSI模型的数据链路层，主要用于在局域网络（LAN）内的设备之间进行数据帧的交换。</li>
+<li><strong>内部局域网络通信：</strong> 交换机用于在同一网络内的设备之间传输数据，通常在相同IP子网内工作。</li>
+<li><strong>决策基于MAC地址：</strong> 交换机的决策是基于目标设备的MAC地址进行的，它使用MAC地址表来确定数据帧应该被发送到哪个接口。</li>
+<li><strong>高性能：</strong> 交换机通常提供高性能的数据交换，因为它们在硬件级别进行操作，不需要进行复杂的路由选择。</li>
+<li><strong>无状态：</strong> 交换机通常是无状态设备，不存储关于通信的历史信息，而路由器可能会维护路由表和状态信息。</li>
+</ol>
+<h3 id="爬">爬</h3>
+<p><a target="_blank" rel="noopener" href="https://websec.readthedocs.io/zh/latest/info/site.html">https://websec.readthedocs.io/zh/latest/info/site.html</a></p>
+<p>robots.txt 也不是强制的规范，而是一种内容网站和搜索引擎之间博弈的产物。对于一个搜索引擎来说，遵守或者不遵守只关乎你作为一个搜索引擎的声誉，大多数时候还是遵守的，比如说百度上至今不能搜索淘宝宝贝，因为淘宝主动屏蔽了百度。内容站点也不是啥<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E7%99%BD%E6%9C%88%E5%85%89&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22answer%22%2C%22sourceId%22%3A2081752804%7D">白月光</a>，无非也是想要<strong>搜索引擎带来的流量，但是又不想爬虫占用服务器资源</strong>。</p>
+<p><a target="_blank" rel="noopener" href="http://zhihu.com">zhihu.com</a>/robots.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">User-agent: Googlebot</span><br><span class="line">Disallow: /appview/</span><br><span class="line">Disallow: /login</span><br><span class="line">Disallow: /logout</span><br><span class="line">Disallow: /resetpassword</span><br><span class="line">Disallow: /terms</span><br><span class="line">Disallow: /search</span><br><span class="line">Allow: /search-special</span><br><span class="line">Disallow: /notifications</span><br><span class="line">Disallow: /settings</span><br><span class="line">Disallow: /inbox</span><br><span class="line">Disallow: /admin_inbox</span><br><span class="line">Disallow: /*?guide*</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>数据提取：</p>
+<ol>
+<li><strong>请求发送与响应获取</strong>：爬虫程序通过发送 HTTP/HTTPS 请求获取网页内容，通常使用库或框架（如Python的requests、Scrapy等）来发送请求，并接收并解析网页服务器返回的响应。</li>
+<li><strong>网页解析与DOM操作</strong>：爬虫需要解析 HTML 或 XML 格式的网页内容以提取所需的信息。通常使用解析器（如Beautiful Soup、lxml等）来解析网页结构，并使用 XPath 或 CSS 选择器等技术定位和提取所需的数据。</li>
+<li><strong>动态网页抓取</strong>：针对使用 JavaScript 动态加载内容的网页，爬虫需要模拟浏览器行为，如使用无头浏览器（Headless Browser）或类似工具（如Selenium）来渲染 JavaScript，并获取动态生成的内容。 <strong>模拟浏览器行为</strong>：对于需要处理动态内容或使用 JavaScript 渲染的网页，模拟浏览器行为更有优势，甚至可能需要处理 WebSocket 连接。</li>
+<li>并发 分布式： ip代理池</li>
+<li></li>
+</ol>
+<p>反爬虫技术：</p>
+<ol>
+<li><strong>动态内容生成</strong>：网站使用动态生成内容或者 Ajax 请求，这使得爬虫难以捕获完整的页面数据。</li>
+<li><strong>网站结构变化</strong>：经常更改网站的页面结构、URL格式或数据的位置，使得爬虫难以获取持续准确的数据。</li>
+<li><strong>使用登录验证</strong>：限制对需要用户登录的内容的访问，要求爬虫模拟登录行为才能获取数据。</li>
+<li><strong>robots.txt 文件</strong>：用于向搜索引擎爬虫提供指导，告知哪些页面可以被索引，哪些页面不应该被索引。</li>
+<li><strong>IP 黑名单</strong>：阻止来自特定IP地址的请求，这些IP地址可能是已知的恶意爬虫。</li>
+<li><strong>用户代理检测</strong>：识别请求中的用户代理（User-Agent），并阻止或限制来自爬虫的请求。</li>
+<li><strong>验证码</strong>：通过向用户展示验证码，要求用户进行验证以确认其身份，从而阻止自动化爬虫。</li>
+<li><strong>频率限制</strong>：限制对网站的访问频率，例如限制某个IP地址或用户在特定时间段内的请求次数。</li>
+<li><strong>JavaScript 加载</strong>：某些爬虫不支持JavaScript，网站可以利用JavaScript动态加载内容，使得爬虫难以获取完整的页面内容。</li>
+</ol>
+<p>Service worker 本质上充当 Web 应用程序、浏览器与网络（可用时）之间的代理服务器。这个 API 旨在创建有效的离线体验，它会拦截网络请求并根据网络是否可用来采取适当的动作、更新来自服务器的的资源。它还提供入口以推送通知和访问后台同步 API。</p>
+<p>Service workers 也可以用来做这些事情：</p>
+<ul>
+<li>后台数据同步</li>
+<li>响应来自其他源的资源请求</li>
+<li>集中接收计算成本高的数据更新，比如地理位置和陀螺仪信息，这样多个页面就可以利用同一组数据</li>
+<li>在客户端进行 CoffeeScript、LESS、CJS/AMD 等模块编译和依赖管理（用于开发目的）</li>
+<li>后台服务钩子</li>
+<li>自定义模板用于特定 URL 模式</li>
+<li>性能增强，比如预取用户可能需要的资源，比如相册中的后面数张图片</li>
+</ul>
+<p>未来 service worker 能够用来做更多使 web 平台接近原生应用的事。值得关注的是，其他标准也能并且将会使用 service worker，例如：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/slightlyoff/BackgroundSync">后台同步</a>：启动一个 service worker 即使没有用户访问特定站点，也可以更新缓存</li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Push_API">响应推送</a>：启动一个 service worker 向用户发送一条信息通知新的内容可用</li>
+</ul>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        Author:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Stan ke</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        Link:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://stan370.github.io/2025/01/06/security/">https://stan370.github.io/2025/01/06/security/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        Reprint policy:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    All articles in this blog are used except for special statements
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    reprint policy. If reproduced, please indicate source
+                    <a href="/about" target="_blank">Stan ke</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                                    <span class="chip bg-color">网络安全</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                    </ul>
+                    
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/reward/wechat.JPG" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        TBD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2025/01/07/Token/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/18.jpg" class="responsive-img" alt="WebAPP怎么保存状态？ Token设计与选型">
+                        
+                        <span class="card-title">WebAPP怎么保存状态？ Token设计与选型</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2025-01-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%B7%A5%E7%A8%8B/" class="post-category">
+                                    计算机工程
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">计算机基础</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">
+                        <span class="chip bg-color">分布式系统</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">网络安全</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2024/12/02/surveillance/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/13.jpg" class="responsive-img" alt="你的网络你做主？—— 浅谈宽带限制上传、TR069 与 PCDN 那些事">
+                        
+                        <span class="card-title">你的网络你做主？—— 浅谈宽带限制上传、TR069 与 PCDN 那些事</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2024-12-02
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Stan ke
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">网络安全</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+
+    <div class="container row center-align"
+         style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2025</span>
+            
+            <a href="/about" target="_blank">Stan ke</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/Stan370/stan370.github.io" target="_blank">Matery</a>
+            <br>
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:&nbsp;<span
+                        class="white-color">293.4k</span>
+            <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;Total visits:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;Total visitors:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            <br>
+            <!-- Matomo -->
+            <script>
+                var _paq = window._paq = window._paq || [];
+                /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+                _paq.push(['trackPageView']);
+                _paq.push(['enableLinkTracking']);
+                (function() {
+                    var u="https://your-matomo-instance.com/";
+                    _paq.push(['setTrackerUrl', u+'matomo.php']);
+                    _paq.push(['setSiteId', '1']);
+                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+                })();
+            </script>
+            <!-- End Matomo Code -->
+            <!-- Privacy Notice -->
+            <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+                <i class="fas fa-shield-alt"></i> This site uses Matomo for privacy-friendly analytics.
+            </div>
+            <!-- 运行天数提醒. -->
+            
+                <span id="sitetime"> Loading ...</span>
+                <script>
+                    var calcSiteTime = function () {
+                        var seconds = 1000;
+                        var minutes = seconds * 60;
+                        var hours = minutes * 60;
+                        var days = hours * 24;
+                        var years = days * 365;
+                        var today = new Date();
+                        var startYear = "2019";
+                        var startMonth = "6";
+                        var startDate = "28";
+                        var startHour = "0";
+                        var startMinute = "0";
+                        var startSecond = "0";
+                        var todayYear = today.getFullYear();
+                        var todayMonth = today.getMonth() + 1;
+                        var todayDate = today.getDate();
+                        var todayHour = today.getHours();
+                        var todayMinute = today.getMinutes();
+                        var todaySecond = today.getSeconds();
+                        var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                        var diff = t2 - t1;
+                        var diffYears = Math.floor(diff / years);
+                        var diffDays = Math.floor((diff / days) - diffYears * 365);
+
+                        // 区分是否有年份.
+                        var language = 'en';
+                        if (startYear === String(todayYear)) {
+                            document.getElementById("year").innerHTML = todayYear;
+                            var daysTip = 'This site has been running for ' + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                daysTip = '本站已运行 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                daysTip = '本站已運行 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = daysTip;
+                        } else {
+                            document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                            var yearsAndDaysTip = 'This site has been running for ' + diffYears + ' years and '
+                                + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                yearsAndDaysTip = '本站已运行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                yearsAndDaysTip = '本站已運行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+                        }
+                    }
+
+                    calcSiteTime();
+                </script>
+            
+            <br>
+            
+        </div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+  <div class="modal-content">
+    <div class="search-header">
+      <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span  >
+      <input
+        type="search"
+        id="searchInput"
+        name="s"
+        placeholder="Please enter a search keyword"
+        class="search-input"
+      />
+    </div>
+    <div id="searchResult"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems, {
+        dismissible: true,    // Allow modal to be dismissed by clicking outside
+        preventScrolling: false, // Allow scrolling while modal is open
+        opacity: 0.5,        // Opacity of modal background
+        inDuration: 250,     // Transition in duration
+        outDuration: 250,    // Transition out duration
+        onOpenStart: function() {
+            document.body.style.overflow = 'auto';
+        },
+        onCloseEnd: function() {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Get modal instance
+    const searchModal = document.getElementById("searchModal");
+    const modalInstance = M.Modal.getInstance(searchModal);
+    
+    // Only open modal when search button is clicked
+    document.getElementById("openSearchBtn")?.addEventListener("click", function() {
+        modalInstance.open();
+        searchInput.focus(); 
+    });
+    function closeSearchModal() {
+        modalInstance.close();
+    }
+
+    // Handle clicks outside modal
+    document.addEventListener("click", function(event) {
+        const modalContent = searchModal.querySelector(".modal-content");
+        // Check if click is outside modal content
+        if (event.target === searchModal && !modalContent.contains(event.target)) {
+            closeSearchModal();
+        }
+    });
+
+    // Add ESC key to close modal
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape" && searchModal.classList.contains('open')) {
+            closeSearchModal();
+        }
+    });
+
+    var searchFunc = function (path, search_id, content_id) {
+      "use strict";
+      function debounce(func, wait) {
+        let timeout;
+        return function () {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, arguments), wait);
+        };
+      }
+      $.ajax({
+        url: path,
+        dataType: "json",
+        success: function (jsonData) {
+          // 获取所有文章数据
+          console.log(jsonData);
+          var datas = jsonData.map(function (post) {
+            return {
+              title: post.title,
+              content: post.content,
+              url: post.url,
+            };
+          });
+
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+
+          // 搜索输入监听
+          $input.addEventListener(
+            "input",
+            debounce(function () {
+              var str = '<ul class="search-result-list">';
+              var keywords = this.value
+                .trim()
+                .toLowerCase()
+                .split(/[\s\-]+/);
+              $resultContent.innerHTML = "";
+              if (this.value.trim().length <= 0) {
+                return;
+              }
+              // Perform local searching
+              datas.forEach(function (data) {
+                var isMatch = true;
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content
+                  .trim()
+                  .replace(/<[^>]+>/g, "")
+                  .toLowerCase();
+                var data_url =
+                  data.url.indexOf("/") === 0 ? data.url : "/" + data.url;
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                console.log(data_title, data_content, data_url);
+                if (data_title !== "" && data_content !== "") {
+                  for (let i = 0; i < keywords.length; i++) {
+                    let keyword = keywords[i];
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+
+                    if (index_title < 0 && index_content < 0) {
+                      isMatch = false;
+                      break; // 直接退出关键词遍历
+                    } else {
+                      if (index_content < 0) {
+                        index_content = 0;
+                      }
+                      if (i === 0) {
+                        first_occur = index_content;
+                      }
+                    }
+                  }
+                }
+
+                // Show search results
+                if (isMatch) {
+                  str += `<li>
+                <a href="${data_url}" class="search-result-title">${data_title}</a>`;
+                  var content = data.content.trim().replace(/<[^>]+>/g, "");
+                  if (first_occur >= 0) {
+                    var start = Math.max(0, first_occur - 20);
+                    var end = Math.min(content.length, first_occur + 80);
+                    var match_content = content.substring(start, end);
+
+                    keywords.forEach(function (keyword) {
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(
+                        regS,
+                        '<em class="search-keyword">$&</em>'
+                      );
+                    });
+
+                    str += `<p class="search-result">${match_content}...</p>`;
+                  }
+                  str += "</li>";
+                }
+              });
+
+              str += "</ul>";
+              $resultContent.innerHTML = str;
+            }, 300)
+          ); // 设置 300 毫秒延迟
+        },
+        error: function (xhr, status, error) {
+          console.error("Search failed:", error);
+          document.getElementById(content_id).innerHTML =
+            '<p class="search-error">Search failed to load. Please try again.</p>';
+        },
+      });
+    };
+
+    // 初始化搜索
+    searchFunc('/search.json', "searchInput", "searchResult");
+  });
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/js/matery.js"></script>
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/clicklove.js" async="async"></script>
+    <script async src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

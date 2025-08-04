@@ -1,0 +1,2124 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="理解数据库系统, StanBlog">
+    <meta name="description" content="Database
+数据库是一个存储数据的系统，它可以存储大量的数据，并且能够高效地检索这些数据。数据库中的数据被组织成表格的形式，这些表格称为表。表中的每一行代表一个记录，每一列代表一个字段。
+
+对于数据库而言，重要的不是数据量，而是当数据">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+    <title>理解数据库系统 | StanBlog</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/atom.xml" title="StanBlog" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3592614110969127"
+     crossorigin="anonymous"></script>
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">StanBlog</span>
+                </a>
+            </div>
+            
+<style>
+  #openSearchBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+#openSearchBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+  #searchIcon {
+    color: white;
+  }
+</style>
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>Index</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>Tags</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>Categories</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>Archives</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>About</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>Contact</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <button id="openSearchBtn" type="button" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </button>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">StanBlog</div>
+        <div class="logo-desc">
+            
+            A popular long-form, stick-figure-illustrated blog about almost everything. Material Themes / GitHub Pages 个性化定制的Hexo-Matery主题 
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			Index
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			Tags
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			Categories
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			Archives
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			About
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			Contact
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Stan370/stan370.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Stan370/stan370.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/featureimages/db.png')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">理解数据库系统</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">
+                                <span class="chip bg-color">数据库</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    2024-08-20
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
+                    17k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
+                    61 Min
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1>Database</h1>
+<p>数据库是一个存储数据的系统，它可以存储大量的数据，并且能够高效地检索这些数据。数据库中的数据被组织成表格的形式，这些表格称为表。表中的每一行代表一个记录，每一列代表一个字段。</p>
+<blockquote>
+<p>对于数据库而言，重要的不是数据量，而是当数据量增加时运算如何增加。时间复杂度用来检验某个算法处理一定量的数据要花多长时间，时间复杂度不会给出确切的运算次数，但是给出的是一种理念。</p>
+</blockquote>
+<p><strong>根据数据模型分类：</strong></p>
+<p><strong>关系型数据库（RDBMS）</strong>：</p>
+<ul>
+<li>使用表格（表）和行列结构存储数据。</li>
+<li>数据以严格的结构（模式）存在，具有预定义的模式（Schema）。</li>
+<li>常见的关系型数据库包括 MySQL、PostgreSQL、Oracle 和 SQL Server 等。</li>
+</ul>
+<p><strong>非关系型数据库（NoSQL）</strong>：</p>
+<p>键值（Key-Value）数据库<br>
+概述：键值数据库就像在传统语言中使用的哈希表。你可以通过key来添加、查询或者删除数据，鉴于使用主键访问，所以会获得不错的性能及扩展性。</p>
+<p>产品：Riak、Redis、Memcached、Amazon’s Dynamo、Project Voldemort</p>
+<p>适用的场景：</p>
+<p><strong>储存用户信息，比如会话、配置文件、参数、购物车等等。这些信息一般都和ID（键）挂钩，这种情景下键值数据库是个很好的选择。</strong></p>
+<p>不适用场景</p>
+<p>需要通过值来查询。Key-Value数据库中根本没有通过值查询的途径</p>
+<p>需要储存数据之间的关系。在Key-Value数据库中不能通过两个或以上的键来关联数据。</p>
+<p>需要事务的支持。在Key-Value数据库中故障产生时不可以进行回滚。</p>
+<p>二、 面向文档（Document-Oriented）数据库<br>
+概述：面向文档数据库会将数据以文档的形式储存。每个文档都是自包含的数据单元，是一系列数据项的集合。<br>
+每个数据项都有一个名称与对应的值，值既可以是简单的数据类型，如字符串、数字和日期等；也可以是复杂的类型，如有序列表和关联对象。<br>
+数据存储的最小单位是文档，同一个表中存储的文档属性可以是不同的，数据可以使用XML、JSON或者JSONB等多种形式存储。</p>
+<p>产品：MongoDB、CouchDB、RavenDB</p>
+<p>适用的场景</p>
+<p>日志。企业环境下，每个应用程序都有不同的日志信息。Document-Oriented数据库并没有固定的模式，所以我们可以使用它储存不同的信息。</p>
+<p>分析。鉴于它的弱模式结构，不改变模式下就可以储存不同的度量方法及添加新的度量。</p>
+<p>不适用场景</p>
+<p>在不同的文档上添加事务。Document-Oriented数据库并不支持文档间的事务，如果对这方面有需求则不应该选用这个解决方案。</p>
+<p>三、 列存储数据库<br>
+概述：列存储数据库将数据储存在列族中，一个列族存储经常被一起查询的相关数据。<br>
+<strong>举个例子，如果我们有一个Person类，我们通常会一起查询他们的姓名和年龄而不是薪资。这种情况下，姓名和年龄就会被放入一个列族中，而薪资则在另一个列族中。</strong></p>
+<p>产品：Cassandra、HBase</p>
+<p>有谁在使用：Ebay （Cassandra）、Instagram （Cassandra）、NASA （Cassandra）、Twitter （Cassandra and HBase）、Facebook （HBase）、Yahoo!（HBase）</p>
+<p>适用的场景</p>
+<p>日志。因为我们可以将数据储存在不同的列中，每个应用程序可以将信息写入自己的列族中。</p>
+<p>博客平台。我们储存每个信息到不同的列族中。举个例子，标签可以储存在一个，类别可以在一个，而文章则在另一个。</p>
+<p>不适用场景</p>
+<p>如果我们需要ACID事务。Vassandra就不支持事务。</p>
+<p>原型设计。如果我们分析Cassandra的数据结构，我们就会发现结构是基于我们期望的数据查询方式而定。在模型设计之初，我们根本不可能去预测它的查询方式，而一旦查询方式改变，我们就必须重新设计列族。</p>
+<p>四、 图（Graph-Oriented）数据库<br>
+概述：图数据库允许我们将数据以图的方式储存。实体会被作为顶点，而实体之间的关系则会被作为边。<br>
+比如我们有三个实体，Steve Jobs、Apple和Next，则会有两个“Founded by”的边将Apple和Next连接到Steve Jobs。</p>
+<p>产品：Neo4J、Infinite Graph、OrientDB</p>
+<p><strong>NoSQL 不适合处理多对多的场景，SQL 不适合节点的数据类型多变，且不支持递归的关系查找，关系也没有属性附着</strong></p>
+<p><strong>根据用途分类：</strong></p>
+<p><strong>事务处理数据库（OLTP）</strong>：</p>
+<ul>
+<li>用于处理日常的交易和操作，例如在线交易处理、电子商务等。</li>
+<li>需要快速读写、维护数据的一致性和完整性。</li>
+<li>常见的关系型数据库常用于 OLTP。</li>
+</ul>
+<p><strong>在线分析处理数据库（OLAP）</strong>：</p>
+<ul>
+<li>用于分析大量数据，支持复杂的查询和数据分析。</li>
+<li>重视对数据的高效读取和汇总，用于决策支持和报告。</li>
+<li>数据仓库和一些大数据平台通常用于 OLAP。</li>
+</ul>
+<p>OLTP vs OLAP</p>
+<h2 id="Mysql">Mysql</h2>
+<p><img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/SQL.png" alt="sql"></p>
+<p>MySQL 的架构共分为两层：<strong>Server 层和存储引擎层</strong>，</p>
+<ul>
+<li><strong>Server 层负责建立连接、分析和执行 SQL</strong>。MySQL 大多数的核心功能模块都在这实现，主要包括连接器，查询缓存、解析器、预处理器、优化器、执行器等。另外，所有的内置函数（如日期、时间、数学和加密函数等）和所有跨存储引擎的功能（如存储过程、触发器、视图等。）都在 Server 层实现。</li>
+<li><strong>存储引擎层负责数据的存储和提取</strong>。支持 InnoDB、MyISAM、Memory 等多个存储引擎，不同的存储引擎共用一个 Server 层。现在最常用的存储引擎是 InnoDB，从 MySQL 5.5 版本开始， InnoDB 成为了 MySQL 的默认存储引擎。我们常说的索引数据结构，就是由存储引擎层实现的，不同的存储引擎支持的索引类型也不相同，比如 InnoDB 支持索引类型是 B+树 ，且是默认使用，也就是说在数据表中创建的主键索引和二级索引默认使用的是 B+ 树索引。</li>
+</ul>
+<p>执行一条 SQL 查询语句，期间发生了什么？</p>
+<ul>
+<li>连接器：建立连接，管理连接、校验用户身份；</li>
+<li>查询缓存：查询语句如果命中查询缓存则直接返回，否则继续往下执行。MySQL 8.0 已删除该模块；</li>
+<li>解析 SQL，通过解析器对 SQL 查询语句进行词法分析、语法分析，然后构建语法树，方便后续模块读取表名、字段、语句类型；</li>
+<li>执行 SQL：执行 SQL 共有三个阶段：
+<ul>
+<li>预处理阶段：检查表或字段是否存在；将 <code>select *</code> 中的 `` 符号扩展为表上的所有列。</li>
+<li>优化阶段：基于查询成本的考虑， 选择查询成本最小的执行计划；</li>
+<li>执行阶段：根据执行计划执行 SQL 查询语句，从存储引擎读取记录，返回给客户端；</li>
+</ul>
+</li>
+</ul>
+<p>连接的过程需要先经过 TCP 三次握手，因为 MySQL 是基于 TCP 协议进行传输的</p>
+<blockquote>
+<p>怎么解决长连接占用内存的问题？</p>
+</blockquote>
+<p>有两种解决方式。</p>
+<p>第一种，<strong>定期断开长连接</strong>。既然断开连接后就会释放连接占用的内存资源，那么我们可以定期断开长连接。</p>
+<p>第二种，<strong>客户端主动重置连接</strong>。MySQL 5.7 版本实现了 <code>mysql_reset_connection()</code> 函数的接口，注意这是接口函数不是命令，那么当客户端执行了一个很大的操作后，在代码里调用 mysql_reset_connection 函数来重置连接，达到释放内存的效果。这个过程不需要重连和重新做权限验证，但是会将连接恢复到刚刚创建完时的状态。</p>
+<h3 id="InnoDB-的架构">InnoDB 的架构</h3>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/ea503cf6-9325-47ab-9fb3-3e33e40583ef/b4b375d5-303b-467c-9bfb-613f15101592/image.png" alt="image.png"></p>
+<p><strong>1. 入口点：Handler API</strong></p>
+<ul>
+<li>这是应用程序与 InnoDB 存储引擎交互的接口。SQL 语句（如选择，插入，更新，删除) 通过此 API 进行处理。</li>
+</ul>
+<p><strong>2.执行引擎：</strong></p>
+<ul>
+<li><strong>MTR1（阅读视图）：</strong> 管理事务的一致读取视图，确保每个事务都能看到数据库的一致快照。</li>
+<li>**MTR2（交易）：**处理事务管理，包括启动、提交和回滚事务。</li>
+<li>**命令：**表示要执行的已解析 SQL 语句（例如从用户中选择 *）。</li>
+</ul>
+<p><strong>3.缓冲池（内存中）：</strong></p>
+<ul>
+<li>**InnoDB的核心：**一个大型内存区域，用于缓存数据库文件中经常访问的数据页。这可最大限度地减少磁盘 I/O 并显著提高性能。</li>
+<li><strong>LRU 列表：</strong> 实施最近最少使用 (LRU) 算法来管理缓存页面。经常使用的页面保留在内存中，而较少使用的页面则被逐出，为新数据腾出空间。</li>
+<li>**空闲列表：**跟踪缓冲池中可用于新数据的页面。</li>
+<li><strong>冲洗清单：</strong> 保存需要写回磁盘的页面（由于修改）。</li>
+<li><strong>自适应哈希索引：</strong> 通过在哈希表中缓存经常访问的索引条目来进一步加快索引查找速度。</li>
+</ul>
+<p><strong>4. 更换缓冲液：</strong></p>
+<ul>
+<li><strong>优化写入：</strong> 内存中的一种特殊数据结构，用于临时存储对二级索引的更改。InnoDB 不会立即将这些更改写入磁盘，而是将它们缓冲在更改缓冲区中。这减少了磁盘 I/O，尤其是对于写入密集型工作负载。</li>
+<li><strong>合并：</strong> 更改缓冲区会定期与磁盘上的二级索引合并，从而使更改持久化。</li>
+</ul>
+<p><strong>5. 撤消缓冲区：</strong></p>
+<ul>
+<li>**支持回滚：**存储有关以前版本数据的信息，允许 InnoDB 撤消事务并提供一致的读取视图。</li>
+</ul>
+<p><strong>6.重做日志缓冲区：</strong></p>
+<ul>
+<li>**预写日志：**内存缓冲区，用于记录对数据库所做的所有更改，在将其写入磁盘之前。这可确保数据持久性和崩溃恢复。</li>
+</ul>
+<p><strong>7.磁盘存储：</strong></p>
+<ul>
+<li>**InnoDB 表空间：**InnoDB 将数据和索引存储在表空间文件中。
+<ul>
+<li>**系统表空间（.ibd）：**保存数据字典信息，如果配置的话可能包含用户表。</li>
+<li><strong>每个表的文件表空间 (.ibd)：</strong> 每个表都有自己的.ibd 文件，提高了可管理性。</li>
+<li>**通用表空间（diy.ibd）：**允许您创建共享表空间来存储多个表。</li>
+<li><strong>临时表空间（ibtmp1）：</strong> 用于临时表和内部操作。</li>
+</ul>
+</li>
+<li><strong>双写缓冲区：</strong> 一种有助于防止崩溃恢复期间数据损坏的机制。更改首先写入磁盘上的双写缓冲区，然后写入实际数据文件。</li>
+<li><strong>撤消表空间 (.mother)：</strong> 将撤消信息存储在磁盘上。</li>
+<li><strong>重做日志（ib_logfile[0/1]）：</strong> 重做日志的持久存储，对于崩溃恢复至关重要。</li>
+</ul>
+<p><strong>数据流：</strong></p>
+<ol>
+<li><strong>SQL 语句：</strong> 应用程序通过 Handler API 发送 SQL 语句。</li>
+<li><strong>解析和执行：</strong> 执行引擎处理该语句。</li>
+<li><strong>缓冲池：</strong> InnoDB 检查所需数据是否已在缓冲池中。如果没有，它将数据从磁盘读入缓冲池。</li>
+<li><strong>变化：</strong> 如果该语句修改了数据，则更改将应用于缓冲池，记录在重做日志缓冲区中，并可能缓冲在更改缓冲区中。</li>
+<li><strong>重做日志：</strong> 重做日志缓冲区会定期刷新到磁盘上的重做日志文件。</li>
+<li><strong>检查点：</strong> InnoDB 执行检查点，将修改后的页面从缓冲池写入磁盘。</li>
+<li><strong>耐用性：</strong> 重做日志确保所有已提交的更改都安全地保存在磁盘上，即使发生崩溃。</li>
+</ol>
+<p>该架构突出了 InnoDB 的主要特性，如 ACID 属性（原子性、一致性、隔离性、持久性）、崩溃恢复以及通过缓冲和日志记录实现的性能优化。</p>
+<p>查询语句的那一套流程，更新语句也是同样会走一遍：</p>
+<ul>
+<li>客户端先通过连接器建立连接，连接器自会判断用户身份；</li>
+<li>因为这是一条 update 语句，所以不需要经过查询缓存，但是表上有更新语句，是会把整个表的查询缓存清空的，所以说查询缓存很鸡肋，在 MySQL 8.0 就被移除这个功能了；</li>
+<li>解析器会通过词法分析识别出关键字 update，表名等等，构建出语法树，接着还会做语法分析，判断输入的语句是否符合 MySQL 语法；</li>
+<li>预处理器会判断表和字段是否存在；</li>
+<li>优化器确定执行计划，因为 where 条件中的 id 是主键索引，所以决定要使用 id 这个索引；</li>
+<li><strong>Handler API到</strong>执行器负责具体执行，找到这一行，然后更新。</li>
+</ul>
+<p>不过，更新语句的流程会涉及到 undo log（回滚日志）、redo log（重做日志） 、binlog （归档日志）这三种日志：</p>
+<ul>
+<li><strong>undo log（回滚日志）</strong>：是 Innodb 存储引擎层生成的日志，实现了事务中的<strong>原子性</strong>，主要<strong>用于事务回滚和 MVCC</strong>。</li>
+<li><strong>redo log（重做日志）</strong>：是 Innodb 存储引擎层生成的日志，实现了事务中的<strong>持久性</strong>，主要<strong>用于掉电等故障恢复</strong>；</li>
+<li><strong>binlog （归档日志）</strong>：是 Server 层生成的日志，主要<strong>用于数据备份和主从复制</strong>；</li>
+</ul>
+<p>undo log 和 redo log 用于<strong>记录事务对数据的修改</strong>，以保证原子性和持久性，而 binlog 用于记录数据库的整体变更，MVCC 则用于控制并发，确保读写之间的隔离性。这些机制相互协作，确保数据库在事务执行和并发访问时的一致性和可靠性。</p>
+<p>CREATE INDEX ,ALTER TABLE</p>
+<p>最基本的分页方式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT ... FROM ... WHERE ... ORDER BY ... LIMIT ...</span><br></pre></td></tr></table></figure>
+<p>在中小数据量的情况下，这样的 SQL 足够用了，唯一需要注意的问题就是确保使用了索引。</p>
+<p>举例来说，如果实际 SQL 类似下面语句，那么在 category_id, id 两列上建立复合索引比较好。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM articles WHERE category_id = 123 ORDER BY id LIMIT 50, 10</span><br></pre></td></tr></table></figure>
+<ol>
+<li>分解大连接查询<br>
+将一个大连接查询分解成对每一个表进行一次单表查询，然后在应用程序中进行关联，这样做的好处有：</li>
+</ol>
+<p><strong>缓存之所以能够大幅提高系统的性能，关键在于数据的访问具有局部性，也就是二八定律：「百分之八十的数据访问是集中在 20% 的数据上」。这部分数据也被叫做热点数据。</strong></p>
+<p>让缓存更高效。对于连接查询，如果其中一个表发生变化，那么整个查询缓存就无法使用。而分解后的多个查询，即使其中一个表发生变化，对其它表的查询缓存依然可以使用。<br>
+分解成多个单表查询，这些单表查询的缓存结果更可能被其它查询使用到，从而减少冗余记录的查询。<br>
+减少锁竞争；<br>
+在应用层进行连接，可以更容易对数据库进行拆分，从而更容易做到高性能和可伸缩。<br>
+查询本身效率也可能会有所提升。例如下面的例子中，使用 IN() 代替连接查询，可以让 MySQL 按照 ID 顺序进行查询，这可能比随机的连接要更高效。</p>
+<h3 id="Optimization">Optimization</h3>
+<p><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/1497219">https://developer.aliyun.com/article/1497219</a></p>
+<p>在实际场景中进行 MySQL 查询优化时，通常需要根据具体的业务需求和数据库环境采取针对性的措施。以下是一个系统化的优化步骤和方法：</p>
+<ol>
+<li><strong>了解业务需求与数据特点</strong></li>
+</ol>
+<p><strong>明确查询的业务需求</strong>：了解查询的具体业务需求，包括查询的频率、重要性、响应时间要求等。</p>
+<p><strong>数据分布与访问模式</strong>：分析数据的分布特点（如数据量、表结构、索引情况）和访问模式（读多写少还是读写并重，随机访问还是顺序访问）。</p>
+<ol start="2">
+<li><strong>分析现有查询性能</strong></li>
+</ol>
+<p><strong>使用 <code>EXPLAIN</code> 分析查询计划</strong>：通过 <code>EXPLAIN</code> 了解查询的执行计划，判断查询是否合理利用了索引，以及优化器whether正确连接表，是否存在全表扫描、文件排序等性能瓶颈。</p>
+<p><strong>慢查询日志</strong>：启用 MySQL 慢查询日志，找出执行时间较长的查询，并集中优化这些查询。mysqldumpslow -s t /path/to/slow.log</p>
+<p><strong>查询执行时间</strong>：使用 <code>SHOW PROFILES</code> 或 <code>SHOW STATUS</code> 查看查询的执行时间、CPU 使用率、磁盘 IO 等性能指标。</p>
+<ol start="3">
+<li><strong>索引优化</strong></li>
+</ol>
+<p><strong>创建适当的索引</strong>：为查询中的 <code>WHERE</code>、<code>JOIN</code>、<code>ORDER BY</code>、<code>GROUP BY</code> 等条件创建索引，特别是选择性高的列。</p>
+<p><strong>避免冗余索引</strong>：检查并删除冗余或未被使用的索引，以减少维护开销。</p>
+<p><strong>覆盖索引</strong>：通过覆盖索引（即查询字段都在同一索引中）来减少查询的回表操作。</p>
+<ol start="4">
+<li><strong>查询语句优化</strong></li>
+</ol>
+<p><strong>优化 <code>JOIN</code> 查询</strong>：避免在连接条件中使用函数或计算，尽量使用等值连接（<code>INNER JOIN</code>）而非笛卡尔积（<code>CROSS JOIN</code>）。</p>
+<p><strong>减少返回的数据量</strong>：避免 <code>SELECT *</code>，只选择需要的列；使用 <code>LIMIT</code> 限制返回的行数。</p>
+<p><strong>子查询优化</strong>：将复杂的子查询改写为 <code>JOIN</code> 或使用 <code>EXISTS</code>，避免嵌套子查询带来的性能问题。</p>
+<ol start="5">
+<li><strong>表结构优化</strong></li>
+</ol>
+<p><strong>规范化与反规范化</strong>：根据查询模式适当选择规范化或反规范化策略，减少表之间的连接次数或查询的复杂度。</p>
+<p><strong>分区表</strong>：对大表进行分区，如按时间或范围分区，可以加快查询性能。</p>
+<p><strong>优化表的数据类型</strong>：选择更合适的字段类型，避免使用过大或不必要的精度，如用 <code>TINYINT</code> 而不是 <code>INT</code>。</p>
+<ol start="6">
+<li><strong>利用缓存与存储过程</strong></li>
+</ol>
+<p><strong>缓存热点数据</strong>：将高频访问的数据缓存到内存中（如使用 Redis），减少数据库查询次数。</p>
+<p><strong>预计算与存储过程</strong>：对于计算复杂且频繁的查询，可以通过预计算将结果缓存到表中，或者使用存储过程加快查询速度。</p>
+<ol start="7">
+<li><strong>事务与锁优化</strong></li>
+</ol>
+<p><strong>合理管理事务</strong>：避免长事务或在事务中执行大量查询，尽量缩短事务的执行时间。</p>
+<p><strong>减少锁定范围</strong>：使用合适的锁级别（如行级锁而非表级锁），减少锁争用，提高并发性能。</p>
+<ol start="8">
+<li><strong>数据维护与归档</strong></li>
+</ol>
+<p><strong>定期归档历史数据</strong>：将不常用的历史数据迁移到冷存储或归档表，减小主表的体积，提升查询性能。</p>
+<p><strong>碎片整理</strong>：定期执行 <code>OPTIMIZE TABLE</code>，整理表碎片，特别是对于频繁更新、删除的表。</p>
+<ol start="9">
+<li><strong>监控与持续优化</strong></li>
+</ol>
+<p><strong>监控查询性能</strong>：使用监控工具（如 MySQL Enterprise Monitor、Percona Toolkit、Prometheus 等）持续监控查询性能，发现并优化潜在的性能瓶颈。</p>
+<p><strong>调整数据库参数</strong>：根据监控结果调整 MySQL 的配置参数（如 <code>query_cache_size</code>、<code>innodb_buffer_pool_size</code>），优化数据库整体性能。</p>
+<p>实际案例分析</p>
+<p>案例1：优化电商系统中的订单查询</p>
+<p><strong>场景描述</strong>：某电商系统中的订单表非常大，用户经常查询自己最近一年的订单。</p>
+<p><strong>优化方法</strong>：</p>
+<ul>
+<li><strong>分区表</strong>：按年份或月份对订单表进行分区，查询最近一年订单时，只扫描相关分区。</li>
+<li><strong>覆盖索引</strong>：在订单表的 <code>user_id</code>、<code>order_date</code> 上建立联合索引，避免回表。</li>
+<li><strong>缓存</strong>：将最近一年的订单数据缓存到 Redis 中，减少数据库查询。</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable constant_">CREATE</span> <span class="variable constant_">TABLE</span> <span class="title function_">orders</span> (</span><br><span class="line">    order_id <span class="variable constant_">INT</span> <span class="variable constant_">PRIMARY</span> <span class="variable constant_">KEY</span>,</span><br><span class="line">    user_id <span class="variable constant_">INT</span>,</span><br><span class="line">    order_date <span class="variable constant_">DATE</span>,</span><br><span class="line">    order_amount <span class="title function_">DECIMAL</span>(<span class="number">10</span>, <span class="number">2</span>),</span><br><span class="line">    product_id <span class="variable constant_">INT</span></span><br><span class="line">);</span><br><span class="line">你有一个查询需要经常获取特定用户在某个日期范围内的订单信息，例如：在没有索引的情况下，</span><br><span class="line">库需要对 orders 表进行**全表扫描**，查找符合条件的记录。这可能会导致查询速度变慢，</span><br><span class="line">尤其是在订单表数据量非常大的情况下。</span><br><span class="line"></span><br><span class="line"><span class="variable constant_">CREATE</span> <span class="variable constant_">INDEX</span> idx_user_order_date </span><br><span class="line"><span class="variable constant_">ON</span> <span class="title function_">orders</span>(user_id, order_date);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>案例2：优化社交平台中的用户动态查询</p>
+<p><strong>场景描述</strong>：社交平台用户的动态查询经常发生，涉及多表连接，如用户信息表、动态表、评论表等。</p>
+<p><strong>优化方法</strong>：</p>
+<ul>
+<li><strong>拆分连接查询</strong>：将用户信息与动态内容的查询分开，先查询用户信息表，再通过 <code>IN()</code> 方式获取动态内容。</li>
+<li><strong>水平拆分</strong>：将动态表按用户 ID 或时间进行水平拆分，减少单表数据量，提升查询效率。</li>
+<li><strong>缓存用户信息</strong>：将用户信息缓存到 Redis 或内存中，减少数据库查询。</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="variable constant_">CREATE</span> <span class="variable constant_">TABLE</span> <span class="title function_">comments</span> (</span><br><span class="line">    comment_id <span class="variable constant_">INT</span> <span class="variable constant_">PRIMARY</span> <span class="variable constant_">KEY</span>,</span><br><span class="line">    post_id <span class="variable constant_">INT</span>,</span><br><span class="line">    user_id <span class="variable constant_">INT</span>,</span><br><span class="line">    comment_content <span class="variable constant_">TEXT</span>,</span><br><span class="line">    comment_date <span class="variable constant_">DATETIME</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">假设我们需要查询某个用户的所有动态及其对应的评论，通常会使用如下查询：</span><br><span class="line"></span><br><span class="line"><span class="variable constant_">SELECT</span> u.<span class="property">username</span>, p.<span class="property">post_content</span>, c.<span class="property">comment_content</span></span><br><span class="line"><span class="variable constant_">FROM</span> users u</span><br><span class="line"><span class="variable constant_">JOIN</span> posts p <span class="variable constant_">ON</span> u.<span class="property">user_id</span> = p.<span class="property">user_id</span></span><br><span class="line"><span class="variable constant_">LEFT</span> <span class="variable constant_">JOIN</span> comments c <span class="variable constant_">ON</span> p.<span class="property">post_id</span> = c.<span class="property">post_id</span></span><br><span class="line"><span class="variable constant_">WHERE</span> u.<span class="property">user_id</span> = <span class="number">12345</span></span><br><span class="line"><span class="variable constant_">ORDER</span> <span class="variable constant_">BY</span> p.<span class="property">post_date</span> <span class="variable constant_">DESC</span>;</span><br><span class="line">为了优化上述查询，我们可以在相关表上创建合适的索引。</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span>在 posts 表上创建联合索引，优化 user_id 和 post_date 的查询和排序：</span><br><span class="line"><span class="variable constant_">CREATE</span> <span class="variable constant_">INDEX</span> idx_user_post_date <span class="variable constant_">ON</span> <span class="title function_">posts</span>(user_id, post_date <span class="variable constant_">DESC</span>);</span><br><span class="line">在 comments 表上创建索引以优化 post_id 的连接查询：</span><br><span class="line"><span class="variable constant_">CREATE</span> <span class="variable constant_">INDEX</span> idx_post_id <span class="variable constant_">ON</span> <span class="title function_">comments</span>(post_id);</span><br><span class="line"><span class="number">2.</span>覆盖索引</span><br><span class="line"><span class="variable constant_">CREATE</span> <span class="variable constant_">INDEX</span> idx_user_post_content <span class="variable constant_">ON</span> <span class="title function_">posts</span>(user_id, post_date <span class="variable constant_">DESC</span>, post_content);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>case 3:以<code>%</code>开头的 LIKE 查询会导致索引失效</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 原始查询SELECT * FROM products WHERE product_name LIKE 'abc%';</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 优化后的查询SELECT * FROM products WHERE product_name &gt;= 'abc' AND product_name &lt; 'abd'; or 为文本列添加全文索引</span></span><br></pre></td></tr></table></figure>
+<p>通过以上的步骤和方法，你可以在实际场景中系统地优化 MySQL 查询，提升数据库的响应速度和系统的整体性能。</p>
+<h2 id="索引">索引</h2>
+<p>数据库索引是对数据库表的一列或者多列的值进行排序一种<strong>结构</strong>，使用索引可以快速访问数据表中的特定信息。</p>
+<p><strong>索引的优缺点？</strong></p>
+<p>优点：</p>
+<ul>
+<li>大大加快数据检索的速度。</li>
+<li>将随机I/O变成顺序I/O(因为B+树的叶子节点是连接在一起的)</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>从空间角度考虑，建立索引需要占用物理空间</li>
+<li>从时间角度 考虑，创建和维护索引都需要花费时间，例如对数据进行增删改的时候都需要维护索引。</li>
+</ul>
+<p>索引的实现通常使用<strong>Hash索引和B+树</strong>（MySQL常用的索引就是B+树）。除了数据之外，数据库系统还维护为满足特定查找算法的数据结构，这些数据结构以某种方式引用数据，这种数据结构就是索引。简言之，索引就类似于书本，字典的目录。以下是一些关键概念和要点与数据库索引相关：</p>
+<ol>
+<li><strong>索引类型</strong>：
+<ul>
+<li><strong>B树索引</strong>：是最常见的索引类型，适用于大多数数据库系统。B树索引在树结构中进行数据划分，使得在平均情况下，检索时间复杂度为O(log n)。</li>
+<li><strong>哈希索引</strong>：基于哈希算法，适用于等值查询。但是，哈希索引不适用于范围查询，且不适合于有序数据。</li>
+<li><strong>全文索引</strong>：用于文本数据的高效搜索，支持关键词搜索、模糊查询等。</li>
+<li><strong>空间索引</strong>：用于地理空间数据的索引，可以支持地理坐标查询和范围查询。</li>
+</ul>
+</li>
+</ol>
+<h3 id="什么时候不需要创建索引？"><strong>什么时候不需要创建索引？</strong></h3>
+<ul>
+<li>只读或极少写的表（如配置表、代码表），很少被查询的信息（log</li>
+<li><code>WHERE</code> 条件，<code>GROUP BY</code>，<code>ORDER BY</code> 里用不到的字段，索引的价值是快速定位，如果起不到定位的字段通常是不需要创建索引的，因为索引是会占用物理空间的。</li>
+<li>字段中存在大量重复数据，不需要创建索引，比如性别字段，只有男女，如果数据库表中，男女的记录分布均匀，那么无论搜索哪个值都可能得到一半的数据。在这些情况下，还不如不要索引，因为 MySQL 还有一个查询优化器，查询优化器发现某个值出现在表的数据行中的百分比很高的时候，它一般会忽略索引，进行全表扫描。</li>
+<li>表数据太少的时候，不需要创建索引；</li>
+<li>经常更新的字段不用创建索引，比如不要对电商项目的用户余额建立索引，因为索引字段频繁修改，由于要维护 B+Tree的有序性，那么就需要频繁的重建索引，这个过程是会影响数据库性能的。</li>
+</ul>
+<p><strong>MySQL 索引</strong><br>
+索引是在存储引擎层实现的，而不是在服务器层实现的，所以不同存储引擎具有不同的索引类型和实现。InnoDB将磁盘数据建立索引并储存在B+树中</p>
+<ol>
+<li>B+Tree 索引<br>
+是大多数 MySQL 存储引擎的默认索引类型。</li>
+</ol>
+<p>B树是一种多路平衡查找树</p>
+<p>B+ 树<strong>查询效率更稳定</strong>。因为 B+ 树每次只有访问到叶子节点才能找到对应的数据，而在 B 树中，非叶子节点也会存储数据，这样就会造成查询效率不稳定的情况，有时候访问到了非叶子节点就可以找到关键字，而有时需要访问到叶子节点才能找到关键字。</p>
+<p>其次，B+ 树的查询效率更高，这是因为通常 B+ 树比 B 树更矮胖（阶数更大，深度更低），查询所需要的磁盘 I/O 也会更少。同样的磁盘页大小，B+ 树可以存储更多的节点关键字。</p>
+<p>**B+Tree 只在叶子节点存储数据，而 B 树 的非叶子节点也要存储数据，**所以 B+Tree 的单个节点的数据量更小，<strong>在相同的磁盘 I/O 次数下，就能查询更多的节点</strong>。 另外，B+Tree 叶子节点采用的是双链表连接，适合 MySQL 中常见的基于范围的顺序查找，而 B 树无法做到这一点。</p>
+<p>2、B+Tree vs Hash， Hash 在做等值查询的时候效率贼快，搜索复杂度为 O(1)。 但是 Hash 表不适合做范围查询，它更适合做等值的查询，这也是 B+Tree 索引要比 Hash 表索引有着更广泛的适用场景的原因。</p>
+<p>红黑树等平衡树也可以用来实现索引，但是文件系统及数据库系统普遍采用 B+ Tree 作为索引结构，这是因为使用 B+ 树访问磁盘数据有更高的性能。</p>
+<p>Why innodb use b+ tree as index?</p>
+<ol>
+<li><strong>适合范围查询和范围扫描</strong>：B+ 树索引适用于范围查询，例如 <strong><code>BETWEEN</code></strong>、<strong><code>&lt;</code></strong>、<strong><code>&gt;</code></strong> 等操作。B+ 树的特性使得在索引中查找范围更为高效。</li>
+<li><strong>有序性</strong>：B+ 树是一种有序树结构，叶子节点形成了一个有序链表。这使得范围扫描变得更加高效，因为它们能够顺序访问索引页。</li>
+<li><strong>减少磁盘 I/O</strong>：B+ 树索引的叶子节点通常构成一个链表，这有助于减少范围查询时需要读取的磁盘页数量。另外，由于索引节点存储了更多的键值对，相较于其他树结构（如 B 树），在内存中更有可能读取到所需的节点。</li>
+<li><strong>支持聚集索引</strong>：在 InnoDB 中，主键索引（如果定义了主键）被称为聚集索引，它决定了数据的物理存储顺序。B+ 树作为主键索引提供了对表数据物理存储顺序的优化。</li>
+<li><strong>范围分裂</strong>：B+ 树的分裂不会影响叶子节点，只有非叶子节点才会发生分裂。这有助于保持叶子节点的紧凑性，避免了频繁的平衡操作，提高了性能。</li>
+<li><strong>支持多版本并发控制（MVCC）</strong>：InnoDB 使用了 MVCC（多版本并发控制）来处理事务隔离性，而 B+ 树索引能够有效地支持这种并发控制模型。</li>
+</ol>
+<p>二叉搜索树查询效率无疑是最高的，因为平均来说每次比较都能缩小一半的搜索范围  所以表面上来看我们使用 B、B+ 树没有 二叉查找树效率高，但是实际上由于 B、B+ 树降低了树高，减少了磁盘 IO 次数，反而大大提升了速度。</p>
+<ul>
+<li>聚簇索引：<strong>将<a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/cdcs?from_column=20065&amp;from=20065">数据存储</a>与索引放到了一块</strong>，找到索引也就找到了数据 聚簇索引的叶子节点就是实际的数据行</li>
+<li>非聚簇索引：一个表可以有多个非聚簇索引，这些索引在逻辑上只是指向数据行的指针。 将数据存储于索引分开结构，索引结构的叶子节点指向了数据的对应行，myisam通过key_buffer把索引先缓存到内存中，当需要访问数据时（通过索引访问数据），在内存中直接搜索索引，然后通过索引找到磁盘相应数据，这也就是为什么索引不在key buffer命中时，速度慢的原因</li>
+</ul>
+<p>区别就在于叶子节点存放的是什么数据：</p>
+<ul>
+<li>聚簇索引的叶子节点存放的是实际数据，所有完整的用户记录都存放在聚簇索引的叶子节点；</li>
+<li>二级索引的叶子节点存放的是主键值，而不是实际数据。</li>
+</ul>
+<p><strong>如果某个查询语句使用了二级索引，但是查询的数据不是主键值，这时在二级索引找到主键值后，需要去聚簇索引中获得数据行，这个过程就叫作「回表」，也就是说要查两个 B+ 树才能查到数据。不过，当查询的数据是主键值时，因为只在二级索引就能查询到，不用再去聚簇索引查，这个过程就叫作「索引覆盖」，也就是只需要查一个 B+ 树就能找到数据。</strong></p>
+<p><strong>什么是覆盖索引和索引下推？</strong></p>
+<p>覆盖索引，也就是 covering index 。 <strong>指的是一个查询语句的执行只用从索引中就能获取到目标数据，不必从数据表中读取</strong>。</p>
+<ol>
+<li><strong>覆盖索引:</strong> 当查询所需的全部列数据都能在索引中找到时，我们称之为覆盖索引。这意味着查询可以直接从索引中获取结果，无需回表查询主键索引。</li>
+</ol>
+<p><code>CREATE INDEX idx_name_age ON users (name, age);</code></p>
+<p>在这个例子中，我们创建了一个名为 <code>idx_name_age</code> 的覆盖索引，它包含了 <code>name</code> 和 <code>age</code> 两个列。如果查询需要根据 <code>name</code> 和 <code>age</code> 来查找用户，那么这个索引就可以覆盖查询，无需访问表本身。</p>
+<p><strong>查询时使用覆盖索引:</strong></p>
+<p>当查询条件能够通过覆盖索引找到所需数据时，MySQL 会自动使用覆盖索引。</p>
+<p><strong>示例查询:</strong></p>
+<p><code>SELECT name, age FROM users WHERE name = 'John' AND age = 30;</code></p>
+<p>在这个例子中，如果 <code>idx_name_age</code> 索引存在，并且包含了 <code>name</code> 和 <code>age</code> 的值，那么 MySQL 会使用覆盖索引来执行查询，直接返回结果，而无需访问表本身</p>
+<p>Mysql5.6 引入的索引下推优化（index condition pushdown)， 可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。</p>
+<p>现在有下面这条查询语句：</p>
+<p><code>select * from t_user  where age &gt; 20 and reward = 100000;</code></p>
+<p>联合索引当遇到范围查询 (&gt;、&lt;) 就会停止匹配，也就是 <strong>age 字段能用到联合索引，但是 reward 字段则无法利用到索引</strong>。具体原因这里可以看这篇：<a target="_blank" rel="noopener" href="https://xiaolincoding.com/mysql/index/index_interview.html#%E6%8C%89%E5%AD%97%E6%AE%B5%E4%B8%AA%E6%95%B0%E5%88%86%E7%B1%BB"><strong>索引常见面试题(opens new window)</strong></a></p>
+<p>那么，不使用索引下推（MySQL 5.6 之前的版本）时，执行器与存储引擎的执行流程是这样的：</p>
+<ul>
+<li>Server 层首先调用存储引擎的接口定位到满足查询条件的第一条二级索引记录，也就是定位到 age &gt; 20 的第一条记录；</li>
+<li>存储引擎根据二级索引的 B+ 树快速定位到这条记录后，获取主键值，然后<strong>进行回表操作</strong>，将完整的记录返回给 Server 层；</li>
+<li>Server 层在判断该记录的 reward 是否等于 100000，如果成立则将其发送给客户端；否则跳过该记录；</li>
+<li>接着，继续向存储引擎索要下一条记录，存储引擎在二级索引定位到记录后，获取主键值，然后回表操作，将完整的记录返回给 Server 层；</li>
+<li>如此往复，直到存储引擎把表中的所有记录读完。</li>
+</ul>
+<p>可以看到，没有索引下推的时候，每查询到一条二级索引记录，都要进行回表操作，然后将记录返回给 Server，接着 Server 再判断该记录的 reward 是否等于 100000。而使用索引下推后，判断记录的 reward 是否等于 100000 的工作交给了存储引擎层，过程如下 ：</p>
+<ul>
+<li>Server 层首先调用存储引擎的接口定位到满足查询条件的第一条二级索引记录，也就是定位到 age &gt; 20 的第一条记录；</li>
+<li>存储引擎定位到二级索引后，<strong>先不执行回表</strong>操作，而是先判断一下该索引中包含的列（reward列）的条件（reward 是否等于 100000）是否成立。如果<strong>条件不成立</strong>，则直接<strong>跳过该二级索引</strong>。如果<strong>成立</strong>，则<strong>执行回表</strong>操作，将完成记录返回给 Server 层。</li>
+<li>Server 层在判断其他的查询条件（本次查询没有其他条件）是否成立，如果成立则将其发送给客户端；否则跳过该记录，然后向存储引擎索要下一条记录。</li>
+<li>如此往复，直到存储引擎把表中的所有记录读完。</li>
+</ul>
+<p>可以看到，使用了索引下推后，虽然 reward 列无法使用到联合索引，但是因为它包含在联合索引（age，reward）里，所以直接在存储引擎过滤出满足 reward = 100000 的记录后，才去执行回表操作获取整个记录。相比于没有使用索引下推，节省了很多回表操作。</p>
+<p>InnoDB以页面（Page）为基本单位来组织和管理数据。这些页面是数据库中数据和索引的物理存储单元。</p>
+<p>以下是 InnoDB 页面的一些关键特点：</p>
+<ol>
+<li><strong>固定大小的页</strong>：InnoDB 使用固定大小的数据页（通常是默认大小为 16KB）。每个页都有一个地址和唯一的页号，并用于存储数据、索引、事务日志等信息。</li>
+<li><strong>页类型</strong>：InnoDB 中有不同类型的页，如数据页（Data Page）、索引页（Index Page）、Undo 页（Undo Page）、事务日志页（Log Page）等。每种类型的页用于存储不同的信息。</li>
+<li><strong>数据页</strong>：主要用于存储表的数据。数据页中包含了行记录以及一些管理信息，例如行格式、行的版本信息（用于 MVCC）等。</li>
+<li><strong>索引页</strong>：用于存储索引的节点信息，B+ 树结构中的分支节点和叶子节点。</li>
+<li><strong>管理和缓存</strong>：InnoDB 通过缓冲池（Buffer Pool）来管理数据页的内存缓存。数据页在内存中进行读取和写入，以提高访问速度。LRU（Least Recently Used）算法用于管理缓冲池中的页。</li>
+</ol>
+<p>Explain查询创建的索引是否真正有效</p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/ea503cf6-9325-47ab-9fb3-3e33e40583ef/84e344c3-a1df-4da0-a8c1-52a0f32055ac/image.png" alt="image.png"></p>
+<p>The <code>EXPLAIN</code> statement in MySQL provides insight into how MySQL executes a query, specifically detailing how tables are joined. The <code>type</code> column in the <code>EXPLAIN</code> output describes the join method used, which indicates the efficiency of the query. Here’s a summary of the join types listed from best to worst:</p>
+<ol>
+<li><strong>system</strong></li>
+</ol>
+<p><strong>Description</strong>: The table has only one row, making it a “system table.” This is a special case of the <code>const</code> join type.</p>
+<p><strong>Efficiency</strong>: Fastest, as there’s only one row to retrieve.</p>
+<ol start="2">
+<li><strong>const</strong></li>
+</ol>
+<p><strong>Description</strong>: The table has at most one matching row, which is read at the start of the query. The result is treated as a constant by the optimizer.</p>
+<p><strong>Usage</strong>: Typically used when querying a table with a primary key or a unique index where the result is a single row.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tbl_name <span class="keyword">WHERE</span> primary_key <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>eq_ref</strong></li>
+</ol>
+<p><strong>Description</strong>: For each row from the previous tables, exactly one row is read from this table. This type is used when all parts of a primary key or unique index are used.</p>
+<p><strong>Usage</strong>: Used in join queries where the indexed column is compared with a constant or an expression involving columns from previously read tables.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> ref_table, other_table <span class="keyword">WHERE</span> ref_table.key_column <span class="operator">=</span> other_table.column;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li><strong>ref</strong></li>
+</ol>
+<p><strong>Description</strong>: All rows with matching index values are read from this table for each combination of rows from the previous tables. This type is used when the join uses only a leftmost prefix of the key or if the key is not a primary key or unique index.</p>
+<p><strong>Usage</strong>: Applicable when there are multiple rows that match the join condition.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> ref_table <span class="keyword">WHERE</span> key_column <span class="operator">=</span> expr;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li><strong>fulltext</strong></li>
+</ol>
+<p><strong>Description</strong>: The join is performed using a <code>FULLTEXT</code> index.</p>
+<p><strong>Usage</strong>: Used when a <code>FULLTEXT</code> index is involved in the query.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> articles <span class="keyword">WHERE</span> <span class="keyword">MATCH</span> (title, body) AGAINST (<span class="string">'text'</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li><strong>ref_or_null</strong></li>
+</ol>
+<p><strong>Description</strong>: Similar to <code>ref</code>, but includes an additional search for <code>NULL</code> values. Often used in queries that involve <code>OR</code> conditions with <code>NULL</code>.</p>
+<p><strong>Usage</strong>: When the query checks for both specific values and <code>NULL</code> in the indexed column.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> ref_table <span class="keyword">WHERE</span> key_column <span class="operator">=</span> expr <span class="keyword">OR</span> key_column <span class="keyword">IS</span> <span class="keyword">NULL</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li><strong>index_merge</strong></li>
+</ol>
+<p><strong>Description</strong>: Indicates that the <code>Index Merge</code> optimization is used, where multiple indexes are used to satisfy the query.</p>
+<p><strong>Usage</strong>: When the query can use more than one index.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tbl_name <span class="keyword">WHERE</span> key1 <span class="operator">=</span> <span class="number">10</span> <span class="keyword">OR</span> key2 <span class="operator">=</span> <span class="number">20</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li><strong>unique_subquery</strong></li>
+</ol>
+<p><strong>Description</strong>: Replaces <code>eq_ref</code> for some <code>IN</code> subqueries. It functions as an index lookup and replaces the subquery for efficiency.</p>
+<p><strong>Usage</strong>: For efficient <code>IN</code> subqueries.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tbl_name <span class="keyword">WHERE</span> id <span class="keyword">IN</span> (<span class="keyword">SELECT</span> primary_key <span class="keyword">FROM</span> single_table <span class="keyword">WHERE</span> <span class="keyword">condition</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="9">
+<li><strong>index_subquery</strong></li>
+</ol>
+<p><strong>Description</strong>: Similar to <code>unique_subquery</code>, but works for non-unique indexes.</p>
+<p><strong>Usage</strong>: For <code>IN</code> subqueries involving non-unique indexes.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tbl_name <span class="keyword">WHERE</span> id <span class="keyword">IN</span> (<span class="keyword">SELECT</span> key_column <span class="keyword">FROM</span> single_table <span class="keyword">WHERE</span> <span class="keyword">condition</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="10">
+<li><strong>range</strong></li>
+</ol>
+<p><strong>Description</strong>: Only rows within a certain range are retrieved using an index. The index allows for range scans.</p>
+<p><strong>Usage</strong>: When the query involves conditions that limit the result set to a specific range.</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tbl_name <span class="keyword">WHERE</span> key_column <span class="keyword">BETWEEN</span> <span class="number">10</span> <span class="keyword">AND</span> <span class="number">20</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="11">
+<li><strong>index</strong></li>
+</ol>
+<p><strong>Description</strong>: Similar to <code>ALL</code>, but instead of scanning the entire table, only the index is scanned. It’s used when the query can be satisfied by the index alone.</p>
+<p><strong>Usage</strong>: When the index is covering (contains all needed columns).</p>
+<p><strong>Example</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> indexed_column <span class="keyword">FROM</span> tbl_name;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="12">
+<li><strong>ALL</strong></li>
+</ol>
+<ul>
+<li>
+<p><strong>Description</strong>: A full table scan is performed for each combination of rows from the previous tables. This is generally the least efficient join type.</p>
+</li>
+<li>
+<p><strong>Usage</strong>: When no indexes are available, or the query optimizer determines that a full table scan is faster.</p>
+</li>
+<li>
+<p><strong>Example</strong>:</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> tbl_name;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><strong>Best Types</strong>: <code>system</code>, <code>const</code>, <code>eq_ref</code> are the most efficient, meaning they minimize the number of rows scanned.</p>
+</li>
+<li>
+<p><strong>Good Types</strong>: <code>ref</code>, <code>range</code>, <code>index_merge</code> are generally efficient, depending on the specific query and index design.</p>
+</li>
+<li>
+<p><strong>Less Optimal Types</strong>: <code>index</code>, <code>ALL</code> are less efficient, as they may involve scanning large portions of the table.</p>
+</li>
+</ul>
+<p>Understanding and optimizing these join types is key to improving query performance in MySQL.</p>
+<h2 id="Redis">Redis</h2>
+<p>Redis（Remote Dictionary Server )，即远程字典服务。C语言开发的一个开源的（遵从BSD协议）高性能键值对（key-value）的内存数据库，可以用作数据库、缓存、消息中间件等。它是一种NoSQL（not-only sql，泛指<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22118561398%22%7D">非关系型数据库</a>）的数据库。</p>
+<p>Redis的基本概念和用法：</p>
+<ol>
+<li><strong>高性能</strong>：Redis完全存储在内存中，这使得它能够以非常高的速度执行读写操作。</li>
+<li><strong>多种数据结构</strong>：除了键值对，Redis还支持字符串、哈希表、列表、集合、有序集合等多种数据结构，允许更灵活的数据操作。</li>
+<li><strong>持久化</strong>：Redis支持将数据持久化到硬盘，以便在重启后恢复数据。它提供了两种持久化方式：快照（Snapshotting）和AOF（Append-Only File）。</li>
+<li><strong>发布/订阅</strong>：Redis提供了发布（publish）和订阅（subscribe）的功能，允许不同部分之间通过消息进行通信。</li>
+<li><strong>事务</strong>：Redis 事务的本质是一组命令的集合。事务支持一次执行多个命令，一个事务中所有命令都会被序列化，<strong>Redis 在事务失败时不进行回滚，而是继续执行余下的命令。Redis官方认为事务是原子性的：所有的命令，要么全部执行（但不一定成功），要么全部不执行。</strong></li>
+<li><strong>缓存</strong>：Redis常用于作为缓存层，将频繁访问的数据存储在内存中，以提高读取性能。</li>
+<li><strong>计数器和排行榜</strong>：Redis适用于计数器和排行榜等需要快速处理增减操作的场景。</li>
+<li><strong>分布式锁</strong>：Redis可以用来实现分布式锁，以确保在多个节点上的操作不会互相干扰。</li>
+<li><strong>消息队列</strong>：使用Redis的列表数据结构，可以实现简单的消息队列，用于异步处理任务。</li>
+</ol>
+<p><strong>Redis这么快？</strong></p>
+<blockquote>
+<p>第一：Redis完全基于内存，绝大部分请求是纯粹的内存操作，非常迅速，数据存在内存中，类似于HashMap，HashMap的优势就是查找和操作的时间复杂度是O(1)。第二：数据结构简单，对数据操作也简单。第三：采用单线程，避免了不必要的上下文切换和竞争条件，不存在多线程导致的CPU切换，不用去考虑各种锁的问题，不存在加锁释放锁操作，没有死锁问题导致的性能消耗。虽然 Redis 的主要工作（网络 I/O 和执行命令）一直是单线程模型，但是<strong>在 Redis 6.0 版本之后，也采用了多个 I/O 线程来处理网络请求</strong>，<strong>这是因为随着网络硬件的性能提升，Redis 的性能瓶颈有时会出现在网络 I/O 的处理上</strong>。</p>
+</blockquote>
+<p>第四：使用多路复用IO模型，非阻塞IO。</p>
+<p>String、Hash、List、Set、SortedSet。</p>
+<ol>
+<li><strong>Hashes:</strong> Hashes are maps between string fields and string values. They are useful for representing objects with multiple fields, such as user profiles.</li>
+<li><strong>String</strong> data up to 512 MB 。String类型是<strong>二进制安全</strong>的(其本质是将操作输入作为原始的、无任何特殊字符意义的数据流)，意思是 redis 的 string 可以包含任何数据。如数字，字符串，jpg图片或者序列化的对象。</li>
+<li><strong>Lists:</strong> 双向链表实现Lists are ordered collections of strings. You can add elements to the head (left) or tail (right) of a list. Lists can be used for task queues, message queues, and more.</li>
+<li><strong>Sets:</strong> Sets are unordered collections of unique strings. They are used for storing unique values. You can perform set operations like union, intersection, and difference.</li>
+<li><strong>Sorted Sets (ZSETs):</strong> Similar to sets, but each member has a score associated with it. Sorted sets are used for tasks that require ordering by score, such as leaderboards.</li>
+<li><strong>Bitmaps:</strong> Bitmaps are used for bit-level operations. They are often used to represent sets with a large number of unique items in a very memory-efficient way.</li>
+</ol>
+<ul>
+<li>Redis 的字符串表示为 <code>sds(simple dynamic string)</code> ，而不是 C 字符串（以 <code>\0</code> 结尾的 <code>char*</code>）。</li>
+<li>对比 C 字符串， <code>sds</code> 有以下特性：
+<ul>
+<li>可以高效地执行长度计算（<code>strlen</code>）；</li>
+<li>可以高效地执行追加操作（<code>append</code>）；</li>
+<li>二进制安全；</li>
+</ul>
+</li>
+<li><code>sds</code> 会为追加操作进行优化：加快追加操作的速度，并降低内存分配的次数，代价是多占用了一些内存，而且这些内存不会被主动释放。</li>
+</ul>
+<p>struct sdshdr{<br>
+int len;//buf数组中已经使用的字节的数量，也就是SDS字符串长度<br>
+int  free;//buf数组中未使用的字节的数量<br>
+char buf[];//字节数组，字符串就保存在这里面<br>
+};</p>
+<p>Redis需要对数据设置过期时间，并采用的是惰性删除+定期删除两种策略对过期键删除。<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&amp;mid=2247484386&amp;idx=1&amp;sn=323ddc84dc851a975530090fcd6e2326&amp;chksm=ebd742e3dca0cbf52bc65d430447e639d81cc13e0ac34613edf464dae3950b10e2e1df74dcc5&amp;token=1834317504&amp;lang=zh_CN&amp;scene=21#wechat_redirect">Redis对过期键的策略+持久化</a></p>
+<ol>
+<li><strong>数据过期清除策略</strong>：
+<ol>
+<li>定期删除：Redis会定期（默认每隔100ms）随机抽取一些设置了过期时间TTL 的键，检查其是否过期，如果有过期的键就删除。这个策略确实是为了避免全局扫描而引入的，以减少CPU负载。</li>
+<li>惰性删除：当你尝试访问某个键时，Redis会检查该键是否已过期，如果已过期，则删除它。这个策略确保在获取键的时候处理过期数据，称为"惰性"，因为它不主动扫描键。</li>
+</ol>
+</li>
+<li>内存淘汰策略：
+<ul>
+<li>Redis是一个内存数据库，当内存用尽时，需要根据一定的策略来释放一些键以腾出内存空间。这个策略称为内存淘汰策略（Memory Eviction Policy）。</li>
+<li>Redis提供了不同的内存淘汰策略，常见的策略包括：
+<ul>
+<li>LRU（Least Recently Used）：删除最近最少使用的键。</li>
+<li>LFU（Least Frequently Used）：删除最不频繁使用的键。</li>
+<li>Random（随机淘汰）：随机选择一个键进行删除。</li>
+<li>TTL（Time To Live）：根据键的TTL来删除过期的键。</li>
+</ul>
+</li>
+<li>你可以根据需要在Redis配置文件中选择适合你的内存淘汰策略，默认使用LRU策略。</li>
+</ul>
+</li>
+</ol>
+<p>如果缓存数据<strong>设置的过期时间是相同</strong>的，并且Redis恰好将这部分数据全部删光了。这就会导致在这段时间内，这些缓存<strong>同时失效</strong>，全部请求到数据库中。</p>
+<p>跳表是<strong>可以实现二分查找的有序链表</strong>。</p>
+<ul>
+<li>Multi开始事务。</li>
+<li>命令入队。</li>
+<li>Exec执行事务。</li>
+</ul>
+<p><strong>持久化</strong></p>
+<p>Reids 是先执行写操作命令后，才将该命令记录到 AOF 日志里的，这么做其实有两个好处。</p>
+<ul>
+<li><strong>避免额外的检查开销</strong>：因为如果先将写操作命令记录到 AOF 日志里，再执行该命令的话，如果当前的命令语法有问题，那么如果不进行命令语法检查，该错误的命令记录到 AOF 日志里后，Redis 在使用日志恢复数据时，就可能会出错。</li>
+<li><strong>不会阻塞当前写操作命令的执行</strong>：因为当写操作命令执行成功后，才会将命令记录到 AOF 日志。</li>
+</ul>
+<p><strong>RDB 快照</strong>：将某一时刻的内存数据，以二进制的方式写入磁盘</p>
+<p>所以，RDB 快照就是记录某一个瞬间的内存数据，记录的是实际数据   因此在 Redis 恢复数据时， RDB 恢复数据的效率会比 AOF 高些，因为直接将 RDB 文件读入内存就可以，不需要像 AOF 那样还需要额外执行操作命令的步骤才能恢复数据。</p>
+<blockquote>
+<p>RDB 做快照时会阻塞线程吗？</p>
+</blockquote>
+<p>Redis 提供了两个命令来生成 RDB 文件，分别是 save 和 bgsave，他们的区别就在于是否在「主线程」里执行：</p>
+<ul>
+<li>执行了 save 命令，就会在主线程生成 RDB 文件，由于和执行操作命令在同一个线程，所以如果写入 RDB 文件的时间太长，<strong>会阻塞主线程</strong>；</li>
+<li>执行了 bgsave 命令，会创建一个子进程来生成 RDB 文件，这样可以<strong>避免主线程的阻塞</strong>；</li>
+</ul>
+<p>Redis 还可以通过配置文件的选项来实现每隔一段时间自动执行一次 bgsave 命令，默认会提供以下配置：</p>
+<p><code>save 900 1 save 300 10 save 60 10000</code></p>
+<p>别看选项名叫 save，实际上执行的是 bgsave 命令，也就是会创建子进程来生成 RDB 快照文件。 只要满足上面条件的任意一个，就会执行 bgsave，它们的意思分别是：</p>
+<ul>
+<li>900 秒之内，对数据库进行了至少 1 次修改；</li>
+<li>300 秒之内，对数据库进行了至少 10 次修改；</li>
+<li>60 秒之内，对数据库进行了至少 10000 次修改。</li>
+</ul>
+<p>这里提一点，Redis 的快照是<strong>全量快照</strong>，也就是说每次执行快照，都是把内存中的「所有数据」都记录到磁盘中。所以执行快照是一个比较重的操作，如果频率太频繁，可能会对 Redis 性能产生影响。如果频率太低，服务器故障时，丢失的数据会更多。</p>
+<p><strong>AOF 是一种持久化方式，它通过将 Redis 所有的写操作（包括写命令）以追加（append）的方式记录到一个文件中。AOF 文件包含了可以重放（replay）重建数据集的写命令序列，因此，它记录了数据库状态的完整变更历史。</strong></p>
+<p>缺点：</p>
+<p><strong>文件较大</strong>：由于记录了所有写操作，AOF 文件可能会比 RDB 文件更大。</p>
+<p><strong>恢复速度相对较慢</strong>：在恢复时，可能会因为需要重新执行大量写操作而导致恢复速度较慢。</p>
+<h3 id="缓存">缓存</h3>
+<p><strong>缓存雪崩 Cache avalanche</strong></p>
+<ul>
+<li>Redis挂掉了，请求全部走数据库。</li>
+<li>对缓存数据设置相同的过期时间，导致某段时间内缓存失效，请求全部走数据库。</li>
+</ul>
+<p>缓存雪崩如果发生了，很可能就把我们的数据库<strong>搞垮</strong>，导致整个服务瘫痪！</p>
+<p><strong>如何解决缓存雪崩？</strong></p>
+<ul>
+<li>解决方法：考虑用<strong>加锁或者队列</strong>的方式保证来保证不会有大量的线程对数据库一次性进行读写，从而避免失效时大量的并发请求落到底层存储系统上；还有一个解决方案，原有的失效时间基础上增加一个随机值，这样就会大幅度的<strong>减少缓存在同一时间过期</strong>。</li>
+</ul>
+<p>对于“Redis挂掉了，请求全部走数据库”这种情况，我们可以有以下的思路：</p>
+<ul>
+<li>事发前：实现Redis的<strong>高可用</strong>(主从架构+Sentinel 或者Redis Cluster)，尽量避免Redis挂掉这种情况发生。</li>
+<li>事发中：万一Redis真的挂了，我们可以设置<strong>本地缓存(ehcache)+限流(hystrix)</strong>，尽量避免我们的数据库被干掉(起码能保证我们的服务还是能正常工作的)</li>
+<li>事发后：redis持久化，重启后自动从磁盘上加载数据，<strong>快速恢复缓存数据</strong>。</li>
+</ul>
+<p><strong>缓存击穿   Hotspot data set is invalid</strong></p>
+<p>However, for some hot data with very high requests, once the valid time has passed, there will be a large number of requests falling on the database at this moment, which may cause the database to crash.</p>
+<p>应对缓存击穿可以采取前面说到两种方案：</p>
+<ul>
+<li>互斥锁方案，<strong>保证同一时间只有一个业务线程更新缓存</strong>，未能获取互斥锁的请求，要么等待锁释放后重新读取缓存，要么就返回空值或者默认值。</li>
+<li><strong>不给热点数据设置过期时间，由后台异步更新缓存，或者在热点数据准备要过期前，提前通知后台线程更新缓存以及重新设置过期时间；</strong></li>
+</ul>
+<p><strong>缓存穿透</strong></p>
+<p>是指查询一个一定<strong>不存在的数据</strong>。由于缓存不命中，并且出于容错考虑，如果从<strong>数据库查不到数据则不写入缓存</strong>，这将导致这个不存在的数据<strong>每次请求都要到数据库去查询</strong>，失去了缓存的意义。</p>
+<p>缓存穿透也有两种方案：</p>
+<ul>
+<li>由于请求的参数是不合法的(每次都请求不存在的参数)，于是我们可以使用布隆过滤器(BloomFilter)或者压缩filter<strong>提前拦截</strong>，不合法就不让这个请求到数据库层！</li>
+<li>当我们从数据库找不到的时候，我们也将这个<strong>空对象设置到缓存里边去</strong>。下次再请求的时候，就可以从缓存里边获取了。</li>
+<li>这种情况我们一般会将空对象设置一个<strong>较短的过期时间</strong>。</li>
+</ul>
+<p>可以发现缓存击穿跟缓存雪崩很相似，如果缓存中的<strong>某个热点数据过期</strong>了，此时大量的请求直接访问数据库就是</p>
+<p><strong>缓存与数据库双写一致</strong></p>
+<p>只要我们设置了<strong>键的过期时间</strong>，我们就能保证缓存和数据库的数据<strong>最终是一致</strong>的。因为只要缓存数据过期了，就会被删除。随后读的时候，因为缓存里没有，就可以查数据库的数据，然后将数据库查出来的数据写入到缓存中。</p>
+<p>除了设置过期时间，我们还需要做更多的措施来<strong>尽量避免</strong>数据库与缓存处于不一致的情况发生。分布式环境下非常容易出现缓存和数据库间数据一致性问题，针对这一点，如果项目对缓存的要求是强一致性的，那么就不要使用缓存。我们只能采取合适的策略来降低缓存和数据库间数据不一致的概率，而无法保证两者间的强一致性。合适的策略包括合适的<strong>缓存更新策略</strong>，更新数据库后<strong>及时更新缓存、缓存失败时增加重试机制。</strong></p>
+<p>两种策略各自有优缺点：</p>
+<ul>
+<li>先删除缓存，再更新数据库</li>
+<li>在高并发下表现不如意，在原子性被破坏时表现优异</li>
+<li>先更新数据库，再删除缓存(<code>Cache Aside Pattern</code>设计模式)</li>
+</ul>
+<p><strong>缓存更新的策略</strong></p>
+<ul>
+<li>Cache Aside（旁路缓存）策略；</li>
+<li>Read/Write Through（读穿 / 写穿）策略；</li>
+<li>Write Back（写回）策略；</li>
+</ul>
+<p>主要分为两类 <strong>Cache-Aside</strong> 和 <strong>Cache-As-SoR。</strong> SoR 即「System Of Record，记录系统」，表示数据库。 实际开发中，Redis 和 MySQL 的更新策略用的是 Cache Aside，另外两种策略主要应用在计算机系统里</p>
+<ul>
+<li><strong>Cache Aside 策略</strong>：应用程序直接<strong>与数据库和缓存交互</strong>，并负责维护缓存的一致性。这种策略简单易用，但是需要维护缓存和数据库的一致性，可能出现缓存穿透或缓存雪崩的问题，一般采用<strong>延迟双删</strong>来保证最终一致性</li>
+</ul>
+<blockquote>
+<p>查询：先查询缓存，如果缓存中没有，则查询数据库，并将结果写入缓存</p>
+<p>更新：先更新数据库，然后删除缓存或者更新缓存</p>
+</blockquote>
+<p>Cache-As-SoR **可以理解为，应用认为后端就是一个单一的存储，而存储自己维护自己的Cache。**数据库由缓存代理，缓存未命中时由缓存加载数据库数据然后应用从缓存读，写数据时更新完缓存后同步写数据库。应用只感知缓存而不感知数据库。</p>
+<ul>
+<li><strong>Read/Write Through 策略</strong>：应用程序<strong>只和缓存交互</strong>，使用缓存与数据库交互.  better integrity and consistency, less performance</li>
+</ul>
+<blockquote>
+<p>查询：先查询缓存，如果缓存中没有，则缓存从数据库中加载数据，并写入缓存</p>
+<p>更新：先更新缓存，再由缓存同步更新数据库</p>
+</blockquote>
+<ul>
+<li><strong>Write Behind 策略</strong>：应用程序<strong>只和缓存交互</strong>。回写式，数据写入缓存即可返回，缓存内部会异步的去更新数据源，这样好处是<strong>写操作特别快</strong>，因为只需要更新缓存。并且缓存内部可以合并对相同数据项的多次更新，但是带来的问题就是<strong>数据不一致</strong>，可能发生写丢失。</li>
+<li><strong>Refresh-Ahead 策略</strong>：应用程序<strong>只和缓存交互</strong>，由后台服务与数据库交互</li>
+</ul>
+<blockquote>
+<p>查询：只查询缓存</p>
+<p>更新：由后台服务<strong>自动从数据库中查询最新的数据</strong>，并将数据写入缓存中，</p>
+</blockquote>
+<p><strong>性能</strong></p>
+<p><code>Cache Aside</code> 的性能较高，它<strong>只在缓存未命中</strong>时才访问数据库</p>
+<p><code>Read/Write Through</code> 的性能较低，它在<strong>每次读写时都需要访问数据库</strong></p>
+<p><code>Write Behind Caching</code> 的性能最高，它<strong>只在缓存未命中</strong>时才访问数据库，而<strong>写入操作是异步的</strong></p>
+<p><code>Refresh-Ahead</code> 的性能介于 <code>Cache Aside</code> 和 <code>Write Behind Caching</code> 之间，它<strong>只在即将过期时</strong>才访问数据库，并且<strong>写入操作也是异步的</strong></p>
+<p><strong>数据一致性</strong></p>
+<p><code>Cache Aside</code> 的数据一致性较低，它<strong>只在缓存未命中时</strong>才更新缓存，而写入操作则是<strong>直接更新数据库</strong>，<strong>并将缓存中的数据删除或更新</strong></p>
+<p><code>Read/Write Through</code> 的数据一致性最高，它在<strong>每次读写时都</strong>更新数据库和缓存</p>
+<p><code>Write Behind Caching</code> 的数据一致性最低，它<strong>只在缓存未命中</strong>时才更新缓存，而写入操作则是先更新缓存，并在<strong>异步更新数据库</strong>，有较大的延迟。</p>
+<p><code>Refresh-Ahead</code> 的数据一致性介于 <code>Read/Write Through</code> 和 <code>Cache Aside</code> 之间，它保证了缓存中的数据<strong>总是最新</strong>的，但是有一定的延迟</p>
+<p>Redis 持久化策略，其实就是为了减少服务宕机后数据丢失，以及快速恢复数据，也算是支持高可用的一种实现。 除此之外，Redis 还提供了其它几种方式来保证**系统高可用，**业务中最常用的莫过于主从同步（也称作主从复制）、Sentinel 哨兵机制以及 Cluster 集群。</p>
+<h3 id="主从复制"><strong>主从复制</strong></h3>
+<p>Redis 同时支持主从复制和读写分离：一个 Redis 实例作为主节点 Master，负责写操作。其它实例（可能有 1 或多个）作为从节点 Slave，负责复制主节点的数据。</p>
+<p>主节点 Master 数据更新：Master 负责处理所有的写操作，包括写入、更新和删除等。 数据同步：写操作在 Master 上执行，然后 Master 将写操作的结果同步到所有从节点 Slave 上。 从节点 Slave 数据读取：Slave 负责处理读操作，例如获取数据、查询等。 数据同步：Slave 从 Master 复制数据，并在本地保存一份与主节点相同的数据副本。</p>
+<p>2.2 为什么要读写分离 1）防止并发2）易于扩展 我们都知道，大部分使用 Redis 的业务都是读多写少的。所以，我们可以根据业务量的规模来确定挂载几个从节点 Slave，当缓存数据增大时，我们可以很方便的扩展从节点的数量，实现弹性扩展。 同时，读写分离还可以实现数据备份和负载均衡，从而提高可靠性和性能。 3）高可用保障 不仅如此，Redis 还可以手动切换主从节点，来做故障隔离和恢复。</p>
+<p><strong>主从复制过程</strong></p>
+<ul>
+<li>从服务器连接主服务器，发送SYNC命令；主服务器接收到SYNC命名后，开始执行BGSAVE命令生成RDB文件并使用缓冲区记录此后执行的所有写命令；主服务器BGSAVE执行完后，向所有从服务器发送快照文件，并在发送期间继续记录被执行的写命令；从服务器收到快照文件后丢弃所有旧数据，载入收到的快照；主服务器快照发送完毕后开始向从服务器发送缓冲区中的写命令；从服务器完成对快照的载入，开始接受命令请求，并执行来自主服务器缓冲区的写命令；（从服务器初始化完成）主服务器每执行一个写命令就会向从服务器发送相同的写命令，从服务器接收并执行收到的写命令（从服务器初始化完成后的操作）</li>
+<li>一般主从配置可以缓解请求压力，做读写分离，写服务器不开启持久化，从服务器开启，从服务器还负责读取的操作，而且从服务器可以是多个，可以有效缓解主服务器的压力；但是坏处在于，如果主服务器宕机，无法自动切换恢复；</li>
+</ul>
+<p>bgsave 过程中，Redis 依然<strong>可以继续处理操作命令</strong>的，也就是数据是能被修改的，关键的技术就在于**写时复制技术（Copy-On-Write, COW）。**执行 bgsave 命令的时候，会通过 fork() 创建子进程</p>
+<p><strong>写入时复制</strong>（英语：<strong>Copy-on-write</strong>，简称<strong>COW</strong>）是一种计算机<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88">程序设计</a>领域的优化策略。其核心思想是，如果有多个调用者（callers）同时请求相同资源（如内存或磁盘上的数据存储），他们会共同获取相同的指针指向相同的资源，直到某个调用者试图修改资源的内容时，系统才会真正复制一份专用副本（private copy）给该调用者，而其他调用者所见到的最初的资源仍然保持不变。这过程对其他的调用者都是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%80%8F%E6%98%8E">透明</a>的。此作法主要的优点是如果调用者没有修改该资源，就不会有副本（private copy）被建立，因此多个调用者只是读取操作时可以共享同一份资源。</p>
+<p>Redis的<strong>持久化策略</strong></p>
+<p>有两种：1、RDB：快照形式是直接把内存中的数据保存到一个dump的文件中，定时保存，保存策略。2、AOF：把所有的对Redis的服务器进行修改的命令都存到一个文件里，命令的集合。Redis默认是快照RDB的持久化方式。当Redis重启的时候，它会优先使用<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=AOF%E6%96%87%E4%BB%B6&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22118561398%22%7D">AOF文件</a>来还原数据集，因为AOF文件保存的数据集通常比RDB文件所保存的数据集更完整。你甚至可以关闭<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E6%8C%81%E4%B9%85%E5%8C%96%E5%8A%9F%E8%83%BD&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%22118561398%22%7D">持久化功能</a>，让数据只在服务器运行时存。</p>
+<p><strong>集群原理</strong></p>
+<p>在Redis集群中，所有Redis节点彼此互联，节点内部使用二进制协议优化传输速度和带宽。当一个节点宕机后，集群中超过半数节点检测失效才认为该节点失效。不同于Tomcat集群需要反向代理服务器，Redis集群中任意节点都可以直接和Java客户端连接。Redis集群上的数据分配采用哈希槽。Redis集群中内置了16384个哈希槽，当有数据要存储时，Redis会首先使用CRC16算法对key进行计算，将计算结果对16384取余，这样每个key都会对应一个取值在16384之间的哈希槽。开发者可根据每个Redis实例性能来调整每个Redis实例上哈希槽的分布范围。</p>
+<p>DELETE FROM messages WHERE create &lt; DATE_SUB(NOW(), INTERVAL 3 MONTH);</p>
+<p>一般业务刚上线的时候，直接使用单机数据库就够了，但是随着用户量上来之后，系统就面临着大量的写操作和读操作，单机数据库处理能力有限，容易成为系统瓶颈。由于存在读写锁冲突，并且很多大型互联网业务往往<strong>读多写少</strong>，读操作会首先成为数据库瓶颈，我们希望消除读写锁冲突从而提升数据库整体的读写能力。</p>
+<p>那么就需要采用读写分离的数据库集群方式，一主多从，主库会同步数据到从库。写操作都到主库，读操作都去从库。</p>
+<p>读写分离的主要思想是将数据库的读和写操作分开处理，从而减轻主数据库的负担，提高整个系统的并发能力和性能。</p>
+<p>常见的读写分离架构包括：</p>
+<ol>
+<li><strong>主从复制</strong>：通过在主数据库上进行写操作，并将写操作同步到多个从数据库（只读副本）。读操作则可以在从数据库上执行，分担了主数据库的读压力。</li>
+<li><strong>Sharding分片</strong>：按照某种规则（例如按照用户ID、地理位置等）将数据分散存储在不同的数据库节点上，每个节点负责一部分数据。这样可以水平扩展数据库系统，提高了系统整体的读写能力。</li>
+</ol>
+<p>Mysql<strong>表格设计</strong>？</p>
+<p>平衡范式与冗余(效率优先；往往牺牲范式)拒绝3B(拒绝大<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=sql%E8%AF%AD%E5%8F%A5&amp;spm=1001.2101.3001.7020">sql语句</a>：big sql、拒绝大事务：big transaction、拒绝大批量：big batch);</p>
+<p>第一范式（1NF）是指数据库表的<strong>每一列都是不可分割的基本数据项</strong>，同一列中不能有多个值，即实体中的某个属性不能有多个值或者不能有重复的属性。如果出现重复的属性，就可能需要定义一个新的实体，新的实体由重复的属性构成，新实体与原实体之间为一对多关系。在第一范式（1NF）中表的每一行只包含一个实例的信息。简而言之，第一范式就是无重复的列。</p>
+<p>说明：在任何一个关系数据库中，第一范式（1NF）是对关系模式的基本要求，<strong>不满足第一范式（1NF）的数据库就不是关系数据库。</strong></p>
+<p>第一范式存在问题：冗余度大、会引起修改操作的不一致性、数据插入异常、数据删除异常。</p>
+<ol>
+<li><strong>冗余度大</strong>：
+<ul>
+<li>1NF要求每列都是原子性的，这可能导致数据的冗余。当数据重复存储在不同的表中，会增加存储空间，增加了数据不一致性的风险。</li>
+</ul>
+</li>
+<li><strong>修改操作的不一致性</strong>：
+<ul>
+<li>如果某个信息在多个地方存储，当需要修改这个信息时，需要在所有存储位置进行同样的修改。如果有一个位置的信息修改了而其他位置未修改，数据就会不一致。</li>
+</ul>
+</li>
+<li><strong>数据插入异常</strong>：
+<ul>
+<li>数据插入异常指的是由于表中的部分列被留空或无法插入新行，而导致无法插入需要的数据。在1NF中，如果表中的某列是必填项，而其他列不是，当插入新行时，可能会出现无法插入数据的情况。</li>
+</ul>
+</li>
+<li><strong>数据删除异常</strong>：
+<ul>
+<li>当从表中删除数据时，可能会意外删除其他相关数据，从而造成数据丢失。这种情况在存在多个依赖于相同键的表时较为常见。如果删除某个主键相关的信息，可能会导致其他数据不完整或不一致。</li>
+</ul>
+</li>
+</ol>
+<p><strong>第二范式</strong>，强调记录的唯一性约束，数据表必须有一个主键，并且没有包含在主键中的列必须<strong>完全依赖</strong>于主键，而不能只依赖于主键的一部分。</p>
+<p>举例：</p>
+<p>学生信息（学号，身份证，姓名）学号-》姓名 ，学号，身份证-》姓名 所以姓名部分依赖于（学号，身份证）该表不是2NF。</p>
+<p><strong>2.3 3NF 第三范式</strong></p>
+<p>第三范式，强调数据属性冗余性的约束，也就是非主键列必须直接依赖于主键。也就是消除了非主属性对码的传递函数依赖的2NF。</p>
+<p>BCNF消除主键的某一列会依赖于主键的其他列</p>
+<p><strong>4NF 第四范式</strong></p>
+<p>非主属性不应该有多值。如果有多值就违反了第四范式。4NF是限制关系模式的属性间不允许有非平凡且非函数依赖的多值依赖。</p>
+<p>举例：用户联系方式表(用户id，固定电话，移动电话)，其中用户id是主键，这个满足了BCNF,但是一个用户有可能会有多个固定电话或者多个移动电话，那么这种设计就不合理，应该改为(用户id，联系方式类型，电话号码)。</p>
+<p>说明：如果只考虑函数依赖，关系模式规范化程度最高的范式是BCNF;如果考虑多值依赖则是4NF。</p>
+<p>先建立索引或者分区，然后再查询</p>
+<h3 id="事务">事务</h3>
+<p>数据库环境中的事务有两个主要目的：</p>
+<ol>
+<li>提供可靠的工作单元，即使在系统发生故障的情况下，也可以从故障中正确恢复并保持数据库的一致性。例如：当执行过早且意外停止（完全或部分）时，在这种情况下，数据库上的许多操作仍未完成，状态不明确。</li>
+</ol>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        Author:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Stan ke</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        Link:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://stan370.github.io/2024/08/20/DB/">https://stan370.github.io/2024/08/20/DB/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        Reprint policy:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    All articles in this blog are used except for special statements
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    reprint policy. If reproduced, please indicate source
+                    <a href="/about" target="_blank">Stan ke</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">
+                                    <span class="chip bg-color">数据库</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                    </ul>
+                    
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/reward/wechat.JPG" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        TBD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2024/09/15/IOandEpoll/Epoll/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/17.jpg" class="responsive-img" alt="操作系统 I/O 多路复用，select / poll / epoll">
+                        
+                        <span class="card-title">操作系统 I/O 多路复用，select / poll / epoll</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2024-09-15
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" class="post-category">
+                                    计算机科学
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">计算机基础</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
+                        <span class="chip bg-color">操作系统</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2024/07/21/Distributed/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="分布式系统中的一致性模型">
+                        
+                        <span class="card-title">分布式系统中的一致性模型</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2024-07-21
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" class="post-category">
+                                    计算机科学
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">
+                        <span class="chip bg-color">数据库</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">
+                        <span class="chip bg-color">分布式系统</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+
+    <div class="container row center-align"
+         style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2025</span>
+            
+            <a href="/about" target="_blank">Stan ke</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/Stan370/stan370.github.io" target="_blank">Matery</a>
+            <br>
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:&nbsp;<span
+                        class="white-color">293.4k</span>
+            <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;Total visits:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;Total visitors:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            <br>
+            <!-- Matomo -->
+            <script>
+                var _paq = window._paq = window._paq || [];
+                /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+                _paq.push(['trackPageView']);
+                _paq.push(['enableLinkTracking']);
+                (function() {
+                    var u="https://your-matomo-instance.com/";
+                    _paq.push(['setTrackerUrl', u+'matomo.php']);
+                    _paq.push(['setSiteId', '1']);
+                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+                })();
+            </script>
+            <!-- End Matomo Code -->
+            <!-- Privacy Notice -->
+            <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+                <i class="fas fa-shield-alt"></i> This site uses Matomo for privacy-friendly analytics.
+            </div>
+            <!-- 运行天数提醒. -->
+            
+                <span id="sitetime"> Loading ...</span>
+                <script>
+                    var calcSiteTime = function () {
+                        var seconds = 1000;
+                        var minutes = seconds * 60;
+                        var hours = minutes * 60;
+                        var days = hours * 24;
+                        var years = days * 365;
+                        var today = new Date();
+                        var startYear = "2019";
+                        var startMonth = "6";
+                        var startDate = "28";
+                        var startHour = "0";
+                        var startMinute = "0";
+                        var startSecond = "0";
+                        var todayYear = today.getFullYear();
+                        var todayMonth = today.getMonth() + 1;
+                        var todayDate = today.getDate();
+                        var todayHour = today.getHours();
+                        var todayMinute = today.getMinutes();
+                        var todaySecond = today.getSeconds();
+                        var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                        var diff = t2 - t1;
+                        var diffYears = Math.floor(diff / years);
+                        var diffDays = Math.floor((diff / days) - diffYears * 365);
+
+                        // 区分是否有年份.
+                        var language = 'en';
+                        if (startYear === String(todayYear)) {
+                            document.getElementById("year").innerHTML = todayYear;
+                            var daysTip = 'This site has been running for ' + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                daysTip = '本站已运行 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                daysTip = '本站已運行 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = daysTip;
+                        } else {
+                            document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                            var yearsAndDaysTip = 'This site has been running for ' + diffYears + ' years and '
+                                + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                yearsAndDaysTip = '本站已运行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                yearsAndDaysTip = '本站已運行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+                        }
+                    }
+
+                    calcSiteTime();
+                </script>
+            
+            <br>
+            
+        </div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+  <div class="modal-content">
+    <div class="search-header">
+      <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span  >
+      <input
+        type="search"
+        id="searchInput"
+        name="s"
+        placeholder="Please enter a search keyword"
+        class="search-input"
+      />
+    </div>
+    <div id="searchResult"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems, {
+        dismissible: true,    // Allow modal to be dismissed by clicking outside
+        preventScrolling: false, // Allow scrolling while modal is open
+        opacity: 0.5,        // Opacity of modal background
+        inDuration: 250,     // Transition in duration
+        outDuration: 250,    // Transition out duration
+        onOpenStart: function() {
+            document.body.style.overflow = 'auto';
+        },
+        onCloseEnd: function() {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Get modal instance
+    const searchModal = document.getElementById("searchModal");
+    const modalInstance = M.Modal.getInstance(searchModal);
+    
+    // Only open modal when search button is clicked
+    document.getElementById("openSearchBtn")?.addEventListener("click", function() {
+        modalInstance.open();
+        searchInput.focus(); 
+    });
+    function closeSearchModal() {
+        modalInstance.close();
+    }
+
+    // Handle clicks outside modal
+    document.addEventListener("click", function(event) {
+        const modalContent = searchModal.querySelector(".modal-content");
+        // Check if click is outside modal content
+        if (event.target === searchModal && !modalContent.contains(event.target)) {
+            closeSearchModal();
+        }
+    });
+
+    // Add ESC key to close modal
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape" && searchModal.classList.contains('open')) {
+            closeSearchModal();
+        }
+    });
+
+    var searchFunc = function (path, search_id, content_id) {
+      "use strict";
+      function debounce(func, wait) {
+        let timeout;
+        return function () {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, arguments), wait);
+        };
+      }
+      $.ajax({
+        url: path,
+        dataType: "json",
+        success: function (jsonData) {
+          // 获取所有文章数据
+          console.log(jsonData);
+          var datas = jsonData.map(function (post) {
+            return {
+              title: post.title,
+              content: post.content,
+              url: post.url,
+            };
+          });
+
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+
+          // 搜索输入监听
+          $input.addEventListener(
+            "input",
+            debounce(function () {
+              var str = '<ul class="search-result-list">';
+              var keywords = this.value
+                .trim()
+                .toLowerCase()
+                .split(/[\s\-]+/);
+              $resultContent.innerHTML = "";
+              if (this.value.trim().length <= 0) {
+                return;
+              }
+              // Perform local searching
+              datas.forEach(function (data) {
+                var isMatch = true;
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content
+                  .trim()
+                  .replace(/<[^>]+>/g, "")
+                  .toLowerCase();
+                var data_url =
+                  data.url.indexOf("/") === 0 ? data.url : "/" + data.url;
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                console.log(data_title, data_content, data_url);
+                if (data_title !== "" && data_content !== "") {
+                  for (let i = 0; i < keywords.length; i++) {
+                    let keyword = keywords[i];
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+
+                    if (index_title < 0 && index_content < 0) {
+                      isMatch = false;
+                      break; // 直接退出关键词遍历
+                    } else {
+                      if (index_content < 0) {
+                        index_content = 0;
+                      }
+                      if (i === 0) {
+                        first_occur = index_content;
+                      }
+                    }
+                  }
+                }
+
+                // Show search results
+                if (isMatch) {
+                  str += `<li>
+                <a href="${data_url}" class="search-result-title">${data_title}</a>`;
+                  var content = data.content.trim().replace(/<[^>]+>/g, "");
+                  if (first_occur >= 0) {
+                    var start = Math.max(0, first_occur - 20);
+                    var end = Math.min(content.length, first_occur + 80);
+                    var match_content = content.substring(start, end);
+
+                    keywords.forEach(function (keyword) {
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(
+                        regS,
+                        '<em class="search-keyword">$&</em>'
+                      );
+                    });
+
+                    str += `<p class="search-result">${match_content}...</p>`;
+                  }
+                  str += "</li>";
+                }
+              });
+
+              str += "</ul>";
+              $resultContent.innerHTML = str;
+            }, 300)
+          ); // 设置 300 毫秒延迟
+        },
+        error: function (xhr, status, error) {
+          console.error("Search failed:", error);
+          document.getElementById(content_id).innerHTML =
+            '<p class="search-error">Search failed to load. Please try again.</p>';
+        },
+      });
+    };
+
+    // 初始化搜索
+    searchFunc('/search.json', "searchInput", "searchResult");
+  });
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/js/matery.js"></script>
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/clicklove.js" async="async"></script>
+    <script async src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
