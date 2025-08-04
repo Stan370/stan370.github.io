@@ -174,7 +174,7 @@ mathjax:
 # 文章信息--若要开启文章字数统计，需要安装 hexo-wordcount 插件，安装命令: `npm i --save hexo-wordcount`
 postInfo:
   date: true # 发布日期
-  update: false # 更新日期
+  update: true # 更新日期
   wordCount: true # 文章字数统计
   totalCount: false # 站点总文章字数
   min2read: true # 文章阅读时长

@@ -1,6 +1,7 @@
 ---
-title: 3000元部署开源隐私”大“模型 on Mac mini 16gB
+title: 3000元部署开源隐私"大"模型 on Mac mini 16gB
 date: 2025-03-19 21:56:29
+updatedate: 2025-08-04
 tags:
 - LLM
 img: https://a-us.storyblok.com/f/1014296/5000x3000/a4a9fdddc0/satechi_macmini2024_hub_env1-edit.jpg
