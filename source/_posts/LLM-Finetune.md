@@ -77,8 +77,24 @@ int8, etc. formats.
 | Qwen3-14B Q4\_K\_M    | \~14B | 13–16GB+ | ❌ 慢 | 很强   | 离线高质量推理，慢也能忍 |
 | Qwen1.5-7B Q4\_K\_M   | \~7B  | 7–9GB    | ⚠ 中 | 强    | 折中选择         |
 
+## GGUF memory calc
+**Total memory ≈ weight memory + KV cache memory + other buffers
+Weight memory ≈ GGUF file size × decompression factor (approximately 1.5 for Q2_K)
+KV cache ≈ number of layers × context_length × embedding_length × bytes_per_value
+Other buffers ≈ hundreds of MB
+Therefore, when deploying on Ollama, llama.cpp, or mlc-llm, choose the appropriate GGUF version – Q4_K_M and Q8_0 offer a good balance.**
 
-Therefore, when deploying on Ollama, llama.cpp, or mlc-llm, choose the appropriate GGUF version – Q4_K_M and Q8_0 offer a good balance.
+First, the model weights themselves. After quantization, the GGUF file stores compressed integer weights, but llama.cpp decodes them into compact tensors when loading. For 2-bit × group quantization (Q2_K), the measured memory usage is approximately 1.5 times the file size—for example, a 9.3 GB Q2_K file will occupy approximately 14 GB after loading. This is consistent with the common saying in the community that "loading a quantized model requires ∼(file size) × (bits/8) × decompression factor", and also confirms the experience that "memory requirements are about 2-4 times the disk size" (WizardLM-7B 14GB file loading requires ∼30GB of memory) ([Artificial Intelligence Stack Exchange][1]).
+
+Secondly, the KV cache. The longer the statement context, the more key/value pairs need to be stored. Each Transformer layer generates a KV tensor for context_length (e.g. 4096), with a shape of (context_length, head_count_kv, head_size), and numbers are generally stored in FP16. Taking Qwen3-Coder-30B as an example: 48 layers, head_count_kv=4, head_size=128, but embedding_length=2048, this is actually...
+
+```
+layers × context × embedding_length × 2 bytes
+≈ 48 × 4096 × 2048 × 2 bytes
+≈ 800 MiB
+```
+
+If you enable a longer context (like 16KB), the KV cache will linearly double.
 
 **Phase 3: Understanding the Model Repository Structure (Using Qwen as an Example)**
 
@@ -182,3 +198,209 @@ I want to see how small I can go and still retain quality coding assistance. Spo
 That's it. From confusion to abliteration to building my private dev assistant, this journey taught me one thing: **you don’t need OpenAI** to build a good coder chatbot. You just need good data, good models, and the will to destroy and rebuild.
 
 If you’re curious or want to try abliteration yourself, ping me. I’ll share my LoRA configs, ggml hacks, and more.
+
+# **Running Large GGUF Models on Apple Silicon: A Real-World Guide for M4 Mac (16GB) Users**
+
+You’ve downloaded a massive 30-billion-parameter AI model — maybe `Qwen3-Coder-30B-A3B-Instruct-UD-Q2_K_XL.gguf` — excited to run it locally on your sleek M4 Mac with 16GB of unified memory.
+
+You fire up `llama-server`, set `--n-gpu-layers 999`, and wait.
+
+Then… crash.
+
+```
+ggml_metal_graph_compute: command buffer 1 failed with status 5
+error: Insufficient Memory (kIOGPUCommandBufferCallbackErrorOutOfMemory)
+```
+
+Or worse: silent hangs, `SIGSTOP`, LLDB showing `0xffffffffffffffff`, and no way to kill the process.
+
+This is **not a failure of will** — it’s a collision between **ambition and reality**.
+
+In this article, we’ll walk through:
+- Why large GGUF models fail on 16GB Macs
+- The truth about quantization (spoiler: Q2_K ≠ small memory)
+- How to actually run models *without* crashing
+- And how to fix the infamous `pos_min == -1` bug in `llama.cpp`
+
+Let’s get real about **local LLMs on Apple Silicon**.
+
+---
+
+## 🔍 Part 1: The Myth of “Small” Quantized Models
+
+You see a file:  
+`Qwen3-Coder-30B-A3B-Instruct-UD-Q2_K_XL.gguf` — **10.97 GiB**
+
+“Perfect!” you think. “It’s under 16GB. It should fit.”
+
+But reality hits hard.
+
+### 📊 Why 11 GB ≠ 11 GB
+
+| Component | Memory Use |
+|--------|------------|
+| Model weights (Q2_K hybrid) | ~11 GB |
+| KV Cache (for context) | ~1–2 GB |
+| Metal GPU working buffers | ~2–4 GB |
+| Intermediate activations | ~1–2 GB |
+| macOS & other apps | ~1–2 GB |
+| **Total Peak Usage** | **~16–20 GB** |
+
+👉 Even with **Unsloth UD v2.0** or **Q2_K_XL**, the runtime memory exceeds your **16GB unified RAM**.
+
+The M4 GPU doesn’t have “VRAM” — it shares memory with the CPU.  
+So when Metal runs out of space, **everything stops**.
+
+---
+
+## 💥 Part 2: The GPU Memory Crash
+
+You see:
+
+```
+ggml_metal_graph_compute: command buffer 1 failed with status 5
+error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+```
+
+This isn’t a software bug — it’s **physics**.
+
+The GPU tried to allocate buffers for computation and failed.
+
+Even with `--mmap` (memory mapping), the active layers must be loaded into memory.
+
+### ✅ Workaround: Reduce GPU Offloading
+```bash
+--n-gpu-layers 0    # CPU-only (slow but stable)
+--n-gpu-layers 32   # Partial GPU (best balance)
+```
+
+Or switch to a **7B model** — they’re faster, fit in memory, and often outperform bloated 30B models in practice.
+
+---
+
+## 🐛 Part 3: The `pos_min == -1` Bug in `llama.cpp`
+
+After surviving the memory battle, you hit a new enemy:
+
+```
+/Users/stanmac/Downloads/llm/llama.cpp/tools/server/server.cpp:3292: pos_min == -1, but n_past > 0 - should not happen
+```
+
+This is a **known regression** in recent `llama.cpp` builds (April 2025), triggered by:
+
+- Chat format mismatches
+- Slot reuse bugs
+- Broken KV cache state
+
+The server **crashes or freezes**, and even `kill -9` fails.
+
+LLDB shows:
+```
+* thread #1, stop reason = signal SIGSTOP
+frame #0: 0xffffffffffffffff 
+```
+
+👉 The process is **zombie-stuck** — only a **reboot** can fully free the Metal GPU memory.
+
+---
+
+## ✅ Part 4: How to Actually Succeed
+
+Here’s what works — tested on M4 Mac 16GB.
+
+### ✅ 1. Use a Stable `llama.cpp` Version
+
+Avoid the latest `master`. Use a known good commit:
+
+```bash
+git checkout 8f7c702c
+make clean && make server -j
+```
+
+Or wait for the fix in:
+👉 https://github.com/ggml-org/llama.cpp/pull/13833
+
+---
+
+### ✅ 2. Run This Command (Safe & Stable)
+
+```bash
+./build/bin/llama-server \
+  --model "Your model path" \
+  --port 10000 \
+  --n-gpu-layers 0 \
+  --ctx-size 4096 \
+  --batch-size 512 \
+  --threads 8 \
+  --temp 0.7 \
+  --repeat-penalty 1.1 \
+  --no-cache \
+  --log-disable
+```
+
+#### Key Flags:
+- `--n-gpu-layers 0`: Avoid GPU OOM
+- `--ctx-size 4096`: Limit context to save memory
+- `--no-cache`: Bypass broken KV cache logic
+- `--log-disable`: Reduce noise
+
+---
+
+### ✅ 3. Use `/completion`, Not `/chat/completions`
+
+Avoid the buggy chat format parser.
+
+Use:
+```bash
+curl http://localhost:10000/completion -d '{
+  "prompt": "def binary_search(arr, x):",
+  "n_predict": 128
+}'
+```
+
+Not:
+```bash
+curl http://localhost:10000/v1/chat/completions -d '{ "messages": [...] }'
+```
+
+---
+
+### ✅ 4. Kill Stuck Processes
+
+When the server hangs:
+
+```bash
+pkill -9 -f llama-server
+```
+
+If that fails:
+- Open **Activity Monitor** → force quit
+- Or **reboot** (sadly, often necessary)
+
+---
+
+### ✅ 5. Better: Switch to 7B Models
+
+| Model | Size | RAM Use | Speed | Quality |
+|------|------|--------|-------|--------|
+| `Qwen2.5-Coder-7B-Q5_K_S.gguf` | ~6 GB | ~9 GB | ⚡⚡ | ✅✅✅ |
+| `DeepSeek-Coder-V2-Lite-Q6_K.gguf` | ~5.2 GB | ~8 GB | ⚡⚡⚡ | ✅✅✅✅ |
+| `CodeLlama-7B-Instruct-Q5_K_M.gguf` | ~5.8 GB | ~9 GB | ⚡⚡ | ✅✅ |
+
+👉 These run **fully on GPU**, are **faster**, and **don’t crash**.
+
+---
+
+## 🏁 Conclusion: Be Realistic, Be Smart
+
+### ✅ Do:
+- Use **7B–14B models** for best experience
+- Stick to **stable `llama.cpp`** versions
+- Use `--no-cache`, `--n-gpu-layers 0` for debugging
+- Prefer `/completion` over chat endpoints
+
+### ❌ Don’t:
+- Assume Q2_K = small memory
+- Run 30B models on 16GB Macs
+- Ignore the `pos_min == -1` bug — it’s real
+- Expect GPU to save you — it shares memory
