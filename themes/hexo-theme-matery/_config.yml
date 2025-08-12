@@ -465,6 +465,7 @@ libs:
     star: /libs/others/star.js
     snow: /libs/others/snow.js
     tcaptcha: /libs/others/TencentCaptcha.js
+    busuanzi: /libs/others/busuanzi.pure.mini.js
     aplayer: /libs/aplayer/APlayer.min.js
     meting: /libs/aplayer/Meting.min.js
     dplayer: /libs/dplayer/DPlayer.min.js

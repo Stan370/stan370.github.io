@@ -15,14 +15,16 @@
             <br>
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;<%- __('siteTotalWords') %>:&nbsp;<span
                         class="white-color"><%= totalcount(site) %></span>
+            <% if (theme.busuanziStatistics && theme.busuanziStatistics.enable) { %>
             <span id="busuanzi_container_site_pv">
                 &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;<%- __('siteTotalVisits') %>:&nbsp;
-                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+                    <span id="busuanzi_value_site_pv" class="white-color">Loading...</span>
             </span>
                 <span id="busuanzi_container_site_uv">
                 &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;<%- __('siteTotalVisitors') %>:&nbsp;
-                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+                    <span id="busuanzi_value_site_uv" class="white-color">Loading...</span>
             </span>
+            <% } %>
             <br>
             <!-- Matomo -->
             <script>
@@ -43,6 +45,26 @@
             <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
                 <i class="fas fa-shield-alt"></i> This site uses Matomo for privacy-friendly analytics.
             </div>
+            
+            <!-- Busuanzi Debug Info -->
+            <% if (theme.busuanziStatistics && theme.busuanziStatistics.enable) { %>
+            <script>
+                // Debug Busuanzi loading
+                console.log('Busuanzi enabled, checking elements...');
+                setTimeout(function() {
+                    var pvElement = document.getElementById('busuanzi_value_site_pv');
+                    var uvElement = document.getElementById('busuanzi_value_site_uv');
+                    if (pvElement && pvElement.innerHTML === 'Loading...') {
+                        console.log('Busuanzi PV still loading, service might be blocked');
+                        pvElement.innerHTML = 'Service unavailable';
+                    }
+                    if (uvElement && uvElement.innerHTML === 'Loading...') {
+                        console.log('Busuanzi UV still loading, service might be blocked');
+                        uvElement.innerHTML = 'Service unavailable';
+                    }
+                }, 5000); // Check after 5 seconds
+            </script>
+            <% } %>
             <!-- 运行天数提醒. -->
             <% if (theme.time.enable) { %>
                 <span id="sitetime"> Loading ...</span>
