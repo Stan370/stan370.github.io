@@ -110,3 +110,13 @@ deploy:
   type: git
   repository: https://github.com/Stan370/stan370.github.io.git
   branch: master
+deploy:
+  - type: git
+    repo: https://github.com/Stan370/stan370.github.io.git
+    branch: master
+
+  - type: rsync
+    host: jksfadfm.serv00.net
+    user: youruser
+    root: ~/domains/jksfadfm.serv00.net/public_html/
+    port: 22
