@@ -107,10 +107,6 @@ theme: hexo-theme-matery
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: git
-  repository: https://github.com/Stan370/stan370.github.io.git
-  branch: master
-deploy:
   - type: git
     repo: https://github.com/Stan370/stan370.github.io.git
     branch: master
