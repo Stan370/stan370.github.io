@@ -11,7 +11,7 @@ keywords:
 author: Stan ke
 language: en
 timezone: ''
-url: https://stan370.github.io/
+url: https://jksfadfm.serv00.net
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -107,7 +107,8 @@ theme: hexo-theme-matery
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  - type: git
-    repo: https://github.com/Stan370/stan370.github.io.git
-    branch: master
-
+  type: rsync
+    host: jksfadfm.serv00.net
+    user: jksfadfm
+    root: ~/domains/jksfadfm.serv00.net/public_html/
+    port: 22
