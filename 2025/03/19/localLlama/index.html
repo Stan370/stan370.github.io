@@ -4,9 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="3000元部署开源隐私”大“模型 on Mac mini 16gB, StanBlog">
-    <meta name="description" content="为什么我选择 Mac Mini M4？——本地 LLM 部署 &amp;amp; 个人知识库探索
-在大模型都想上云、绑API的时代，还有多少人愿意在家用小机器上，部署隐私友好、本地离线、完全控制的模型系统？如果你愿意折腾，一台**不到3000元的二">
+    <meta name="keywords" content="3000元部署开源隐私&#34;大&#34;模型 on Mac mini 16gB, StanBlog">
+    <meta name="description" content="对于 20B以上的模型 Mac mini 16GB 还是不太够。 芯片虽然 CPU 单核强，NPU 功耗比也不错，但真要跑 LLM，最大瓶颈不是 CPU，而是内存带宽和总 RAM。你提到的内存带宽差异，才是关键：
+M4：带宽在 120GB/">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -29,7 +29,7 @@
 </script>
 
 
-    <title>3000元部署开源隐私”大“模型 on Mac mini 16gB | StanBlog</title>
+    <title>3000元部署开源隐私&#34;大&#34;模型 on Mac mini 16gB | StanBlog</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/awesome/css/all.min.css">
@@ -434,7 +434,7 @@ mjx-container[display="true"] + br {
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">3000元部署开源隐私”大“模型 on Mac mini 16gB</h1>
+                    <h1 class="description center-align post-title">3000元部署开源隐私&#34;大&#34;模型 on Mac mini 16gB</h1>
                 </div>
             </div>
         </div>
@@ -571,18 +571,23 @@ mjx-container[display="true"] + br {
                 
 
                 
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
+                    2025-08-04
+                </div>
+                
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
-                    3.8k
+                    4.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
-                    15 Min
+                    18 Min
                 </div>
                 
 
@@ -597,11 +602,18 @@ mjx-container[display="true"] + br {
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p><strong>为什么我选择 Mac Mini M4？——本地 LLM 部署 &amp; 个人知识库探索</strong></p>
+                <p>对于 20B以上的模型 Mac mini 16GB 还是不太够。 芯片虽然 CPU 单核强，NPU 功耗比也不错，但真要跑 LLM，最大瓶颈不是 CPU，而是内存带宽和总 RAM。你提到的内存带宽差异，才是关键：<br>
+M4：带宽在 120GB/s 左右，跟普通 DDR5 核显 PC 差不多，根本不是“显卡级”。<br>
+M3 Pro：256GB/s<br>
+M3 Max：400GB/s<br>
+M3 Ultra：800GB/s（双芯封装）<br>
+AI 推理 = 带宽 + 显存 + 内存 + 并发 IO<br>
+这个带宽决定了大模型参数读取速度，尤其是多头注意力层密集访问权重时，M4 根本顶不住。而且 16GB RAM 不仅容量小，统一内存结构还容易在多进程/模型切换时抖动，尤其你测试过加载 Qwen3-Coder-30B，swap 一上，性能完全废掉。<br>
+更别说 GGUF 模型加载时内存占用不只是模型权重，还有 KV Cache、临时缓冲、线程开销，这些加起来对 16GB 系统简直是极限拉扯。 14B 以下的量化模型（尤其是 Q4_K、Q5_K、甚至 Q2_K），在 Mac mini 上勉强可跑，但要看你容忍的响应速度和内存边界。但 3000元的价格还要什么自行车</p>
 <p>在大模型都想上云、绑API的时代，还有多少人愿意在家用小机器上，部署隐私友好、本地离线、完全控制的模型系统？如果你愿意折腾，一台**不到3000元的二手/教育优惠 Mac mini M4（16GB RAM）**就能跑起目前大多数开源 20B 以下的量化模型，甚至还能处理语音、图像、代码。</p>
 <p>我在2024年中到2025年间密集试了各种框架，从 Transformers 到 llama.cpp，再到 Apple 的 MLX + LM Studio，下面是基于实际使用体验 + 社区 benchmark 对比 + 本地推理日志的一份部署总结，适合有硬件限制但又想最大化利用现有芯片能力的开发者。 这篇文章会分享我的<strong>选型思考</strong>、<strong>用途场景</strong>，以及在折腾过程中收获的一些经验。</p>
 <hr>
-<h2 id="1-为什么选择-Mac-Mini-M4？"><strong>1. 为什么选择 Mac Mini M4？</strong></h2>
+<h1><strong>1. 为什么选择 Mac Mini M4？</strong></h1>
 <p>在挑选设备时，我主要考虑了以下几个因素：</p>
 <h3 id="1-1-性能-vs-能耗：M4-的性价比惊喜">** 1.1 性能 vs. 能耗：M4 的性价比惊喜**</h3>
 <p>相比 Intel/AMD 服务器或台式机，<strong>Apple Silicon 的能耗比确实很强</strong>。M4 拥有<strong>10 核 CPU + 10 核 GPU + 16 核 NPU</strong>，而且功耗低到离谱（官方标称 30W）。<br>
@@ -651,9 +663,26 @@ Neural Engine（神经引擎）：<br>
 </ul>
 </li>
 </ul>
-<hr>
-<h2 id="大模型部署能力：你能跑多“大”？">大模型部署能力：你能跑多“大”？</h2>
-<h3 id="截止-2025-08，以下模型可稳定运行">截止 2025-08，以下模型<strong>可稳定运行</strong></h3>
+<h2 id="内存极限在哪里？">内存极限在哪里？</h2>
+<p>在 Mac mini 16GB 上，操作系统本身约占 2.5GB，即便关闭 iCloud、Spotlight、Stage Manager 等服务，理论最大模型体积也就在 <strong>11.5~12GB 左右</strong>。实践中：</p>
+<ul>
+<li>开启 <code>llama-swap</code> 可释放模型之间的 KV Cache，降低峰值内存（非常推荐）</li>
+<li><code>MLX</code> 加载更快，但占用 GPU RAM 多，不适合同时跑多模型</li>
+</ul>
+<h3 id="GGuf模型部署内存计算">GGuf模型部署内存计算</h3>
+<p>估算一个量化模型在内存里的真实占用，不能只看磁盘上 GGUF 文件的大小，还要把模型权重解压到内存、KV cache、以及 llama.cpp 运行时的各种缓冲区都算进去。最核心的三个部分是：</p>
+<p>首先，模型权重本身。量化后 GGUF 文件里存的就是压缩过的整数权重，但 llama.cpp 加载时会把它们解码到紧凑的张量里。对于 2 bit × group quant（Q2_K），实测内存占用约是文件大小的 1.5 倍左右——比如一个 9.3 GB 的 Q2_K 文件，加载后差不多要占 14 GB 左右。这跟社区里常说“量化模型加载要 ∼(文件大小) × (bits/8) × 解压系数”吻合，也印证了“内存需求大约是磁盘大小的 2 – 4 倍”这个经验（WizardLM–7B 14 GB 文件加载要用 ∼30 GB 内存）(<a target="_blank" rel="noopener" href="https://ai.stackexchange.com/questions/40839/for-an-llm-model-how-can-i-estimate-its-memory-requirements-based-on-storage-us?utm_source=chatgpt.com" title="For an LLM model, how can I estimate its memory ...">Artificial Intelligence Stack Exchange</a>)。</p>
+<p>其次，KV cache。语句上下文越长，需要存的 key/value 对越多。每个 Transformer 层要为 context_length（例如 4096）生成一份 KV 张量，形状是 (context_length, head_count_kv, head_size)，数字一般以 FP16 存储。以 Qwen3-Coder-30B 为例：48 层、head_count_kv=4、head_size=128、可是 embedding_length=2048，其实就是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">layers × context × embedding_length × 2 bytes  </span><br><span class="line">≈ 48 × 4096 × 2048 × 2 B  </span><br><span class="line">≈ 800 MiB</span><br></pre></td></tr></table></figure>
+<p>如果你开更长的 context（像 16 K），KV cache 就会线性翻倍。</p>
+<p>最后，运行时缓冲区和线程开销，会把总量再推高个几十到几百 MB。包括前向中间激活、多线程数据结构、stack buffer，macOS 下的 mmap 也会多占点。</p>
+<p>把它们合并，得出大致公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">总内存 ≈ 权重内存 + KV cache 内存 + 其他缓冲</span><br><span class="line">权重内存 ≈ GGUF 文件大小 × 解压系数（Q2_K 下大约 1.5）</span><br><span class="line">KV cache ≈ 层数 × context_length × embedding_length × bytes_per_value</span><br><span class="line">其他缓冲 ≈ 数百 MB</span><br></pre></td></tr></table></figure>
+<p>举个例子：<br>
+Qwen3-Coder-30B-A3B-Instruct-UD-Q2_K_XL.gguf 文件 9.3 GB，加上约 14 GB 权重解压、∼0.8 GB KV cache、∼0.2 GB 其他，就差不多需要 15 GB 以上才能稳定跑。Mac mini 16 GB 理论上勉强够，但是系统和其他进程还要占 2 – 4 GB，经常会触发 swap，性能就很糟。</p>
+<p>如果你改用 Q4_0（4 bit），解压系数掉到 ∼1.2，9.3 GB 文件只要 11 GB 左右；Q8_0（8 bit）基本是 1.0 倍，就是文件大小本身。但精度和速度也跟着走。</p>
+<p>这样你就能根据磁盘上不同 quant 格式的文件大小，按上述系数算出大概要多少内存，再比照自己硬件的可用 RAM，选最合适的模型量化等级。</p>
+<p>截止 2025-08，以下模型<strong>可稳定运行</strong></p>
 <table>
 <thead>
 <tr>
@@ -688,7 +717,7 @@ Neural Engine（神经引擎）：<br>
 </tr>
 <tr>
 <td><code>unsloth/Qwen3-Coder-30B-A3B-Instruct</code></td>
-<td>GGUF Q2_K_XL</td>
+<td>GGUF Q2_K_S</td>
 <td>~11.8GB</td>
 <td>~10–13</td>
 <td>勉强可用，内存压线</td>
@@ -717,6 +746,7 @@ Neural Engine（神经引擎）：<br>
 </tbody>
 </table>
 <h3 id="❌-无法稳定运行的模型">❌ 无法稳定运行的模型</h3>
+<p>大于15B的模型</p>
 <table>
 <thead>
 <tr>
@@ -744,13 +774,6 @@ Neural Engine（神经引擎）：<br>
 </tbody>
 </table>
 <hr>
-<h2 id="内存极限在哪里？">内存极限在哪里？</h2>
-<p>在 Mac mini 16GB 上，操作系统本身约占 2.5GB，即便关闭 iCloud、Spotlight、Stage Manager 等服务，理论最大模型体积也就在 <strong>11.5~12GB 左右</strong>。实践中：</p>
-<ul>
-<li><strong>GGUF Q2_K_XL</strong> 是可用的最大 quant 格式（用于 30B 模型）</li>
-<li>开启 <code>llama-swap</code> 可释放模型之间的 KV Cache，降低峰值内存（非常推荐）</li>
-<li><code>MLX</code> 加载更快，但占用 GPU RAM 多，不适合同时跑多模型</li>
-</ul>
 <hr>
 <h2 id="语音-图像能力评估">语音 + 图像能力评估</h2>
 <h3 id="Whisper-Large-v3">Whisper Large v3</h3>
@@ -1400,15 +1423,17 @@ npm run dev<br>
             |&nbsp;Theme&nbsp;<a href="https://github.com/Stan370/stan370.github.io" target="_blank">Matery</a>
             <br>
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:&nbsp;<span
-                        class="white-color">293.4k</span>
+                        class="white-color">297.3k</span>
+            
             <span id="busuanzi_container_site_pv">
                 &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;Total visits:&nbsp;
-                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+                    <span id="busuanzi_value_site_pv" class="white-color">Loading...</span>
             </span>
                 <span id="busuanzi_container_site_uv">
                 &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;Total visitors:&nbsp;
-                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+                    <span id="busuanzi_value_site_uv" class="white-color">Loading...</span>
             </span>
+            
             <br>
             <!-- Matomo -->
             <script>
@@ -1429,6 +1454,26 @@ npm run dev<br>
             <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
                 <i class="fas fa-shield-alt"></i> This site uses Matomo for privacy-friendly analytics.
             </div>
+            
+            <!-- Busuanzi Debug Info -->
+            
+            <script>
+                // Debug Busuanzi loading
+                console.log('Busuanzi enabled, checking elements...');
+                setTimeout(function() {
+                    var pvElement = document.getElementById('busuanzi_value_site_pv');
+                    var uvElement = document.getElementById('busuanzi_value_site_uv');
+                    if (pvElement && pvElement.innerHTML === 'Loading...') {
+                        console.log('Busuanzi PV still loading, service might be blocked');
+                        pvElement.innerHTML = 'Service unavailable';
+                    }
+                    if (uvElement && uvElement.innerHTML === 'Loading...') {
+                        console.log('Busuanzi UV still loading, service might be blocked');
+                        uvElement.innerHTML = 'Service unavailable';
+                    }
+                }, 5000); // Check after 5 seconds
+            </script>
+            
             <!-- 运行天数提醒. -->
             
                 <span id="sitetime"> Loading ...</span>
@@ -1721,7 +1766,7 @@ npm run dev<br>
 </script>
 
     <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/clicklove.js" async="async"></script>
-    <script async src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/"></script>
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
     
 
     

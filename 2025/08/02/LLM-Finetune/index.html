@@ -570,18 +570,23 @@ mjx-container[display="true"] + br {
                 
 
                 
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
+                    2025-08-05
+                </div>
+                
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
-                    1.4k
+                    2.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
-                    8 Min
+                    15 Min
                 </div>
                 
 
@@ -712,7 +717,16 @@ int8, etc. formats.</p>
 </tr>
 </tbody>
 </table>
-<p>Therefore, when deploying on Ollama, llama.cpp, or mlc-llm, choose the appropriate GGUF version – Q4_K_M and Q8_0 offer a good balance.</p>
+<h2 id="GGUF-memory-calc">GGUF memory calc</h2>
+<p><strong>Total memory ≈ weight memory + KV cache memory + other buffers<br>
+Weight memory ≈ GGUF file size × decompression factor (approximately 1.5 for Q2_K)<br>
+KV cache ≈ number of layers × context_length × embedding_length × bytes_per_value<br>
+Other buffers ≈ hundreds of MB<br>
+Therefore, when deploying on Ollama, llama.cpp, or mlc-llm, choose the appropriate GGUF version – Q4_K_M and Q8_0 offer a good balance.</strong></p>
+<p>First, the model weights themselves. After quantization, the GGUF file stores compressed integer weights, but llama.cpp decodes them into compact tensors when loading. For 2-bit × group quantization (Q2_K), the measured memory usage is approximately 1.5 times the file size—for example, a 9.3 GB Q2_K file will occupy approximately 14 GB after loading. This is consistent with the common saying in the community that “loading a quantized model requires ∼(file size) × (bits/8) × decompression factor”, and also confirms the experience that “memory requirements are about 2-4 times the disk size” (WizardLM-7B 14GB file loading requires ∼30GB of memory) ([Artificial Intelligence Stack Exchange][1]).</p>
+<p>Secondly, the KV cache. The longer the statement context, the more key/value pairs need to be stored. Each Transformer layer generates a KV tensor for context_length (e.g. 4096), with a shape of (context_length, head_count_kv, head_size), and numbers are generally stored in FP16. Taking Qwen3-Coder-30B as an example: 48 layers, head_count_kv=4, head_size=128, but embedding_length=2048, this is actually…</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">layers × context × embedding_length × 2 bytes</span><br><span class="line">≈ 48 × 4096 × 2048 × 2 bytes</span><br><span class="line">≈ 800 MiB</span><br></pre></td></tr></table></figure>
+<p>If you enable a longer context (like 16KB), the KV cache will linearly double.</p>
 <p><strong>Phase 3: Understanding the Model Repository Structure (Using Qwen as an Example)</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Qwen/Qwen3-8B-Base</span><br><span class="line">├── Adapters (8)</span><br><span class="line">├── Finetunes (80)</span><br><span class="line">├── Merges (3)</span><br><span class="line">└── Quantizations (30)</span><br></pre></td></tr></table></figure>
 <p><strong>Interpretation:</strong></p>
@@ -801,6 +815,176 @@ int8, etc. formats.</p>
 <p>—</p>
 <p>That’s it. From confusion to abliteration to building my private dev assistant, this journey taught me one thing: <strong>you don’t need OpenAI</strong> to build a good coder chatbot. You just need good data, good models, and the will to destroy and rebuild.</p>
 <p>If you’re curious or want to try abliteration yourself, ping me. I’ll share my LoRA configs, ggml hacks, and more.</p>
+<h1><strong>Running Large GGUF Models on Apple Silicon: A Real-World Guide for M4 Mac (16GB) Users</strong></h1>
+<p>You’ve downloaded a massive 30-billion-parameter AI model — maybe <code>Qwen3-Coder-30B-A3B-Instruct-UD-Q2_K_XL.gguf</code> — excited to run it locally on your sleek M4 Mac with 16GB of unified memory.</p>
+<p>You fire up <code>llama-server</code>, set <code>--n-gpu-layers 999</code>, and wait.</p>
+<p>Then… crash.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ggml_metal_graph_compute: command buffer 1 failed with status 5</span><br><span class="line">error: Insufficient Memory (kIOGPUCommandBufferCallbackErrorOutOfMemory)</span><br></pre></td></tr></table></figure>
+<p>Or worse: silent hangs, <code>SIGSTOP</code>, LLDB showing <code>0xffffffffffffffff</code>, and no way to kill the process.</p>
+<p>This is <strong>not a failure of will</strong> — it’s a collision between <strong>ambition and reality</strong>.</p>
+<p>In this article, we’ll walk through:</p>
+<ul>
+<li>Why large GGUF models fail on 16GB Macs</li>
+<li>The truth about quantization (spoiler: Q2_K ≠ small memory)</li>
+<li>How to actually run models <em>without</em> crashing</li>
+<li>And how to fix the infamous <code>pos_min == -1</code> bug in <code>llama.cpp</code></li>
+</ul>
+<p>Let’s get real about <strong>local LLMs on Apple Silicon</strong>.</p>
+<hr>
+<h2 id="🔍-Part-1-The-Myth-of-“Small”-Quantized-Models">🔍 Part 1: The Myth of “Small” Quantized Models</h2>
+<p>You see a file:<br>
+<code>Qwen3-Coder-30B-A3B-Instruct-UD-Q2_K_XL.gguf</code> — <strong>10.97 GiB</strong></p>
+<p>“Perfect!” you think. “It’s under 16GB. It should fit.”</p>
+<p>But reality hits hard.</p>
+<h3 id="📊-Why-11-GB-≠-11-GB">📊 Why 11 GB ≠ 11 GB</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Memory Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model weights (Q2_K hybrid)</td>
+<td>~11 GB</td>
+</tr>
+<tr>
+<td>KV Cache (for context)</td>
+<td>~1–2 GB</td>
+</tr>
+<tr>
+<td>Metal GPU working buffers</td>
+<td>~2–4 GB</td>
+</tr>
+<tr>
+<td>Intermediate activations</td>
+<td>~1–2 GB</td>
+</tr>
+<tr>
+<td>macOS &amp; other apps</td>
+<td>~1–2 GB</td>
+</tr>
+<tr>
+<td><strong>Total Peak Usage</strong></td>
+<td><strong>~16–20 GB</strong></td>
+</tr>
+</tbody>
+</table>
+<p>👉 Even with <strong>Unsloth UD v2.0</strong> or <strong>Q2_K_XL</strong>, the runtime memory exceeds your <strong>16GB unified RAM</strong>.</p>
+<p>The M4 GPU doesn’t have “VRAM” — it shares memory with the CPU.<br>
+So when Metal runs out of space, <strong>everything stops</strong>.</p>
+<hr>
+<h2 id="💥-Part-2-The-GPU-Memory-Crash">💥 Part 2: The GPU Memory Crash</h2>
+<p>You see:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ggml_metal_graph_compute: command buffer 1 failed with status 5</span><br><span class="line">error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)</span><br></pre></td></tr></table></figure>
+<p>This isn’t a software bug — it’s <strong>physics</strong>.</p>
+<p>The GPU tried to allocate buffers for computation and failed.</p>
+<p>Even with <code>--mmap</code> (memory mapping), the active layers must be loaded into memory.</p>
+<h3 id="✅-Workaround-Reduce-GPU-Offloading">✅ Workaround: Reduce GPU Offloading</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">--n-gpu-layers 0    <span class="comment"># CPU-only (slow but stable)</span></span><br><span class="line">--n-gpu-layers 32   <span class="comment"># Partial GPU (best balance)</span></span><br></pre></td></tr></table></figure>
+<p>Or switch to a <strong>7B model</strong> — they’re faster, fit in memory, and often outperform bloated 30B models in practice.</p>
+<hr>
+<h2 id="🐛-Part-3-The-pos-min-1-Bug-in-llama-cpp">🐛 Part 3: The <code>pos_min == -1</code> Bug in <code>llama.cpp</code></h2>
+<p>After surviving the memory battle, you hit a new enemy:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Users/stanmac/Downloads/llm/llama.cpp/tools/server/server.cpp:3292: pos_min == -1, but n_past &gt; 0 - should not happen</span><br></pre></td></tr></table></figure>
+<p>This is a <strong>known regression</strong> in recent <code>llama.cpp</code> builds (April 2025), triggered by:</p>
+<ul>
+<li>Chat format mismatches</li>
+<li>Slot reuse bugs</li>
+<li>Broken KV cache state</li>
+</ul>
+<p>The server <strong>crashes or freezes</strong>, and even <code>kill -9</code> fails.</p>
+<p>LLDB shows:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">frame #0: 0xffffffffffffffff </span><br></pre></td></tr></table></figure>
+<p>👉 The process is <strong>zombie-stuck</strong> — only a <strong>reboot</strong> can fully free the Metal GPU memory.</p>
+<hr>
+<h2 id="✅-Part-4-How-to-Actually-Succeed">✅ Part 4: How to Actually Succeed</h2>
+<p>Here’s what works — tested on M4 Mac 16GB.</p>
+<h3 id="✅-1-Use-a-Stable-llama-cpp-Version">✅ 1. Use a Stable <code>llama.cpp</code> Version</h3>
+<p>Avoid the latest <code>master</code>. Use a known good commit:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout 8f7c702c</span><br><span class="line">make clean &amp;&amp; make server -j</span><br></pre></td></tr></table></figure>
+<p>Or wait for the fix in:<br>
+👉 <a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/pull/13833">https://github.com/ggml-org/llama.cpp/pull/13833</a></p>
+<hr>
+<h3 id="✅-2-Run-This-Command-Safe-Stable">✅ 2. Run This Command (Safe &amp; Stable)</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">./build/bin/llama-server \</span><br><span class="line">  --model <span class="string">"Your model path"</span> \</span><br><span class="line">  --port 10000 \</span><br><span class="line">  --n-gpu-layers 0 \</span><br><span class="line">  --ctx-size 4096 \</span><br><span class="line">  --batch-size 512 \</span><br><span class="line">  --threads 8 \</span><br><span class="line">  --temp 0.7 \</span><br><span class="line">  --repeat-penalty 1.1 \</span><br><span class="line">  --no-cache \</span><br><span class="line">  --log-disable</span><br></pre></td></tr></table></figure>
+<h4 id="Key-Flags">Key Flags:</h4>
+<ul>
+<li><code>--n-gpu-layers 0</code>: Avoid GPU OOM</li>
+<li><code>--ctx-size 4096</code>: Limit context to save memory</li>
+<li><code>--no-cache</code>: Bypass broken KV cache logic</li>
+<li><code>--log-disable</code>: Reduce noise</li>
+</ul>
+<hr>
+<h3 id="✅-3-Use-completion-Not-chat-completions">✅ 3. Use <code>/completion</code>, Not <code>/chat/completions</code></h3>
+<p>Avoid the buggy chat format parser.</p>
+<p>Use:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:10000/completion -d <span class="string">'{</span></span><br><span class="line"><span class="string">  "prompt": "def binary_search(arr, x):",</span></span><br><span class="line"><span class="string">  "n_predict": 128</span></span><br><span class="line"><span class="string">}'</span></span><br></pre></td></tr></table></figure>
+<p>Not:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:10000/v1/chat/completions -d <span class="string">'{ "messages": [...] }'</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="✅-4-Kill-Stuck-Processes">✅ 4. Kill Stuck Processes</h3>
+<p>When the server hangs:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pkill -9 -f llama-server</span><br></pre></td></tr></table></figure>
+<p>If that fails:</p>
+<ul>
+<li>Open <strong>Activity Monitor</strong> → force quit</li>
+<li>Or <strong>reboot</strong> (sadly, often necessary)</li>
+</ul>
+<hr>
+<h3 id="✅-5-Better-Switch-to-7B-Models">✅ 5. Better: Switch to 7B Models</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Size</th>
+<th>RAM Use</th>
+<th>Speed</th>
+<th>Quality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Qwen2.5-Coder-7B-Q5_K_S.gguf</code></td>
+<td>~6 GB</td>
+<td>~9 GB</td>
+<td>⚡⚡</td>
+<td>✅✅✅</td>
+</tr>
+<tr>
+<td><code>DeepSeek-Coder-V2-Lite-Q6_K.gguf</code></td>
+<td>~5.2 GB</td>
+<td>~8 GB</td>
+<td>⚡⚡⚡</td>
+<td>✅✅✅✅</td>
+</tr>
+<tr>
+<td><code>CodeLlama-7B-Instruct-Q5_K_M.gguf</code></td>
+<td>~5.8 GB</td>
+<td>~9 GB</td>
+<td>⚡⚡</td>
+<td>✅✅</td>
+</tr>
+</tbody>
+</table>
+<p>👉 These run <strong>fully on GPU</strong>, are <strong>faster</strong>, and <strong>don’t crash</strong>.</p>
+<hr>
+<h2 id="🏁-Conclusion-Be-Realistic-Be-Smart">🏁 Conclusion: Be Realistic, Be Smart</h2>
+<h3 id="✅-Do">✅ Do:</h3>
+<ul>
+<li>Use <strong>7B–14B models</strong> for best experience</li>
+<li>Stick to <strong>stable <code>llama.cpp</code></strong> versions</li>
+<li>Use <code>--no-cache</code>, <code>--n-gpu-layers 0</code> for debugging</li>
+<li>Prefer <code>/completion</code> over chat endpoints</li>
+</ul>
+<h3 id="❌-Don’t">❌ Don’t:</h3>
+<ul>
+<li>Assume Q2_K = small memory</li>
+<li>Run 30B models on 16GB Macs</li>
+<li>Ignore the <code>pos_min == -1</code> bug — it’s real</li>
+<li>Expect GPU to save you — it shares memory</li>
+</ul>
 
                 
             </div>
@@ -1041,18 +1225,17 @@ int8, etc. formats.</p>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;Current
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2025/08/02/LLM-Finetune/">
+                <a href="/2025/09/05/vibe/">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/17.jpg" class="responsive-img" alt="Not Enough RAM! Gemma3n vs Qwen3 on 16Gb device Test, Building My Private AI Assistant">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/8.jpg" class="responsive-img" alt="Vibe coding的是软件开发的未来吗？">
                         
-                        <span class="card-title">Not Enough RAM! Gemma3n vs Qwen3 on 16Gb device Test, Building My Private AI Assistant</span>
+                        <span class="card-title">Vibe coding的是软件开发的未来吗？</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1062,9 +1245,9 @@ int8, etc. formats.</p>
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2025-08-02
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2025-09-05
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -1072,15 +1255,6 @@ int8, etc. formats.</p>
                             
                         </span>
                     </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/LLM/">
-                        <span class="chip bg-color">LLM</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -1265,15 +1439,17 @@ int8, etc. formats.</p>
             |&nbsp;Theme&nbsp;<a href="https://github.com/Stan370/stan370.github.io" target="_blank">Matery</a>
             <br>
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:&nbsp;<span
-                        class="white-color">293.4k</span>
+                        class="white-color">297.3k</span>
+            
             <span id="busuanzi_container_site_pv">
                 &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;Total visits:&nbsp;
-                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+                    <span id="busuanzi_value_site_pv" class="white-color">Loading...</span>
             </span>
                 <span id="busuanzi_container_site_uv">
                 &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;Total visitors:&nbsp;
-                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+                    <span id="busuanzi_value_site_uv" class="white-color">Loading...</span>
             </span>
+            
             <br>
             <!-- Matomo -->
             <script>
@@ -1294,6 +1470,26 @@ int8, etc. formats.</p>
             <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
                 <i class="fas fa-shield-alt"></i> This site uses Matomo for privacy-friendly analytics.
             </div>
+            
+            <!-- Busuanzi Debug Info -->
+            
+            <script>
+                // Debug Busuanzi loading
+                console.log('Busuanzi enabled, checking elements...');
+                setTimeout(function() {
+                    var pvElement = document.getElementById('busuanzi_value_site_pv');
+                    var uvElement = document.getElementById('busuanzi_value_site_uv');
+                    if (pvElement && pvElement.innerHTML === 'Loading...') {
+                        console.log('Busuanzi PV still loading, service might be blocked');
+                        pvElement.innerHTML = 'Service unavailable';
+                    }
+                    if (uvElement && uvElement.innerHTML === 'Loading...') {
+                        console.log('Busuanzi UV still loading, service might be blocked');
+                        uvElement.innerHTML = 'Service unavailable';
+                    }
+                }, 5000); // Check after 5 seconds
+            </script>
+            
             <!-- 运行天数提醒. -->
             
                 <span id="sitetime"> Loading ...</span>
@@ -1586,7 +1782,7 @@ int8, etc. formats.</p>
 </script>
 
     <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/clicklove.js" async="async"></script>
-    <script async src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/"></script>
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
     
 
     
