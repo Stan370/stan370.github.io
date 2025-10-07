@@ -50,163 +50,167 @@ poll 和 select 几乎没有区别。poll 在用户态通过数组方式传递�
 
 
 好处：
-struct pollfd使用比 使用的位掩码更具可扩展性的数组select()。
-可以更轻松地处理大量文件描述符。
+struct pollfd使用比 使用的位掩码更具可扩展性的数组select()。引用 select 手册页：“select() 只能监视小于 FD_SETSIZE 的文件描述符数量；poll(2) 没有这个限制。”所以这可能是选择 poll 而不是 select 的一个原因。可以更轻松地处理大量文件描述符。
 
 例子：
 struct pollfd fds[2]; fds[0].fd = socket_fd; fds[0].events = POLLIN; poll(fds, 2, timeout); 
-## 3. epoll()（Linux 专用）
-epoll 有以下几个特点：
 
-使用红黑树存储文件描述符集合
-使用队列存储就绪的文件描述符
-每个文件描述符只需在添加时传入一次；通过事件更改文件描述符状态
 
-因为它使用基于事件的模型，所以poll()效率更高。内核仅返回已就绪的文件描述符，而不是轮询每个文件描述符。允许边缘触发和电平触发模式，提供灵活性。
 
-epoll()效率更高，因为它会内部跟踪文件描述符集，并且只在某个文件描述符就绪时通知应用程序。它不需要在每次调用时重新检查所有文件描述符。那为什么epoll可以高效处理数千个连接，达到更好的并发性能？
-### 高效的事件通知机制
-select()和poll()：
+## 3. epoll()
+epoll 是 Linux 2.5.44（2002年）引入的 I/O 多路复用机制，专为高并发设计。
 
-这两个函数每次调用时都会对所有文件描述符执行线性扫描。这意味着即使只有少数文件描述符“就绪”（即数据可供读取/写入），内核也必须在每次调用该函数时检查每个描述符。这使得它们的性能与受监视的文件描述符数量成正比。
+
+`epoll` 并非单一系统调用，而是由三个接口组成的高效事件通知机制：
+
+- `epoll_create1()`：创建一个 epoll 实例，返回一个 epoll 文件描述符（epfd）；
+- `epoll_ctl()`：向 epoll 实例中**注册、修改或删除**需要监听的 fd 及其关注的事件（如 `EPOLLIN`、`EPOLLOUT`）；
+- `epoll_wait()`：阻塞等待，直到有 fd 就绪，返回就绪事件列表。
+
+### 3.1 为什么 epoll 能突破 select/poll 的性能瓶颈？
+
+#### （1）内核数据结构：红黑树 + 就绪链表
+
+- **红黑树（rb-tree）**：用于存储所有通过 `epoll_ctl(EPOLL_CTL_ADD)` 注册的 fd。  
+  - 插入/删除复杂度为 **O(log n)**，高效支持百万级连接；
+  - 避免了 `select/poll` 每次调用都要从用户态拷贝整个 fd 集合到内核的问题。
+
+- **就绪队列（ready list）**：一个**双向链表**，由内核维护。  
+  - 当某个被监听的 fd 状态变为“可读”或“可写”时，内核会**通过回调函数**（callback）将该 fd 对应的 `epitem` 节点加入就绪队列；
+  - `epoll_wait()` 调用时，**只需从该链表中取出就绪事件**，无需遍历所有注册的 fd。
+
+> 这是 epoll 高效的核心：**事件驱动 + 内核主动通知**，而非用户态轮询。
+
+#### （2）避免全量 fd 拷贝
+
+- `select/poll`：每次调用都需将**整个 fd 集合**从用户空间复制到内核空间；
+- `epoll`：fd **只需在 `epoll_ctl()` 时注册一次**，后续 `epoll_wait()` 无需传递 fd 列表，极大减少系统调用开销。
+
+> 注：早期 epoll 实现曾使用 `mmap` 共享内存加速事件传递，但现代内核已优化为高效的 ring buffer 或直接拷贝，`mmap` 不再是必须。
+
+#### （3）时间复杂度：从 O(n) 到 O(k)
+
+- `select/poll`：**O(n)**，n 为监听的 fd 总数；这意味着即使只有少数文件描述符“就绪”（即数据可供读取/写入），内核也必须在每次调用该函数时检查每个描述符。这使得它们的性能与受监视的文件描述符数量成正比。
 例如，如果您正在监视 1,000 个文件描述符，但只有 1 个已准备就绪，select()则poll()仍将对所有 1,000 个进行迭代。
 
+- `epoll_wait()`：时间复杂度从 O(n) 降到 O(1) or O(k)（k 为活跃连接数）；
+- 在 C1000K 场景下（100 万连接，仅 1000 个活跃），epoll 性能优势达 **1000 倍以上**。
 
-epoll它的工作原理是只向内核注册一次文件描述符（使用epoll_ctl()）。此后，内核会跟踪哪些文件描述符已就绪。当您调用时epoll_wait()，它仅返回具有事件（即数据就绪）的文件描述符，而不会扫描所有文件描述符。这使得它更加高效，尤其是在监视大量描述符时，因为它消除了重复扫描的需要。
-它不再在每次调用时检查所有文件描述符，epoll而是更像一个“事件驱动”系统：当注册描述符的状态发生变化时，内核会通知您。
+---
 
-### 边沿触发和电平触发模式
+### 3.2 ET（边缘触发） vs LT（水平触发）
 
-水平触发（LT，Level Trigger）：当文件描述符就绪时，会触发通知，如果用户程序没有一次性把数据读/写完，下次还会发出可读/可写信号进行通知。
-边缘触发（ET，Edge Trigger）：仅当描述符从未就绪变为就绪时，通知一次，之后不会再通知。
+epoll 支持两种事件触发模式，行为差异极大：
 
-select 只支持水平触发，epoll 支持水平触发和边缘触发。区别：边缘触发效率更高，减少了事件被重复触发的次数，函数不会返回大量用户程序可能不需要的文件描述符。
+| 模式 | 行为 | 适用场景 |
+|------|------|--------|
+| **LT（Level-Triggered，默认）** | 只要 fd 处于“可读”状态（即内核接收缓冲区非空），每次调用 `epoll_wait()` 都会返回该 fd 的事件。 | 编程简单，适合初学者；但可能重复触发，增加系统调用次数。 |
+| **ET（Edge-Triggered）** | **仅当 fd 状态从未就绪变为就绪时**（如新数据到达），才触发一次事件。若未一次性读完数据，后续 `epoll_wait()` **不会再次通知**。 | 高性能场景；要求 fd 必须设为**非阻塞模式**，并在事件触发后**循环读取直到返回 `EAGAIN`**。 |
 
-使用场景：当连接数较多并且有很多的不活跃连接时，epoll 的效率比其它两者高很多。当连接数较少并且都十分活跃的情况下，由于 epoll 需要很多回调，因此性能可能低于其它两者。
-
-3.大量描述符的 O(1) 性能
-select()和poll()：
-两者都具有O(n)复杂度，其中n是被监视的文件描述符的数量。随着描述符数量的增加，检查它们所花费的时间也呈线性增长。
-epoll()：
-epoll_wait()对于大多数操作来说，其复杂度为O(1)，这意味着它的性能不会随着文件描述符数量的增加而降低。这使得它在处理数千（甚至数万）个连接时具有更好的扩展性。
-
-4.内核空间数据结构
-epoll()使用更先进的内核空间数据结构（如红黑树和链接列表）来高效跟踪文件描述符。一旦文件描述符被注册，它就会存储在树中，从而允许快速查找和更新，进一步提高性能。
-相比之下，每次调用时select()都poll()需要将所有文件描述符从用户空间复制到内核空间，并且内核必须检查每一个文件描述符，从而导致更多的开销。
-    
-- **`select()` and `poll()`**:
-    - Both have **O(n)** complexity, where `n` is the number of file descriptors being monitored. As the number of descriptors grows, the time taken to check them grows linearly.
-- **`epoll()`**:
-    - `epoll_wait()` has **O(1)** complexity for most operations, meaning it doesn't degrade in performance as the number of file descriptors increases. This allows it to scale much better when handling thousands (or even tens of thousands) of connections.
-
-### 4. **Kernel-Space Data Structures**
-
-- `epoll()` uses more advanced kernel-space data structures (like red-black trees and linked lists) to efficiently track the file descriptors. Once a file descriptor is registered, it is stored in a tree, allowing quick lookups and updates, further improving performance.
-- In contrast, `select()` and `poll()` need to copy all file descriptors from user space to kernel space on every call, and the kernel has to check each one, leading to more overhead.
-
-此外还使用了内存映射（ `mmap` ）技术
-
-另一个本质的改进在于 `epoll` 采用基于事件的就绪通知方式。在 `select/poll` 中，进程只有在调用一定的方法后，内核才对所有监视的socket描述符进行扫描，而 `epoll` 事先通过 `epoll_ctl()` 来注册一个socket描述符，一旦检测到epoll管理的socket描述符就绪时，内核会采用类似 `callback` 的回调机制，迅速激活这个socket描述符，当进程调用 `epoll_wait()` 时便可以得到通知，也就是说epoll最大的优点就在于它 **只管就绪的socket描述符，而跟socket描述符的总数无关** 。
-
-5.大量描述符的内存使用率较低
-在 中select()，您必须提供一个固定大小的位掩码（通常限制为 1024 个描述符，但在某些系统中可以进行调整）。
-在中poll()，您传递一个数组struct pollfd，该数组随着描述符的数量线性增长。
-epoll()通过仅维护活动文件描述符（具有事件的文件描述符）列表而不是所有描述符的完整集合来最大限度地减少内存使用量。
-下面是epoll性能检测的一段代码示例：
-
+#### ET 模式使用示例（关键！）
 
 ```c
+// 设置 socket 为非阻塞
+int flags = fcntl(sockfd, F_GETFL, 0);
+fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
 
-#include <stdio.h>
-#include <sys/epoll.h>
-#include <unistd.h>
-#include <fcntl.h>
-int main() {
-    int fd1 = open("file1.txt", O_RDONLY);
-    int fd2 = open("file2.txt", O_RDONLY);
+// 注册 ET 模式
+ev.events = EPOLLIN | EPOLLET;
+epoll_ctl(epfd, EPOLL_CTL_ADD, sockfd, &ev);
 
-    if (fd1 < 0 || fd2 < 0) {
-        perror("open failed");
-        return -1;
+// 事件处理
+void handle_event(int sockfd) {
+    char buf[4096];
+    ssize_t n;
+    while ((n = read(sockfd, buf, sizeof(buf))) > 0) {
+        // 处理数据
     }
-
-    // Create an epoll instance
-    int epoll_fd = epoll_create1(0);
-    if (epoll_fd < 0) {
-        perror("epoll_create1 failed");
-        return -1;
+    if (n == -1 && errno != EAGAIN) {
+        // 真正的错误
+        close(sockfd);
     }
-    // Add fd1 and fd2 to the epoll instance
-    struct epoll_event event;
-    event.events = EPOLLIN;  // We are interested in read events
-    event.data.fd = fd1;
-    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd1, &event) < 0) {
-        perror("epoll_ctl failed for fd1");
-        return -1;
-    }
-    event.data.fd = fd2;
-    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd2, &event) < 0) {
-        perror("epoll_ctl failed for fd2");
-        return -1;
-    }
-    struct epoll_event events[2];
-    while (1) {
-        // Wait for events on the file descriptors
-        int num_events = epoll_wait(epoll_fd, events, 2, -1);
-
-        if (num_events < 0) {
-            perror("epoll_wait failed");
-            break;
-        }
-
-        // Handle the events that are ready
-        for (int i = 0; i < num_events; i++) {
-            if (events[i].data.fd == fd1) {
-                printf("Data ready on fd1\n");
-            } else if (events[i].data.fd == fd2) {
-                printf("Data ready on fd2\n");
-            }
-        }
-    }
-
-    close(fd1);
-    close(fd2);
-    close(epoll_fd);
-    return 0;
+    // 若 n == -1 && errno == EAGAIN，说明数据已读完，退出循环
 }
 ```
-epoll()速度更快，主要是因为它避免了重复扫描所有文件描述符，而是使用事件驱动模型，仅在必要时通知应用程序。对于大多数操作，它的性能为 O(1)，并且可以高效处理数千个连接，使其成为大型 Web 服务器等高并发场景的理想选择。相比之下，select()和poll()两者都具有 O(n) 性能，随着文件描述符数量的增加，这会导致速度明显变慢。
-## Reactor 
+
+> ⚠️ **ET 模式下，若未读完数据，将永远丢失后续通知！** 这是常见 bug 源头。
+
+---
+
+## 四、Reactor 模式：epoll 的典型应用架构
+
 最直观的服务器处理多客户端访问的方式，就是为每个连接创建一个线程，或者更早期操作系统里甚至是一个进程。虽然线程比进程更轻量，切换成本也更低，但每连接一个线程在并发量大时仍会面临两个问题：
 
-线程创建/销毁有系统开销（malloc stack、context switch）。
-
-线程是稀缺资源，系统线程数有上限（如 Linux 默认 1024~65535）。
-
+线程创建/销毁有系统开销（malloc stack、context switch）
+线程是稀缺资源，系统线程数有上限（如 Linux 默认 1024~65535）
 所以，现代服务端架构更倾向于使用线程池来复用线程资源。线程池中每个线程从任务队列中取任务处理，避免了反复创建/销毁的开销。
 
-但线程池引入后面临另一个问题：I/O 阻塞会浪费线程资源。如果一个线程执行 read(socket) 被阻塞，而连接上没有数据，那么整个线程就“卡住”了，不能服务其他连接。
+但线程池引入后面临另一个问题：I/O 阻塞会浪费线程资源。如果一个线程执行 read(socket) 被阻塞，而连接上没有数据，那么整个线程就"卡住"了，不能服务其他连接。
 
-为了避免这个问题，我们可以将 socket 设置为非阻塞模式。这样 read() 不会阻塞，而是立即返回，如果没有数据，就返回错误码 EAGAIN。线程就可以在用户空间“轮询”所有 socket。
+为了避免这个问题，我们可以将 socket 设置为非阻塞模式。这样 read() 不会阻塞，而是立即返回，如果没有数据，就返回错误码 EAGAIN。线程就可以在用户空间"轮询"所有 socket。
 
 但这种方式会导致高 CPU 占用，尤其在连接数多时效率低。
+Reactor（反应器）是一种**事件驱动设计模式**，其核心思想是：
+> “**一个或多个输入源 → 一个事件分发器（Reactor）→ 多个事件处理器**”
 
-所以引入了 I/O 多路复用技术（如 select、poll、epoll），它允许一个线程通过一个系统调用（如 epoll_wait）同时监听多个连接的状态，一旦某些连接可读（或可写），内核就通知我们“这些连接准备好了”，我们再去 read()，避免了不必要的轮询。
+在 Linux 高并发服务中，**epoll 就是 Reactor 的“事件分发器”**。
 
-这就是像 Nginx、Redis、Node.js、netty 等高并发服务采用的基础模式：I/O 多路复用 + 非阻塞 I/O + 事件驱动模型。Reactor模式称为反应器模式或应答者模式，是基于事件驱动的设计模式，拥有一个或多个并发输入源，有一个服务处理器和多个请求处理器，服务处理器会同步的将输入的请求事件以多路复用的方式分发给相应的请求处理器。Proactor 是把任务交给操作系统 / runtime，让它完成后通知你处理结果
+### 4.1 单 Reactor 单线程（如 Redis）
 
+- **结构**：
+  - 1 个线程运行 epoll 事件循环；
+  - 所有 I/O 事件（accept、read、write）和业务逻辑均在此线程中串行处理。
+- **优点**：
+  - 无锁、无竞争，实现简单；
+  - 上下文切换开销为零。
+- **缺点**：
+  - 业务逻辑不能阻塞（如不能执行慢查询、sleep）；
+  - 无法利用多核 CPU。
+- **适用**：I/O 密集、业务逻辑极轻的场景（如内存 KV 存储）。
 
-单 Reactor 单线程（Redis）
-所有 I/O + 业务逻辑都在一个线程中串行完成
+### 4.2 单 Reactor 多线程（如早期 Nginx）
 
-简单、性能好（但业务处理不能太重）
+- **结构**：
+  - 1 个主线程运行 epoll，负责监听所有 socket；
+  - 当连接可读/可写时，将**整个连接（或请求）交给线程池处理**；
+  - 线程池执行业务逻辑（如解析 HTTP、访问磁盘）。
+- **优点**：
+  - 利用多核；
+  - 业务逻辑可阻塞。
+- **缺点**：
+  - I/O 事件分发仍由单线程处理，可能成为瓶颈；
+  - 线程间数据传递需加锁或队列。
 
-单 Reactor 多线程（Nginx）
-Reactor 只负责监听/调度，业务逻辑交给线程池处理
+### 4.3 主从 Reactor（如 Netty、Swoole）
 
-主从 Reactor（Netty）
-主 Reactor 接收连接
+- **结构**：
+  - **Main Reactor（主 Reactor）**：仅监听 `listen fd`，处理 `accept()`，将新连接分配给 Sub Reactor；
+  - **Sub Reactor（从 Reactor）**：每个 Sub Reactor 运行独立的 epoll 循环，管理一组连接的 I/O（read/write）；
+  - 业务逻辑可由 Sub Reactor 自己处理，或再交给线程池。
+- **优点**：
+  - 完全并行化：accept 与 I/O 分离，I/O 与 I/O 分离；
+  - 无锁设计（每个连接只属于一个 Sub Reactor）；
+  - 极致扩展性，轻松支撑百万连接。
+- **关键机制**：
+  - 使用 `SO_REUSEPORT`（Linux 3.9+）：允许多个进程/线程 bind 同一端口，内核自动负载均衡，避免“惊群”问题；
+  - 每个 Sub Reactor 绑定到独立 CPU 核心，减少 cache miss。
 
-从 Reactor 负责具体数据读写
+> 📌 **Netty 的 EventLoopGroup 就是 Sub Reactor 池的实现**。
 
-分离 accept 和 IO 阶段，提高可扩展性
+---
+
+## 五、epoll 的局限与未来
+
+尽管 epoll 极其成功，但它仍有局限：
+- 仍是**同步事件通知模型**：用户需主动调用 `read()`/`write()`；
+- 系统调用开销仍存在（`epoll_wait` + `read` 至少两次 syscall）；
+- 对磁盘 I/O 支持弱（更适合网络 I/O）。
+
+**下一代方案：io_uring（Linux 5.1+）**
+- 用户提交 I/O 请求到 ring buffer，内核异步完成；
+- 支持 **网络 + 文件 + epoll 替代**；
+- **一次 syscall 完成提交 + 获取结果**；
+- Redis 7.0+、Nginx、Tokio 已开始集成。
+
+但目前，**epoll + Reactor 仍是 Linux 高并发服务的事实标准**。
+```
