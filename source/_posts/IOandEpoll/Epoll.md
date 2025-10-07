@@ -26,7 +26,6 @@ tags:
 非阻塞 I/O 则允许程序发起 I/O 操作（例如 read() 或 recvfrom()），即使数据还没准备好，内核也不会让进程挂起，而是立即返回。此时用户进程得到的是一个错误，提示数据尚未准备好。用户进程需要不断轮询，重复调用 I/O 操作直到数据可用。这种方式避免了线程被阻塞的情况，但频繁的轮询可能会导致 CPU 使用效率低下。![alt text](https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/source/_posts/IOandEpoll/image-2.png)
 
 ## 多路复用 I/O
-协程（英语：coroutine）是计算机程序的一类组件，推广了协作式多任务的子例程，允许执行被挂起与被恢复,协程可以通过yield（取其“退让”之义而非“产生”）来调用其它协程，接下来的每次协程被调用时，从协程上次yield返回的位置接着执行，通过yield方式转移执行权的协程之间不是调用者与被调用者的关系，而是彼此对称、平等的。
 多路复用 I/O (select()，poll()，epoll()) 允许单个线程监控多个文件描述符（如 socket），从而在多个 I/O 操作之间进行复用。它的基本原理是通过轮询多个 socket，查看是否有数据到达，并在有数据到达时通知应用程序。相比非阻塞 I/O，这种机制更高效，特别适合于处理大量连接的服务器。
 本地 I/O 操作通常为阻塞模式，即在进行 I/O 操作时，进程会被挂起直到操作完成。然而，现代操作系统也提供了非阻塞本地 I/O 或异步 I/O（如 Linux 的 aio 或 Windows 的 IOCP），允许应用程序继续执行其他任务而不等待 I/O 完成。网络 I/O 同样可以是阻塞的或非阻塞的。在非阻塞网络 I/O 中，进程发起 I/O 操作时不需要等待数据返回，可以继续执行其他操作。网络 I/O 领域中，异步 I/O、多路复用 I/O（如 select()、poll()、epoll()）、以及事件驱动编程（如 libuv、libevent）等技术被广泛使用，以应对高延迟和并发问题。
 
@@ -34,8 +33,101 @@ tags:
 int socket(int domain, int type, int protocol)
 返回的就是这个 socket 对应的文件描述符 fd。操作系统将 socket 映射到进程的一个文件描述符上，进程就可以通过读写这个文件描述符来和远程主机通信。
 
-可以这样理解：socket 是进程间通信规则的高层抽象，而 fd 提供的是底层的具体实现。socket 与 fd 是一一对应的。通过 socket 通信，实际上就是通过文件描述符 fd 读写文件。这也符合 Unix“一切皆文件”的哲学。使用IO多路复用技术监听多个socket，当有socket可读或可写时，通过事件通知，激活相应的协程进行处理。﻿
+可以这样理解：socket 是进程间通信规则的高层抽象，而 fd 提供的是底层的具体实现。socket 与 fd 是一一对应的。通过 socket 通信，实际上就是通过文件描述符 fd 读写文件。这也符合 Unix“一切皆文件”的哲学。使用IO多路复用技术监听多个socket，当有socket可读或可写时，通过事件通知，激活相应的协程进行处理。
+多路复用 I/O和协程关系?
  
+ 这个问题问得好，实际上“多路复用 I/O（select/poll/epoll）”和“协程（coroutine）”是两个不同层次的机制，但它们在现代并发系统（尤其是 Go、Rust、Python async/await、libuv、Nginx 等）中是**深度绑定**的。我们可以从底层原理和调度模型两个维度看。协程（英语：coroutine）是计算机程序的一类组件，推广了协作式多任务的子例程，允许执行被挂起与被恢复,协程可以通过yield（取其“退让”之义而非“产生”）来调用其它协程，接下来的每次协程被调用时，从协程上次yield返回的位置接着执行，通过yield方式转移执行权的协程之间不是调用者与被调用者的关系，而是彼此对称、平等的。
+
+
+---
+
+### 举个最直接的例子：Go 语言
+
+Go 的协程（goroutine）模型是一个典型代表：
+
+```go
+func handler(conn net.Conn) {
+    buf := make([]byte, 1024)
+    for {
+        n, err := conn.Read(buf)
+        if err != nil { return }
+        conn.Write(buf[:n])
+    }
+}
+
+func main() {
+    ln, _ := net.Listen("tcp", ":8080")
+    for {
+        conn, _ := ln.Accept()
+        go handler(conn)
+    }
+}
+```
+
+表面上好像每个 `conn` 都是阻塞读写的，但实际上：
+
+* Go runtime 在底层为每个 socket 注册到 epoll；
+* 当 goroutine 调用 `Read()` 时，如果没有数据可读，它会：
+
+  1. 把当前 goroutine 状态挂起；
+  2. 把 fd 注册到 epoll；
+  3. 调度其他 goroutine；
+  4. 当 epoll 返回“可读事件”，再恢复该 goroutine。
+
+整个过程**完全用户态切换**，线程没有被阻塞。
+**所以你可以同时开 10w goroutine，因为系统线程数只维持在几十个（M:N 模型）。**
+---
+
+### Python asyncio / Node.js / Rust tokio 同理
+
+| 框架              | 底层 I/O 多路复用                            | 用户态调度机制                 |
+| --------------- | -------------------------------------- | ----------------------- |
+| Python asyncio  | epoll/kqueue/select via `selectors` 模块 | event loop 调度 coroutine |
+| Node.js (libuv) | epoll/kqueue/iocp                      | 单线程 event loop          |
+| Rust tokio      | epoll/kqueue/wepoll                    | Future + reactor 模型     |
+| Go runtime      | epoll/kqueue/iocp                      | M:N goroutine 调度器       |
+
+这些 runtime 全都在做同一件事：
+
+* 用 epoll 等来统一管理 I/O；
+* 当协程遇到 I/O 阻塞点时，自动 yield；
+* I/O 就绪后再 resume。
+
+---
+
+### 核心关系图（简化）
+
+```
+     用户代码层
+  ┌──────────────────────────────┐
+  │ async/await / goroutine / go │
+  │ yield / await / resume       │
+  └──────────────────────────────┘
+                │
+                ▼
+     runtime 调度器 (用户态)
+  ┌──────────────────────────────┐
+  │ epoll_wait()                 │
+  │ 回调、事件队列、任务队列     │
+  └──────────────────────────────┘
+                │
+                ▼
+         内核 I/O 层
+  ┌──────────────────────────────┐
+  │ socket, file, pipe, epoll_fd │
+  │ 驱动中断、DMA、网卡队列      │
+  └──────────────────────────────┘
+```
+
+协程只是事件循环上的“任务单元”；
+多路复用是驱动事件循环的“信号源”。
+
+---
+
+比如 Nginx 用 epoll+回调，Go/Netty 用 epoll+协程，性能上都是百万级连接可行。
+
+---
+
 ## 1.select() 
 用法：允许监视多个文件描述符，以查看它们是否已准备好读取、写入或是否有错误。
 限制：
