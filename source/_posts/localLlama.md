@@ -21,11 +21,11 @@ M4：带宽在 120GB/s 左右，跟普通 DDR5 核显 PC 差不多，根本不�
 
 ---
 
-# **1. 为什么选择 Mac Mini M4？**  
+## **1. 为什么选择 Mac Mini M4？**  
 
 在挑选设备时，我主要考虑了以下几个因素：  
 
-### ** 1.1 性能 vs. 能耗：M4 的性价比惊喜**  
+ ** 1.1 性能 vs. 能耗：M4 的性价比惊喜**  
 相比 Intel/AMD 服务器或台式机，**Apple Silicon 的能耗比确实很强**。M4 拥有**10 核 CPU + 10 核 GPU + 16 核 NPU**，而且功耗低到离谱（官方标称 30W）。  
 在选择硬件时，我研究了多个选项，包括自建 PC、云服务器和其他品牌的小型机，最终锁定了 Mac Mini M4。以下是我的理由。
 Mac Mini M4 的核心亮点是 Apple Silicon 的 M4 芯片，其统一架构和高能效比在 AI 工作负载中表现出色。以下是 M4 的一些关键参数，以及它们如何提升 RAG 工作流的效率：
@@ -52,7 +52,7 @@ Neural Engine（神经引擎）：
 
 ---
 
-# 用不到3000元部署开源“类大模型”：Mac mini 16GB的极限挑战与实践总结（截至2025-08-04）
+用不到3000元部署开源“类大模型”：Mac mini 16GB的极限挑战与实践总结（截至2025-08-04）
 
 在大模型都想上云、绑API的时代，还有多少人愿意在家用小机器上，部署**隐私友好、本地离线、完全控制的模型系统**？如果你愿意折腾，一台\*\*不到3000元的二手/教育优惠 Mac mini M4（16GB RAM）\*\*就能跑起目前大多数开源 20B 以下的量化模型，甚至还能处理语音、图像、代码。
 
@@ -60,7 +60,7 @@ Neural Engine（神经引擎）：
 
 ---
 
-## 📦 系统与环境配置
+### 📦 系统与环境配置
 
 * **设备**：Mac mini M4，16GB 统一内存，256GB SSD
 * **系统**：macOS 15，Terminal + zsh，iStat Menu 监控内存
@@ -74,7 +74,7 @@ Neural Engine（神经引擎）：
 
 
 
-##  内存极限在哪里？
+###  内存极限在哪里？
 
 在 Mac mini 16GB 上，操作系统本身约占 2.5GB，即便关闭 iCloud、Spotlight、Stage Manager 等服务，理论最大模型体积也就在 **11.5\~12GB 左右**。实践中：
 * 开启 `llama-swap` 可释放模型之间的 KV Cache，降低峰值内存（非常推荐）
@@ -144,22 +144,7 @@ Qwen3-Coder-30B-A3B-Instruct-UD-Q2\_K\_XL.gguf 文件 9.3 GB，加上约 14 GB �
 
 ---
 
-## 语音 + 图像能力评估
-
-### Whisper Large v3
-
-* 编译 `whisper.cpp` with `-O3 -DCOREML -DWHISPER_COREML_FULL`
-* 实测推理速度为 **1x 实时音频速度**，可本地转写播客/会议录音
-
-### Bark / AudioLM
-
-* 推理时间长，不适合 16GB 内存场景，推荐 remote inference
-
-### LLaVA + MiniGPT
-
-* `llava-llama-2-7b-lightning.Q4_K_M` 可加载，但图像转文字约需 8–10s
-* CoreML GPU 没显著加速，图像处理瓶颈主要在预处理阶段（clip embedding）
-
+## RAG个人知识库能力评估
 
 
 在考虑在Mac系统上使用LLM构建和管理个人知识基础的工具时，LM Studio MLX和Ollama都是不错的选择，但具有自己的优势。让我们分解如何在功能，用例和易用性方面进行比较。有限的定制：Ollama 的简单性是以灵活性为代价的。如果您想要更好地控制模型行为、定制或与其他系统的集成，Ollama 可能不如 LM Studio MLX 强大。
@@ -341,14 +326,12 @@ exit 1
 * 利用 `llama-cpp-server` + `llama-swap` 自建 API proxy，可复用模型并避免 LM Studio 多模型冲突。
 💡 适合：你对 macOS/Linux 配置熟悉，只需要 1-2 个服务
 如果你只想跑 Open WebUI 或 AnythingLLM，可以手动安装依赖，比如：
+```
+//1.Node.js
 
-sh
-复制
-编辑
-# 安装 Node.js
-brew install node
+brew install node 
 
-# 安装 Open WebUI
+//2.  安装 Open WebUI
 git clone https://github.com/open-webui/open-webui.git
 cd open-webui
 npm install
@@ -356,7 +339,7 @@ npm run dev
 📌 优势：
  不需要 Docker，减少资源占用
  可以自己控制环境，避免 Docker 额外的磁盘消耗
-
+```
 
 ## **4. 结论：Mac Mini M4，最具性价比的本地 AI 设备**
 如果你的需求是 **跑本地 AI 助手、LLM 推理、个人知识库**，**Mac Mini M4 绝对是目前最具性价比的 Apple 设备**。  

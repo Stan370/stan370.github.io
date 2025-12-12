@@ -1,8 +1,8 @@
 ---
 title: The Curse of Meritocracy
 date: 2025-04-13 16:39:20
-tags:
-- feelings
+categories: 感想
+tags: 
 - personal growth
 
 ---
@@ -13,8 +13,8 @@ We are steeped in the gospel of **meritocracy** from childhood. Study diligently
 I bought into this promise wholeheartedly. I learned the rules, played the game, and poured years into mastering the metrics. And by the system's own standards, I succeeded. Multiple Master's offers in Computer Engineering from international universities felt like the culmination, the hard-earned validation.
 
 
-**The Twist
-**
+# The Twist
+
 However, life doesn’t always go as expected. That’s it.
 
 I didn’t plan to take a **gap year**, but I saw it coming.
@@ -58,19 +58,18 @@ That you think creatively or critically beyond known patterns.
 
 I think collaborating in hackathons gave me resilience, not just resume. Building tools and small games that someone actually use feels good. 
 
-Trying, failing, and reflecting on user feedback have taught me far more than traditional coursework ever did. I learned to build before I felt ready, to listen more than explain, and to treat failure not as a signal to stop, but as a prompt to iterate more fast.  
-
+**Trying, failing, and reflecting on user feedback have taught me far more than traditional coursework ever did. I learned to build before I felt ready, to listen more than explain, and to treat failure not as a signal to stop, but as a prompt to iterate more fast.**
 To truly understand feedback, you have to step into the user's shoes. They are the ultimate arbiters of value. What seems intuitive to you might be completely confusing to them. What you thought was a killer feature might be ignored, while a minor element becomes unexpectedly popular.
 
 That kind of growth doesn’t show up on a transcript — but it shapes the kind of engineer, teammate, and thinker I’ve become.
 
 Meritocracy told me to chase validation. Reality taught me to chase growth. It equates our human value with our output, fosters crippling anxiety, and can alienate us from our own genuine interests and sense of self. I didn't magically have all the answers, nor was I suddenly immune to the pressures of the world.
 
-**To Others on a Similar Path
-**
+To Others on a Similar Path：
+
 If you're always feel being left, or struggling to find your place — you're not behind. You're just not playing a zero-sum game anymore. 
 
 Gap Year was transformative for me because it existed outside the metrics of the standardize life I should live. I didn't magically have all the answers, nor was I suddenly immune to the pressures of the world in the past 2 years. But something fundamental had shifted within me.
 
-I'm still try to find the "right" job — but I'm no longer hunting approval. I think the most significant 成长 (growth) came from stepping outside the achievement framework altogether and find your own way of success.
+I'm still try to find the "right" job — but I'm no longer hunting **approval**. I think the most significant 成长 (growth) came from stepping outside the achievement framework altogether and find your own way of success.
 
