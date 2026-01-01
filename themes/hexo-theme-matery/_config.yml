@@ -402,28 +402,28 @@ verifyPassword:
 # busuanzi(http://busuanzi.ibruce.info/) website statistics
 # 不蒜子(http://busuanzi.ibruce.info/) 网站统计
 busuanziStatistics:
-  enable: true
+  enable: false
   totalTraffic: true # 总访问量
   totalNumberOfvisitors: true # 总人次
 busuanzi:
   pv:
-    enable: true
+    enable: false
     title: 本站总访问量
     quantifier: 次
   uv:
-    enable: true
+    enable: false
     title: 本站总访客量
     quantifier: 次
 # Add google analytics configuration
 # 添加 Google Analytics 配置
 googleAnalytics:
-  enable: true
+  enable: false
   id:
 
 # Add baidu analytics configuration
 # 添加 baidu Analytics 配置
 baiduAnalytics:
-  enable: true
+  enable: false
   id:
 
 # 百度搜索资源平台提交链接
