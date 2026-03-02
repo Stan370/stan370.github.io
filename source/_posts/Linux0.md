@@ -8,7 +8,6 @@ tags:
 - 操作系统
 ---
 
-# 操作系统OS
 在学习操作系统的过程中，我们会接触到众多复杂的概念，如内核、进程管理、内存管理、文件系统等。为了更好地掌握这些内容，建议采取循序渐进的学习路线，从理论到实践、从基础到进阶，逐步深入。
 
 学习路线
@@ -32,14 +31,11 @@ tags:
 不同的文件系统类型（FAT、NTFS、ext4、Btrfs）、使用的数据结构（索引节点、目录条目）、日志记录、磁盘调度算法。
 进程间通信（IPC）、信号量、锁机制
 多线程编程与并发控制（如 pthread 库的使用）
-
-第四阶段：系统管理和工具
-系统管理工具: 熟悉常用的 Linux 系统管理工具，如 systemd、cron、top/htop、ps、journalctl 和 dmesg。
+4. 系统管理工具: 熟悉常用的 Linux 系统管理工具，如 systemd、cron、top/htop、ps、journalctl 和 dmesg。
 文件管理工具: 掌握常用的 Linux 文件管理工具，如 ls、cp、mv、rm、find、grep、tar、gzip、bzip2、chmod 和 chown。
 文本处理工具: 学习常用的 Linux 文本处理工具，如 vim、nano、sed、awk、cat、less 和 more。
 网络工具: 熟悉常用的 Linux 网络工具，如 ifconfig/ip、ping、traceroute、ssh、curl、wget、netstat、ss、iptables 和 nftables。
-第五阶段：高级主题
-DMA 零拷贝: 了解 DMA 零拷贝技术及其在提高文件传输性能方面的作用。
+5. DMA 零拷贝: 了解 DMA 零拷贝技术及其在提高文件传输性能方面的作用。
 空分复用和时分复用: 理解空分复用和时分复用的概念及其在操作系统中的应用。
 多线程/多进程: 学习多线程和多进程的概念，以及它们在解决阻塞问题和提高程序并发性方面的应用。
 协程: 了解协程的概念和优势，以及它们与线程的区别
@@ -67,9 +63,8 @@ DMA 零拷贝: 了解 DMA 零拷贝技术及其在提高文件传输性能方面
 
 为了解决这些问题，现代操作系统使用虚拟内存技术，将物理地址空间抽象成虚拟地址空间，并通过**内存管理单元（MMU）**来实现地址转换，使得每个进程只能访问自己的**虚拟地址空间**，从而提高系统的安全性、隔离性和稳定性。
 
-## MMU管理
 
-### Data fetching
+### 数据加载
 
 OS使用内存从磁盘中取数据的过程通常称为“数据加载”或“页面调度”，涉及操作系统和硬件的协作，以下是这一过程的详细解释：
 
@@ -282,7 +277,7 @@ dma零拷贝
 
 POSIX 在确保不同类 Unix 系统之间的互操作性和可移植性方面发挥着关键作用。虽然 Linux 和 macOS 等一些系统密切遵循 POSIX，但 Windows 等其他系统历来对 POSIX 的支持有限，尽管 WSL 等最近的发展已经改进了这一点。对于想要编写跨不同操作系统的可移植且可互操作的代码的开发人员来说，了解 POSIX 至关重要
 
-# Linux
+## Linux
 
 Linus Torvalds 创建了前者。后者是全球数百万开发人员之间的协作，涉及[GNU 项目](https://www.gnu.org/home.en.html), [Linux 内核开发团队](https://www.kernel.org/)[由 Torvalds 领导， X Window 系统的](http://www.x.org/wiki/)各种开发人员在过去的 29 年中，以及其他。这就是自由软件基金会要求将使用来自 GNU 项目的软件的完整 Linux 操作系统称为“GNU/Linux”的原因。
 
@@ -433,7 +428,6 @@ if (result > 0) {
 
 `poll()` 是 `select()` 的增强版本，解决了 `select()` 一些性能上的瓶颈（如文件描述符限制）。它更灵活，适合处理大量文件描述符。
 
-### 用法
 
 ```c
 #include <poll.h>
