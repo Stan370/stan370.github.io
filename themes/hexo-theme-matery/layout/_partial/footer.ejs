@@ -1,113 +1,180 @@
 <footer class="page-footer bg-color">
+  <div
+    class="container row center-align"
+    style="margin-bottom: <% if (theme.time.enable) { %>15<% } else { %>0<% } %>px ! important;"
+  >
+    <div class="col s12 m8 l8 copy-right">
+      Copyright&nbsp;&copy; <% if (theme.time.year !== new Date().getFullYear())
+      { %>
+      <span id="year"
+        ><%- theme.time.year %>-<%- new Date().getFullYear() %></span
+      >
+      <% } else { %>
+      <span id="year"><%- theme.time.year %></span>
+      <% } %>
+      <a href="<%- url_for('/about') %>" target="_blank"
+        ><%- config.author %></a
+      >
+      |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+      |&nbsp;Theme&nbsp;<a
+        href="https://github.com/Stan370/stan370.github.io"
+        target="_blank"
+        >Matery</a
+      >
+      <br />
+      &nbsp;<i class="fas fa-chart-area"></i>&nbsp;<%- __('siteTotalWords') %>:
+      &nbsp;<span class="white-color"><%= totalcount(site) %></span>
+      <!--             <!-- Google tag (gtag.js) -->
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-MW85L5PYMX"
+      ></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
 
-    <div class="container row center-align"
-         style="margin-bottom: <% if (theme.time.enable) { %>15<% } else { %>0<% } %>px ! important;">
-        <div class="col s12 m8 l8 copy-right">
-            
-            Copyright&nbsp;&copy;
-            <% if (theme.time.year !== new Date().getFullYear()) { %>
-                <span id="year"><%- theme.time.year %>-<%- new Date().getFullYear() %></span>
-            <% } else { %>
-                <span id="year"><%- theme.time.year %></span>
-            <% } %>
-            <a href="<%- url_for('/about') %>" target="_blank"><%- config.author %></a>
-            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
-            |&nbsp;Theme&nbsp;<a href="https://github.com/Stan370/stan370.github.io" target="_blank">Matery</a>
-            <br>
-            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;<%- __('siteTotalWords') %>: &nbsp;<span
-                        class="white-color"><%= totalcount(site) %></span>
-<!--             <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW85L5PYMX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+        gtag("config", "G-MW85L5PYMX");
+      </script>
 
-  gtag('config', 'G-MW85L5PYMX');
-</script>
-            <br>
-            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <span id="busuanzi_container_site_pv" style='display:none'>
-                <i class="fa fa-eye"></i> Total Views: <span id="busuanzi_value_site_pv"></span>
-            </span>
-            <span class="post-meta-divider">|</span>
-            <span id="busuanzi_container_site_uv" style='display:none'>
-                <i class="fa fa-user"></i> Total Visitors: <span id="busuanzi_value_site_uv"></span>-->
-            </span> 
-            <script defer src="https://events.vercount.one/js"></script>
-            Total visitors:<span id="vercount_value_page_pv">Loading</span> 
-            Total count:<span id="vercount_value_site_uv">Loading</span> 
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script defer src="https://events.vercount.one/js"></script>
 
-            <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "673f49051091463d8b6de4925e46990a"}'></script>
-            <!-- <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+    <div id="busuanzi_section">
+        <span id="busuanzi_container_site_pv" style="display:none">
+            <i class="fa fa-eye"></i> Total Views: <span id="busuanzi_value_site_pv"></span>
+        </span>
+        <span class="post-meta-divider">|</span>
+        <span id="busuanzi_container_site_uv" style="display:none">
+            <i class="fa fa-user"></i> Total Visitors: <span id="busuanzi_value_site_uv"></span>
+        </span>
+    </div>
+
+    <div id="vercount_section" style="display:none">
+        <i class="fa fa-eye"></i> Total Views: <span id="vercount_value_site_pv"></span>
+        <span class="post-meta-divider">|</span>
+        <i class="fa fa-user"></i> Total Visitors: <span id="vercount_value_site_uv"></span>
+    </div>
+
+    <script>
+        // 自动降级逻辑
+        window.addEventListener('load', function() {
+            // 设置 3 秒超时
+            setTimeout(function() {
+                var bszContainer = document.getElementById('busuanzi_container_site_pv');
+                // 如果 3 秒后不蒜子的容器仍然是隐藏状态 (display: none)，说明加载失败
+                if (getComputedStyle(bszContainer).display === 'none') {
+                    document.getElementById('busuanzi_section').style.display = 'none';
+                    document.getElementById('vercount_section').style.display = 'block';
+                    console.log("Busuanzi failed or slow, switching to Vercount.");
+                }
+            }, 3000); 
+        });
+    </script>
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "673f49051091463d8b6de4925e46990a"}'
+      ></script>
+      <!-- <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
                 <i class="fas fa-shield-alt"></i> This site uses Cloudflare Web Analytics for privacy-friendly analytics. 
             </div>
             
             <!-- 运行天数提醒.  -->
-            <% if (theme.time.enable) { %>
-                <span id="sitetime"> Loading ...</span>
-                <script>
-                    var calcSiteTime = function () {
-                        var seconds = 1000;
-                        var minutes = seconds * 60;
-                        var hours = minutes * 60;
-                        var days = hours * 24;
-                        var years = days * 365;
-                        var today = new Date();
-                        var startYear = "<%- theme.time.year %>";
-                        var startMonth = "<%- theme.time.month %>";
-                        var startDate = "<%- theme.time. date %>";
-                        var startHour = "<%- theme.time.hour %>";
-                        var startMinute = "<%- theme.time.minute %>";
-                        var startSecond = "<%- theme.time.second %>";
-                        var todayYear = today.getFullYear();
-                        var todayMonth = today.getMonth() + 1;
-                        var todayDate = today.getDate();
-                        var todayHour = today.getHours();
-                        var todayMinute = today.getMinutes();
-                        var todaySecond = today.getSeconds();
-                        var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
-                        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
-                        var diff = t2 - t1;
-                        var diffYears = Math.floor(diff / years);
-                        var diffDays = Math.floor((diff / days) - diffYears * 365);
+      <% if (theme.time.enable) { %>
+      <span id="sitetime"> Loading ...</span>
+      <script>
+        var calcSiteTime = function () {
+          var seconds = 1000;
+          var minutes = seconds * 60;
+          var hours = minutes * 60;
+          var days = hours * 24;
+          var years = days * 365;
+          var today = new Date();
+          var startYear = "<%- theme.time.year %>";
+          var startMonth = "<%- theme.time.month %>";
+          var startDate = "<%- theme.time. date %>";
+          var startHour = "<%- theme.time.hour %>";
+          var startMinute = "<%- theme.time.minute %>";
+          var startSecond = "<%- theme.time.second %>";
+          var todayYear = today.getFullYear();
+          var todayMonth = today.getMonth() + 1;
+          var todayDate = today.getDate();
+          var todayHour = today.getHours();
+          var todayMinute = today.getMinutes();
+          var todaySecond = today.getSeconds();
+          var t1 = Date.UTC(
+            startYear,
+            startMonth,
+            startDate,
+            startHour,
+            startMinute,
+            startSecond
+          );
+          var t2 = Date.UTC(
+            todayYear,
+            todayMonth,
+            todayDate,
+            todayHour,
+            todayMinute,
+            todaySecond
+          );
+          var diff = t2 - t1;
+          var diffYears = Math.floor(diff / years);
+          var diffDays = Math.floor(diff / days - diffYears * 365);
 
-                        // 区分是否有年份. 
-                        var language = '<%- config.language %>';
-                        if (startYear === String(todayYear)) {
-                            document.getElementById("year").innerHTML = todayYear;
-                            var daysTip = 'This site has been running for ' + diffDays + ' days';
-                            if (language === 'zh-CN') {
-                                daysTip = '本站已运行 ' + diffDays + ' 天';
-                            } else if (language === 'zh-HK') {
-                                daysTip = '本站已運行 ' + diffDays + ' 天';
-                            }
-                            document.getElementById("sitetime").innerHTML = daysTip;
-                        } else {
-                            document.getElementById("year").innerHTML = startYear + " - " + todayYear;
-                            var yearsAndDaysTip = 'This site has been running for ' + diffYears + ' years and '
-                                + diffDays + ' days';
-                            if (language === 'zh-CN') {
-                                yearsAndDaysTip = '本站已运行 ' + diffYears + ' 年 ' + diffDays + ' 天';
-                            } else if (language === 'zh-HK') {
-                                yearsAndDaysTip = '本站已運行 ' + diffYears + ' 年 ' + diffDays + ' 天';
-                            }
-                            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
-                        }
-                    }
+          // 区分是否有年份.
+          var language = "<%- config.language %>";
+          if (startYear === String(todayYear)) {
+            document.getElementById("year").innerHTML = todayYear;
+            var daysTip =
+              "This site has been running for " + diffDays + " days";
+            if (language === "zh-CN") {
+              daysTip = "本站已运行 " + diffDays + " 天";
+            } else if (language === "zh-HK") {
+              daysTip = "本站已運行 " + diffDays + " 天";
+            }
+            document.getElementById("sitetime").innerHTML = daysTip;
+          } else {
+            document.getElementById("year").innerHTML =
+              startYear + " - " + todayYear;
+            var yearsAndDaysTip =
+              "This site has been running for " +
+              diffYears +
+              " years and " +
+              diffDays +
+              " days";
+            if (language === "zh-CN") {
+              yearsAndDaysTip =
+                "本站已运行 " + diffYears + " 年 " + diffDays + " 天";
+            } else if (language === "zh-HK") {
+              yearsAndDaysTip =
+                "本站已運行 " + diffYears + " 年 " + diffDays + " 天";
+            }
+            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+          }
+        };
 
-                    calcSiteTime();
-                </script>
-            <% } %>
-            <br>
-            <% if (theme.icp.enable) { %>
-                <span id="icp"><img src="<%- theme.jsDelivr.url %><%- url_for('/medias/icp.png') %>"
-                                    style="vertical-align: text-bottom;"/>
-                <a href="<%- url_for(theme.icp.url) %>" target="_blank"><%= theme. icp.text %></a>
-            </span>
-            <% } %>
-        </div>
+        calcSiteTime();
+      </script>
+      <% } %>
+      <br />
+      <% if (theme.icp.enable) { %>
+      <span id="icp"
+        ><img
+          src="<%- theme.jsDelivr.url %><%- url_for('/medias/icp.png') %>"
+          style="vertical-align: text-bottom"
+        />
+        <a href="<%- url_for(theme.icp.url) %>" target="_blank"
+          ><%= theme. icp.text %></a
+        >
+      </span>
+      <% } %>
     </div>
+  </div>
 </footer>
 
 <div class="progress-bar"></div>
