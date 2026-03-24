@@ -3,6 +3,8 @@
     <div class="container row center-align"
          style="margin-bottom: <% if (theme.time.enable) { %>15<% } else { %>0<% } %>px ! important;">
         <div class="col s12 m8 l8 copy-right">
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
             Copyright&nbsp;&copy;
             <% if (theme.time.year !== new Date().getFullYear()) { %>
                 <span id="year"><%- theme.time.year %>-<%- new Date().getFullYear() %></span>
@@ -25,7 +27,7 @@
             <span id="busuanzi_container_site_uv" style='display:none'>
                 <i class="fa fa-user"></i> Total Visitors: <span id="busuanzi_value_site_uv"></span>
             </span>
-            <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "673f49051091463d8b6de4925e46990a"}'></script>End Cloudflare Web Analytics -->
+            <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "673f49051091463d8b6de4925e46990a"}'></script>
             <!-- <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
                 <i class="fas fa-shield-alt"></i> This site uses Cloudflare Web Analytics for privacy-friendly analytics. 
             </div>
