@@ -109,5 +109,4 @@ theme: hexo-theme-matery
 deploy:
   - type: git
     repo: https://github.com/Stan370/stan370.github.io.git
-    branch: master
 
