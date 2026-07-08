@@ -1,0 +1,1684 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="巨魔时代后的 iOS 26侧载, StanBlog">
+    <meta name="description" content="在现代操作系统里，iOS 系统的沙盒和签名机制可以说是防守最严密的堡垒之一，但有的“国产软件”让我的使用体验一落千丈。
+开屏与摇一摇广告是最烦的，这是用户感知最明显的场景。电商大促期间（如 618、双 11），知乎或斗鱼的开屏广告会被京东买">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+    <title>巨魔时代后的 iOS 26侧载 | StanBlog</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/atom.xml" title="StanBlog" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3592614110969127"
+     crossorigin="anonymous"></script>
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">StanBlog</span>
+                </a>
+            </div>
+            
+<style>
+  #openSearchBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+#openSearchBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+  #searchIcon {
+    color: white;
+  }
+</style>
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>Index</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>Tags</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>Categories</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>Archives</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>About</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>Contact</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <button id="openSearchBtn" type="button" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </button>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">StanBlog</div>
+        <div class="logo-desc">
+            
+            A popular long-form, stick-figure-illustrated blog about almost everything. Material Themes / GitHub Pages 个性化定制的Hexo-Matery主题 
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			Index
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			Tags
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			Categories
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			Archives
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			About
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			Contact
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Stan370/stan370.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Stan370/stan370.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl941CZ3jQAu2YGF57d2MKmTVPvBVGyvmIzQ&s')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">巨魔时代后的 iOS 26侧载</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/IOS/">
+                                    <span class="chip bg-color">
+                                        IOS
+                                    </span>
+                                </a>
+                                
+                                <a href="/tags/Apple/">
+                                    <span class="chip bg-color">
+                                        Apple
+                                    </span>
+                                </a>
+                                
+                        </div>
+                        
+                </div>
+                <div class="col s5 right-align">
+                    
+                        <div class="post-cate">
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                                <a href="/categories/%E9%9A%8F%E8%B0%88/" class="post-category">
+                                    随谈
+                                </a>
+                                
+                        </div>
+                        
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                    <div class="post-date info-break-policy">
+                        <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                            2026-06-14
+                    </div>
+                    
+
+                        
+                            <div class="post-date info-break-policy">
+                                <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
+                                    2026-06-15
+                            </div>
+                            
+
+                                
+                                    <div class="info-break-policy">
+                                        <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
+                                            6k
+                                    </div>
+                                    
+
+                                        
+                                            <div class="info-break-policy">
+                                                <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
+                                                    21
+                                                        Min
+                                            </div>
+                                            
+
+                                                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+                
+
+                        <div class="card-content article-card-content">
+                            <div id="articleContent">
+                                <p>在现代操作系统里，iOS 系统的沙盒和签名机制可以说是防守最严密的堡垒之一，但有的“国产软件”让我的使用体验一落千丈。</p>
+<p><strong>开屏与摇一摇广告是最烦的，这是用户感知最明显的场景。电商大促期间（如 618、双 11），知乎或斗鱼的开屏广告会被京东买断, sdk还会利用手机的陀螺仪敏感度触发“摇一摇”或“扭一扭”跳转，即使用户只是轻微晃动手机，App 也会判定为触发广告，立即调用 Universal Links 瞬间拉起京东。</strong><br>
+在 iOS 26 中，苹果把相册、麦克风、蓝牙的权限卡得死死的，但陀螺仪和加速度传感器（CoreMotion 框架）是默认对所有应用公开的，根本不需要用户授权！乎和斗鱼之所以能一秒拉起京东，利用iOS 系统的 openURL，只要知乎向系统发出一个 openURL: openapp.jdmobile:// 的请求，iOS 的桌面管理进程（SpringBoard）就会无条件去寻找并拉起京东 App。甚至像你在 Apple 社区看到的反馈：即使你卸载了京东，它们也会利用 Safari 弹出网页版京东，恶心至极。<br>
+以前用安卓的时候还有李跳跳这种良心app帮助但是ios封闭的系统让安装“第三方”app的门槛提高了，我习惯了服务器上的 root 权限和容器化的自由。<br>
+so我开始研究 iOS 侧载（Sideload）时，苹果那套精密的“安全枷锁”激起了我的解构欲。</p>
+<h2 id="iOS-自签，侧载、JIT、SideStore-和-LiveContainer-扫盲">iOS 自签，侧载、JIT、SideStore 和 LiveContainer 扫盲</h2>
+<p><strong>我的探索路径：</strong></p>
+<p>本文是我在探索 iOS 证书体系、JIT 编译、SideStore 离线续签、以及 LiveContainer 容器化引擎过程中的扫盲与破局记录。 核心是在 “不越狱” 的前提下，通过利用 iOS 系统的开发者机制、动态加载特性以及内存管理的“灰色地带”，来绕过苹果严格的代码签名和沙盒限制。</p>
+<p>要打破规则，先要理解规则。iOS 的侧载本质上是一场<strong>证书所有权</strong>的博弈。</p>
+<h2 id="1-证书体系的“阶级分化”">1. 证书体系的“阶级分化”</h2>
+<p>苹果利用非对称加密，要求所有在 iOS 上运行的二进制文件必须拥有合法的签名（Provisioning Profile）。<br>
+什么是调试证书和发布证书<br>
+一般来讲，iOS 的证书有两种，一种是调试证书，一种是发布证书；后者往往被统称为企业证书。</p>
+<p>两者的区别在于，发布证书中少了很多和开发有关的权限，像调试证书签名的软件，一般里面都会带有一个 get-task-allow，这个权限决定了 iOS 是否允许这个 App 被调试器调试，而允许调试又是启用 JIT 的必须品。发布证书里没有这个权限，因此使用发布证书签名的软件都无法启用 JIT；和 JIT 工具是否使用的和软件同一个证书没有任何关系。</p>
+<p>调试证书数量极为稀有，一个开发者同时只能申请两张这样的证书；发布证书的数量则会多不少。免费开发者只能申请调试证书，发布证书只有付费开发者才可以申请。</p>
+<p>注意，虽然网上很多会有卖“个人开发者证书”的，但这些证书本质都是发布证书，换句话说功能上和企业证书没有任何的区别；你用免费的企业证书使用不了的软件用这些证书一样使用不了。</p>
+<h3 id="证书权限">证书权限</h3>
+<p>iOS 里面经常可以看到各种各样的授权弹窗，XXX 希望访问照片图库，XXX 希望访问通讯录，XXX 希望访问位置信息……但若是你足够聪明，会发现并不是每个软件上面所有的弹窗都会弹一遍，这和证书本身的权限又有关系, 什么是证书的权限？简单来说，苹果为你颁发证书的时候，会一并提供一份列表，上面记载了所有你可以使用的权限；这些权限不一定会全部继承到你希望签名的 App 上，具体使用哪些权限和你在 Xcode 里的设置有关，但概念上是几乎一样的。</p>
+<p>证书权限又分成两种，一种是普通的权限，就是有弹窗允许你控制的那种；另一种稍微特殊一点，叫 Entitlements，这类权限的处理是全自动的，你是看不到任何选项的，如果你平时只是从 App Store 上下载软件的话可能都不知道这个东西的存在。</p>
+<p>普通的权限自不必说，下面这些都是普通权限：</p>
+<p>照片图库<br>
+定位<br>
+麦克风<br>
+……<br>
+而下面这几种是 Entitlement：</p>
+<p>Increased Memory Limit<br>
+Extended Virtual Addressing<br>
+Personal VPN<br>
+上面提到的 get-task-allow<br>
+……<br>
+普通的权限，几乎没什么限制，谁都可以用，但是 Entitlement 就非常好玩了，有一些也是什么人都可以用的，例如 Increased Memory Limit，有一些是必须要求付费开发者证书且需要向苹果申请的，例如 Personal VPN，还有的干脆只给苹果自己用的，例如 com.apple.private.mediaplayer.internal。 证书的管理和有效期 可能有人会注意到开发者 App 会显示在 VPN 与设备管理里面，而这个地方正常情况下是显示 VPN 配置和描述文件的，为什么开发者 App 也在里面呢？ 事实上开发者 App 和证书管理靠的依然是描述文件。 一个 App，侧载到 iOS 上，iOS 怎么知道这个 App 的有效期还有多久，怎么知道 App 申请的哪些 Entitlement 是有效的？就是靠描述文件。 首先正常情况下证书本身的有效期是一年（除了 Apple iPhoneOS Application Signing 这张 App Store 使用的证书），包括免费开发者证书哦！ 那为什么都说免费开发者证书安装出来的软件有效期是七天，这是因为免费开发者签名之后生成的那个描述文件的有效期是七天；七天之后，描述文件过期，尽管证书还在有效期内，但是 iOS 却不认了。至于续签，就是用你的这张证书重新生成一份新的描述文件安装，这份描述文件又是新的七天有效期，因此完成了续签的效果。</p>
+<p>一个侧载的 App 的描述文件要被 iOS 识别为有效，需要同时满足下面三个条件：</p>
+<p>证书在有效期内<br>
+描述文件在有效期内<br>
+描述文件记载的 Entitlements 符合软件实际使用的 Entitlements</p>
+<ul>
+<li><strong>免费个人开发者证书</strong>：人人都能申请。<strong>代价极其高昂</strong>——7天有效期、最多只能安装 3 个 App、限制 10 个 App ID。</li>
+<li><strong>付费个人/企业证书（$99/年）</strong>：1年有效期、安装数量无上限、支持高级权限（Entitlements）。</li>
+<li><strong>神迹：TrollStore（巨魔）</strong>：利用了当年 CoreTrust 的系统级漏洞，直接绕过了整个证书验证链。它不需要任何证书，就能给 App 赋予根权限（Root）且永久免签。但在高版本系统上，这个漏洞已经被彻底堵死。</li>
+</ul>
+<hr>
+<p>iOS 26 以后，核心问题是<strong>沙盒增强（App Sandbox Hardening）</strong></p>
+<blockquote>
+<p>苹果正式封堵了 CoreTrust 漏洞，<strong>TrollStore（巨魔）彻底失效</strong>。没有了巨魔，想越狱就必须依赖软件漏洞（如 iOS 27 的 palera1n 变体），这对于不爱折腾的人来说几乎是不可能的。</p>
+</blockquote>
+<blockquote>
+<p>传统的 SideStore/AltStore 等方案，现在必须依赖**本地环回 VPN（Loopback VPN）**的技术来欺骗 iOS。</p>
+</blockquote>
+<ul>
+<li><strong>稳定性急剧恶化</strong>：在 iOS 26.0 和 26.1 上，只要手机重启，这个“虚拟的 Mac”就会断开连接。你必须手动重开 VPN，并重新信任你的电脑（或 SideStore 模拟的电脑），否则 App 就会闪退。</li>
+<li><strong>通知延迟</strong>： SideStore 的通知同步机制变得极不可靠，很多通知会严重延迟。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>方案</strong></th>
+<th><strong>稳定性</strong></th>
+<th><strong>限制数量</strong></th>
+<th><strong>核心代价</strong></th>
+<th><strong>结论</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LiveContainer + SideStore</strong></td>
+<td>极低（7天续签+VPN高发故障）</td>
+<td>表面无限（设于码头）</td>
+<td>丢通知、无JIT、性能折损、操作繁琐</td>
+<td><strong>下策</strong>（仅适合极客折腾）</td>
+</tr>
+<tr>
+<td><strong>企业证书（自签/购买）</strong></td>
+<td>风险中等（随时面临苹果掉签）</td>
+<td>无限制（原有安装）</td>
+<td>证书可能被封禁，需要重新安装</td>
+<td><strong>中策</strong>（适合省心大众的用户）</td>
+</tr>
+<tr>
+<td><strong>TrollStore（巨魔商店）</strong></td>
+<td>极高（永久免签、间歇性能）</td>
+<td>无限制（原有安装）</td>
+<td><strong>依赖系统特定漏洞</strong></td>
+<td><strong>上策</strong>（一旦符合条件就是绝对的主宰）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>那有没有可能彻底甩掉电脑，让手机自己给自己续签？什么是最好的方案？</strong></p>
+<h2 id="下面的所有方案都是基于这个免费7天证书，开发者开源的方案">下面的所有方案都是基于这个免费7天证书，开发者开源的方案</h2>
+<h3 id="iloader">iloader</h3>
+<p>iLoader是用来引导安装的桌面实用程序，比之前的AltServer和SideServer更好用 添加了更多功能(凭据保存，登录信息，安装器)为了让 SideStore 和 StikDebug 能够欺骗 iOS 26，使其误认为本地 VPN 是苹果官方的开发用 Mac，它们需要原始的硬件配对密钥。iLoader 通过usbmuxd（或 Windows 上的 iTunes 服务）与设备通信，生成这些锁定文件并自动注入到您的设备中。</p>
+<h3 id="SideStore-与本地环回-VPN">SideStore 与本地环回 VPN</h3>
+<p>SideStore 做的事情本质是：帮你自动完成“签名 + 安装 + 7天刷新”这一整套流程。<br>
+简单说就是，当你用数据线连接 Mac 并点击“信任此电脑”之后，Xcode 安装测试 App 时 iOS 内部会开启开发者调试相关服务，而 SideStore 就是通过“配对文件（pairing file）”模拟那台信任过的电脑。</p>
+<p>当然，它也是需要一些技术门槛，具体就不展开了，简单说就是 SideStore 通过工具拦截 iOS 的请求，把验证开发者的请求重定向到手机本地进行处理验证，这个验证需要一个 pairing file（设备配对记录），而这个文件实际上是在你第一次用电脑（或工具）信任这台 iPhone 时，从设备导出的开通“开发通道”的凭证，这个 pairing file 用途是：</p>
+<p>证明设备已经信任侧载工具<br>
+允许 iOS 内部开发服务（MobileInstallation 或等效通道）被 SideStore 调用<br>
+当然，这个配对文件可能会随机失效，或者在设备更新/重置后失效，需要重新生成/导入。<br>
+不过，苹果也在收缩这个场景，例如 iOS 26.4 现在需要验证传入的 socket 是否位于本地子网（local subnet）上，如果检测到 utun 位于子网之外，连接就会被拒绝，这是一个“网掩码检查”（netmask check），只是这个问题后续也有人在支持解决。</p>
+<p>所以实际上 iOS 也是可以做到“合规”侧载，只是这个侧载门槛还是比较高的，比起 Android 就算禁止侧载后的 24 小时冷静期或者 adb 安装的门槛还高，所以大部分时候你认为非欧盟不可以侧载，其实也没错。</p>
+<p>实际上这也是一场攻防过程，iOS 开发者安装应用属于必须提供的路径，而现在 SideStore 把这个途径给自动化，所以严格来说也算是在合理情况下的利用漏洞，至少它不需要越狱不是么？</p>
+<p>另外 iOS 26.4 中调整了账户切换流程，把退出登录放在设置里面的账号设置，需要点击媒体与购买项目才能退出账号，这对于需要经常切换账户的用户来说确实麻烦：</p>
+<p><strong>SideStore</strong> 的出现打破了空间限制。它的核心思维非常巧妙，用网络工程的手段解决了系统限制：</p>
+<blockquote>
+<p><strong>破局思路</strong>：苹果限制了只有开发机（电脑）才能通过 USB/无线局域网触发签名刷新。那么，如果我们在 iOS 内部自己跑一个“网关”，让手机自己跟自己通信呢？</p>
+</blockquote>
+<ol>
+<li>
+<p><strong>生成配对文件（Pairing File）:</strong> 必须的硬件授权.<br>
+使用 <code>iDevicepair</code> 工具，在电脑上让手机生成一个受信配对证书。这个文件包含了手机的 UDID 和密钥，是允许设备触发开发者通信的“钥匙”。</p>
+</li>
+<li>
+<p><strong>构建本地环回 VPN 网关:</strong> 黑掉通信路径.<br>
+在手机上安装 <code>LocalDevVPN</code> 或 <code>StosVPN</code>。这个 VPN 并不连接外网，而是利用 WireGuard 协议在系统内部建立一个环回接口（Loopback），将手机发往本地开发端口的请求，拦截并路由给自己。</p>
+</li>
+<li>
+<p><strong>伪装 Anisette 服务器:</strong> 模拟苹果身份认证.<br>
+SideStore 内部集成了 Anisette 服务器逻辑，通过本地环回网络，直接生成苹果服务器所需的同步令牌（OTP/ADI），在不脱离手机的情况下，独立向苹果服务器发起 <code>App Refresh</code> 请求。</p>
+</li>
+</ol>
+<p>通过这套网络欺骗，SideStore 实现了<strong>无机续签</strong>。但 3 个 App 的硬性限制依然是一堵墙。</p>
+<hr>
+<h3 id="LiveContainer-——-沙盒内的“Docker”">LiveContainer —— 沙盒内的“Docker”</h3>
+<p>LiveContainer最大的好处就是安装APP数量无上限！我们知道不论是SideStore还是AltStore，因为是用免费的个人Apple开发者帐号签名IPA的，所以会有一个装置同时只能安装3个APP的限制。要解锁就只能花钱买3000台币的Apple开发者年费帐号。而LiveContainer没有此限制，在这个APP内部想装几个APP就装几个，只是需要进行切换程序。不需要花钱买Apple开发者帐号。SideStore 解决了续签问题，但我们手上依然只有可怜的 3 个 App 名额（SideStore 自身还要占一个）。为了实现“无限侧载”，<strong>LiveContainer</strong> 登场了。</p>
+<p>作为一个后端开发者，我第一次看到 LiveContainer 的源码时被它的构思震撼了：<strong>这不就是 iOS 版的免安装动态链接器吗？</strong><br>
+它不是一个虚拟机，也不是超轻量 Hypervisor，它是一个<strong>应用启动器（App Launcher）</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[ iOS 系统底层 ] </span><br><span class="line">       │</span><br><span class="line">[ LiveContainer 主程序 ] (合法签名，占用 1 个 App 名额)</span><br><span class="line">       │</span><br><span class="line">       ├── (动态加载) ──&gt; [ 壳 IPA 1 ] (Guest App) -&gt; 独立沙盒目录 1</span><br><span class="line">       └── (动态加载) ──&gt; [ 壳 IPA 2 ] (Guest App) -&gt; 独立沙盒目录 2</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>首先LiveContainer会拆开IPA，修补二进位Mach-O执行档的记忆体结构，将__PAGEZERO区段的起始记忆体地址调整，避开一些安全机制。</p>
+<p>把Mach-O标头的档案类型从MH_EXECUTE改成MH_DYLIB，这样系统就会以载入函式库的方式来处理这个App。</p>
+<p>接着注入一段新的指令，载入自己的TweakLoader.dylib，让App在启动时会执行自定义的程式码。</p>
+<p>修补@executable_path，LiveContainer对_NSGetExecutablePath传出空指标，并让它当掉，产生SIGSEGV错误，再修改@executable_path上下文。让载入的App 以为自己是正统安装的。</p>
+<p>修补NSBundle.mainBundle，直接改成安装的IPA的路径。</p>
+<p>采用Restoring Dyld Memory Loading方法，绕过iOS的签名验证。也可以用JIT来绕过签名验证。如果没有JIT，就透过AltStore或SideStore给APP签名。</p>
+<p>呼叫dlopen启动APP的二进位执行档。</p>
+<p>让TweakLoader在指定资料夹里面载入tweaks。</p>
+<p>找到程式执行入口，跳到该处。</p>
+<p>APP呼叫UIApplicationMain，像一般的iOS APP一样启动。</p>
+<p>关于多帐号与Keychain管理：iOS的Keychain可以用「Access Groups」区分不同App的资料。 LiveContainer预先建立了128组不同的Access Groups。每次建立一个新的App容器，就随机分配一组Access Group，达成资料隔离的效果。这样至多能安装到128个APP。</p>
+<ol>
+<li><strong>改变可执行文件属性</strong>：LiveContainer 会强行修改你导入的 IPA 镜像。它将主执行文件的 Mach-O 头部从“独立可执行文件（<code>MH_EXECUTE</code>）”强行篡改并 patch 为“动态链接库（<code>MH_DYLIB</code>）”。</li>
+<li><strong>通过 <code>dlopen</code> 挂载</strong>：在 LiveContainer 运行时，主程序通过底层 C 语言的 <code>dlopen()</code> 函数，直接将写成 dylib 的子 App 动态加载到自己的进程空间里。</li>
+<li><strong>接管主函数劫持</strong>：找到子 App 的入口指针，直接跳转执行 <code>UIApplicationMain</code>。</li>
+</ol>
+<hr>
+<p>但当你高高兴兴地在 LiveContainer 里跑起高帧率重度游戏、MeloNX（Switch 模拟器）或 UTM 虚拟机时，你会发现它们卡得像幻灯片，甚至直接闪退。<br>
+因为你缺少了侧载技术里的圣杯：<strong>JIT (Just-In-Time Compilation)</strong>。</p>
+<h3 id="为什么需要-JIT？">为什么需要 JIT？</h3>
+<p>像模拟器这类 App，需要实时把虚拟机的指令（如 ARM64/X86）翻译成 iOS 原生能懂的机器码。如果无法在运行时动态将一段内存标记为“可执行（Executable）”，就只能采用效率极低的解释器模式（Interpreter）。</p>
+<p>苹果出于安全考虑，默认<strong>严禁</strong>任何生产环境的应用拥有 <code>mprotect</code> 动态读写执行内存的权限。</p>
+<h3 id="高版本-iOS-上的-JIT-破局">高版本 iOS 上的 JIT 破局</h3>
+<p>在最新的系统环境下，要想在 LiveContainer 内部成功挂载 JIT，需要使用 <strong>StikDebug</strong> 这类调试工具：</p>
+<blockquote>
+<p><strong>调试附加原理</strong>：苹果虽然禁止了普通 App 的 JIT，但却给开发者留了后门——<strong>允许开发者对自己的 App 进行 Debug 调试</strong>。StikDebug 正是利用了这一点，通过前面 SideStore 生成的配对文件，伪装成外部调试器，通过网络给指定进程的 PID 发送附加调试信号（Attach via PID），从而在合规的流程下“恩赐”了该进程动态执行内存的权限。</p>
+</blockquote>
+<hr>
+<p>由于 LiveContainer 是在一个共享沙盒内通过 <code>dlopen</code> 强行缝合子 App，它存在着天然的原生缺陷：<br>
+LiveContainer能够汇入多个APP，只要不删除APP，切换APP之后资料依然会存在。 因为不是真正安装到iOS系统，所以APP产生的资料只会储存在LiveContainer内部。 开启iOS档案APP → 我的iPhone/iPad → LiveContainer → Data → Application，可以看到各个APP的资料。 你必须忍受偶发性的 VPN 环回冲突、证书失效、以及每次大版本升级时底层 Hook 报错。</p>
+<h2 id="VPN">VPN</h2>
+<p>现在主流的签名工具，一种是以 SideStore、iLoader 为代表的免费开发者自签工具，另一类是以全能签、Feather 等工具为代表的购买证书签名工具。 其实真说有什么区别，主要还是刚刚提到的证书种类和权限的区别，基本上，如果你要使用的软件有如下特征： 需要通知推送 包含 VPN 隧道 那么全能签之类的工具更适合你。相反，如果你要使用的软件有如下特征： 需要 JIT（模拟器、虚拟机） 那么 SideStore 更适合你。 注意这两种情况绝大多数情况下是不能交换的，比如你强行使用 SideStore 签名 LocalDevVPN 这种包含了 VPN 隧道的工具，那么相关的功能是完全无法使用的；又或者你使用全能签签名 MeloNX 这种模拟器，也完全无法使用，部分软件可能还会闪退。<br>
+LocalDevVPN：<br>
+它本质上是一个 iOS 开发者工具，用于在设备上创建安全、隔离的本地回环网络隧道（Loopback VPN）<br>
+由于国内网络环境或运营商对苹果特定开发接口（Anisette 服务器等）的限制，SideStore 直连经常会失败。LocalDevVPN 通过建立本地虚拟网络接口，能够绕过这些直连限制，让 SideStore 的网络请求成功路由到目标服务器</p>
+<p>在你的 iOS 26 设备上，实际发生的硬核数据流向是这样的：</p>
+<p>SideStore 客户端 发起开发者续签请求，其网络目标指向 SideStore 预设的一个虚拟开发机 IP。</p>
+<p>StosVPN (TUN 网卡) 捕捉到该流量，直接拦截网络层（L3）IP 包，绕过真实网卡，将其重定向到本地。</p>
+<p>minimuxer (用户态进程) 接收到流量，剥离网络层，提取应用层载荷。关键步骤：将这些请求转化为标准的、带配对密钥的 Usbmuxd 协议报文。</p>
+<p>iOS 系统原生 lockdownd 进程 接收到来自 minimuxer 的报文，在经过非对称加密验证后，由于配对文件（Pairing File）完全吻合，系统会被彻底欺骗，以为自己正通过 USB 线缆连接在一台真正的 Mac 电脑上。</p>
+<h2 id="总结">总结</h2>
+<ol>
+<li><strong>LocalDevVPN（修路）</strong>：<br>
+它本质上是一个 iOS 开发者工具，用于在设备上创建安全、隔离的<strong>本地回环网络隧道（Loopback VPN）</strong>[[1]]。由于国内网络环境或运营商对苹果特定开发接口（Anisette 服务器等）的限制，SideStore 直连经常会失败。LocalDevVPN 通过建立本地虚拟网络接口，能够绕过这些直连限制，让 SideStore 的网络请求成功路由到目标服务器[[10]]。</li>
+<li><strong>SideStore（造车）</strong>：<br>
+负责利用你的 Apple ID 向苹果服务器请求证书，对 IPA 进行签名，并定期续签。同时，它还负责向系统的 <code>debugserver</code> 发送指令，为特定的 App 开启 JIT 权限。</li>
+<li><strong>LiveContainer（开车）</strong>：<br>
+它本身不需要重签 IPA，而是通过动态加载技术在宿主进程内运行未签名的代码。但是，如果你要在 LiveContainer 中运行某些依赖 Keychain（钥匙串）或特定 Entitlements 的应用，它需要导入 SideStore 导出的证书凭据[[18]]。</li>
+</ol>
+<p>要实现完美的“无限自签 + 免签运行 + JIT”，请按照以下流程操作：</p>
+<h4 id="1-准备工作">1. 准备工作</h4>
+<ul>
+<li><strong>获取工具</strong>：你需要一个<strong>外区 Apple ID</strong>（国区 App Store 无法下载），在 App Store 搜索并下载 <strong>LocalDevVPN</strong>[[10]]。同时确保你已经安装了 SideStore 和 LiveContainer。</li>
+<li><strong>登录账号</strong>：在 SideStore 中登录你的免费 Apple ID，并完成 Anisette 服务器的配置（通常使用默认的或自建的服务器）。</li>
+</ul>
+<h4 id="2-建立网络隧道（关键步骤）">2. 建立网络隧道（关键步骤）</h4>
+<ul>
+<li>打开 <strong>LocalDevVPN</strong> 应用。</li>
+<li>在 Wi-Fi 或蜂窝数据环境下，点击连接，启动其内置的 VPN（此时系统状态栏会出现 VPN 图标）[[14]]。这个回环隧道已经建立，准备接管 SideStore 的网络请求。</li>
+</ul>
+<h4 id="3-SideStore-续签与-JIT-激活">3. SideStore 续签与 JIT 激活</h4>
+<ul>
+<li><strong>续签应用</strong>：保持 LocalDevVPN 处于连接状态，打开 <strong>SideStore</strong>，进入 “My Apps”（我的应用）标签页[[20]]。点击应用旁边的刷新按钮（Refresh）。此时，SideStore 会通过网络隧道成功连接到苹果服务器，完成证书的重新签名，解决 7 天掉签问题[[9]]。</li>
+<li><strong>开启 JIT</strong>：如果你需要为某个应用（比如模拟器，或者 LiveContainer 宿主本身）开启 JIT，同样在保持 LocalDevVPN 连接的状态下，在 SideStore 中点击 “Enable JIT”（开启 JIT）按钮[[34]]。网络隧道确保了调试指令能够成功下发给底层的 <code>debugserver</code>。</li>
+</ul>
+<h4 id="4-LiveContainer-导入凭据（针对特定应用）">4. LiveContainer 导入凭据（针对特定应用）</h4>
+<ul>
+<li>如果你要在 LiveContainer 中运行的 IPA 需要完整的钥匙串访问权限或特定的开发者权限，你需要将 SideStore 的证书导入给 LiveContainer。</li>
+<li><strong>操作</strong>：在 SideStore 的设置中找到 “Export Credentials”（导出凭据），设置一个密码并导出。然后打开 <strong>LiveContainer</strong>，进入设置，选择 “Import from AltStore/SideStore”（从 AltStore/SideStore 导入），输入刚才设置的密码即可完成导入[[18]]。</li>
+<li>之后，你就可以在 LiveContainer 中直接添加并运行各种 IPA 文件，享受免签且具备完整权限的运行环境。</li>
+</ul>
+<p>从系统底层来看，这套方案的精妙之处在于<strong>职责分离与网络层欺骗</strong>：</p>
+<ul>
+<li><strong>LiveContainer</strong> 解决了代码签名校验的问题（利用 Mach-O 动态加载）。</li>
+<li><strong>SideStore</strong> 解决了开发者身份和 JIT 内存权限的问题（利用 <code>amfid</code> 和 <code>debugserver</code> 机制）。</li>
+<li><strong>LocalDevVPN</strong> 则纯粹在 BSD Socket 和 Network Extension 层面工作，通过 NetFlow 路由规则，将 SideStore 发往苹果开发服务器的 TCP/UDP 流量引入本地回环接口，配合后端的代理或隧道服务，规避了运营商的 QoS 限制或 DNS 污染。</li>
+</ul>
+
+                                    
+                            </div>
+                            <hr />
+
+                            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        Author:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Stan ke</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        Link:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://stan370.github.io/2026/06/14/ios/index/">https://stan370.github.io/2026/06/14/ios/index/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        Reprint policy:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    All articles in this blog are used except for special statements
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    reprint policy. If reproduced, please indicate source
+                    <a href="/about" target="_blank">Stan ke</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+                                <div class="tag_share" style="display: block;">
+                                    <div class="post-meta__tag-list" style="display: inline-block;">
+                                        
+                                            <div class="article-tag">
+                                                
+                                                    <a href="/tags/IOS/">
+                                                        <span class="chip bg-color">
+                                                            IOS
+                                                        </span>
+                                                    </a>
+                                                    
+                                                    <a href="/tags/Apple/">
+                                                        <span class="chip bg-color">
+                                                            Apple
+                                                        </span>
+                                                    </a>
+                                                    
+                                            </div>
+                                            
+                                    </div>
+                                    <div class="post_share"
+                                        style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                                        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                                    </div>
+                                </div>
+                                
+                                    <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                    </ul>
+                    
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/reward/wechat.JPG" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        TBD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+                                        
+                        </div>
+    </div>
+
+    
+
+                
+
+                            
+
+                                        
+
+                                                    
+
+                                                                
+
+                                                                            
+
+                                                                                        
+
+                                                                                                    
+
+                                                                                                                
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
+            <div class="card">
+                <a href="/2026/06/14/ios/index/">
+                    <div class="card-image">
+                        
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl941CZ3jQAu2YGF57d2MKmTVPvBVGyvmIzQ&s" class="responsive-img" alt="巨魔时代后的 iOS 26侧载">
+                        
+                        <span class="card-title">巨魔时代后的 iOS 26侧载</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-14
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E9%9A%8F%E8%B0%88/" class="post-category">
+                                    随谈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/IOS/">
+                        <span class="chip bg-color">IOS</span>
+                    </a>
+                    
+                    <a href="/tags/Apple/">
+                        <span class="chip bg-color">Apple</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2026/06/03/accelerate/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/featureimages/23.jpg" class="responsive-img" alt="社会“加速”前进对个人生活的影响">
+                        
+                        <span class="card-title">社会“加速”前进对个人生活的影响</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-03
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Stan ke
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/marxism/">
+                        <span class="chip bg-color">marxism</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeBlockFuction.js"></script>
+
+        
+            <script type="text/javascript"
+                src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeLang.js"></script>
+            
+
+                
+                    <script type="text/javascript"
+                        src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeCopy.js"></script>
+                    
+
+                        
+                            <script type="text/javascript"
+                                src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeShrink.js"></script>
+                            
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+  <div
+    class="container row center-align"
+    style="margin-bottom: 15px ! important;"
+  >
+    <div class="col s12 m8 l8 copy-right">
+      Copyright&nbsp;&copy; 
+      <span id="year"
+        >2019-2026</span
+      >
+      
+      <a href="/about" target="_blank"
+        >Stan ke</a
+      >
+      |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+      |&nbsp;Theme&nbsp;<a
+        href="https://github.com/Stan370/stan370.github.io"
+        target="_blank"
+        >Matery</a
+      >
+      <br />
+      &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:
+      &nbsp;<span class="white-color">314.4k</span>
+      <!--             <!-- Google tag (gtag.js) -->
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-MW85L5PYMX"
+      ></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+
+        gtag("config", "G-MW85L5PYMX");
+      </script>
+
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script defer src="https://events.vercount.one/js"></script>
+
+    <div id="busuanzi_section">
+        <span id="busuanzi_container_site_pv" style="display:none">
+            <i class="fa fa-eye"></i> Total Views: <span id="busuanzi_value_site_pv"></span>
+        </span>
+        <span class="post-meta-divider">|</span>
+        <span id="busuanzi_container_site_uv" style="display:none">
+            <i class="fa fa-user"></i> Total Visitors: <span id="busuanzi_value_site_uv"></span>
+        </span>
+    </div>
+
+    <div id="vercount_section" style="display:none">
+        <i class="fa fa-eye"></i> Total Views: <span id="vercount_value_site_pv"></span>
+        <span class="post-meta-divider">|</span>
+        <i class="fa fa-user"></i> Total Visitors: <span id="vercount_value_site_uv"></span>
+    </div>
+
+    <script>
+        // 自动降级逻辑
+        window.addEventListener('load', function() {
+            // 设置 3 秒超时
+            setTimeout(function() {
+                var bszContainer = document.getElementById('busuanzi_container_site_pv');
+                // 如果 3 秒后不蒜子的容器仍然是隐藏状态 (display: none)，说明加载失败
+                if (getComputedStyle(bszContainer).display === 'none') {
+                    document.getElementById('busuanzi_section').style.display = 'none';
+                    document.getElementById('vercount_section').style.display = 'block';
+                    console.log("Busuanzi failed or slow, switching to Vercount.");
+                }
+            }, 3000); 
+        });
+    </script>
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "673f49051091463d8b6de4925e46990a"}'
+      ></script>
+      <!-- <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+                <i class="fas fa-shield-alt"></i> This site uses Cloudflare Web Analytics for privacy-friendly analytics. 
+            </div>
+            
+            <!-- 运行天数提醒.  -->
+      
+      <span id="sitetime"> Loading ...</span>
+      <script>
+        var calcSiteTime = function () {
+          var seconds = 1000;
+          var minutes = seconds * 60;
+          var hours = minutes * 60;
+          var days = hours * 24;
+          var years = days * 365;
+          var today = new Date();
+          var startYear = "2019";
+          var startMonth = "6";
+          var startDate = "28";
+          var startHour = "0";
+          var startMinute = "0";
+          var startSecond = "0";
+          var todayYear = today.getFullYear();
+          var todayMonth = today.getMonth() + 1;
+          var todayDate = today.getDate();
+          var todayHour = today.getHours();
+          var todayMinute = today.getMinutes();
+          var todaySecond = today.getSeconds();
+          var t1 = Date.UTC(
+            startYear,
+            startMonth,
+            startDate,
+            startHour,
+            startMinute,
+            startSecond
+          );
+          var t2 = Date.UTC(
+            todayYear,
+            todayMonth,
+            todayDate,
+            todayHour,
+            todayMinute,
+            todaySecond
+          );
+          var diff = t2 - t1;
+          var diffYears = Math.floor(diff / years);
+          var diffDays = Math.floor(diff / days - diffYears * 365);
+
+          // 区分是否有年份.
+          var language = "en";
+          if (startYear === String(todayYear)) {
+            document.getElementById("year").innerHTML = todayYear;
+            var daysTip =
+              "This site has been running for " + diffDays + " days";
+            if (language === "zh-CN") {
+              daysTip = "本站已运行 " + diffDays + " 天";
+            } else if (language === "zh-HK") {
+              daysTip = "本站已運行 " + diffDays + " 天";
+            }
+            document.getElementById("sitetime").innerHTML = daysTip;
+          } else {
+            document.getElementById("year").innerHTML =
+              startYear + " - " + todayYear;
+            var yearsAndDaysTip =
+              "This site has been running for " +
+              diffYears +
+              " years and " +
+              diffDays +
+              " days";
+            if (language === "zh-CN") {
+              yearsAndDaysTip =
+                "本站已运行 " + diffYears + " 年 " + diffDays + " 天";
+            } else if (language === "zh-HK") {
+              yearsAndDaysTip =
+                "本站已運行 " + diffYears + " 年 " + diffDays + " 天";
+            }
+            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+          }
+        };
+
+        calcSiteTime();
+      </script>
+      
+      <br />
+      
+    </div>
+  </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+  <div class="modal-content">
+    <div class="search-header">
+      <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span  >
+      <input
+        type="search"
+        id="searchInput"
+        name="s"
+        placeholder="Please enter a search keyword"
+        class="search-input"
+      />
+    </div>
+    <div id="searchResult"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems, {
+        dismissible: true,    // Allow modal to be dismissed by clicking outside
+        preventScrolling: false, // Allow scrolling while modal is open
+        opacity: 0.5,        // Opacity of modal background
+        inDuration: 250,     // Transition in duration
+        outDuration: 250,    // Transition out duration
+        onOpenStart: function() {
+            document.body.style.overflow = 'auto';
+        },
+        onCloseEnd: function() {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Get modal instance
+    const searchModal = document.getElementById("searchModal");
+    const modalInstance = M.Modal.getInstance(searchModal);
+    
+    // Only open modal when search button is clicked
+    document.getElementById("openSearchBtn")?.addEventListener("click", function() {
+        modalInstance.open();
+        searchInput.focus(); 
+    });
+    function closeSearchModal() {
+        modalInstance.close();
+    }
+
+    // Handle clicks outside modal
+    document.addEventListener("click", function(event) {
+        const modalContent = searchModal.querySelector(".modal-content");
+        // Check if click is outside modal content
+        if (event.target === searchModal && !modalContent.contains(event.target)) {
+            closeSearchModal();
+        }
+    });
+
+    // Add ESC key to close modal
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape" && searchModal.classList.contains('open')) {
+            closeSearchModal();
+        }
+    });
+
+    var searchFunc = function (path, search_id, content_id) {
+      "use strict";
+      function debounce(func, wait) {
+        let timeout;
+        return function () {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, arguments), wait);
+        };
+      }
+      $.ajax({
+        url: path,
+        dataType: "json",
+        success: function (jsonData) {
+          // 获取所有文章数据
+          console.log(jsonData);
+          var datas = jsonData.map(function (post) {
+            return {
+              title: post.title,
+              content: post.content,
+              url: post.url,
+            };
+          });
+
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+
+          // 搜索输入监听
+          $input.addEventListener(
+            "input",
+            debounce(function () {
+              var str = '<ul class="search-result-list">';
+              var keywords = this.value
+                .trim()
+                .toLowerCase()
+                .split(/[\s\-]+/);
+              $resultContent.innerHTML = "";
+              if (this.value.trim().length <= 0) {
+                return;
+              }
+              // Perform local searching
+              datas.forEach(function (data) {
+                var isMatch = true;
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content
+                  .trim()
+                  .replace(/<[^>]+>/g, "")
+                  .toLowerCase();
+                var data_url =
+                  data.url.indexOf("/") === 0 ? data.url : "/" + data.url;
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                console.log(data_title, data_content, data_url);
+                if (data_title !== "" && data_content !== "") {
+                  for (let i = 0; i < keywords.length; i++) {
+                    let keyword = keywords[i];
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+
+                    if (index_title < 0 && index_content < 0) {
+                      isMatch = false;
+                      break; // 直接退出关键词遍历
+                    } else {
+                      if (index_content < 0) {
+                        index_content = 0;
+                      }
+                      if (i === 0) {
+                        first_occur = index_content;
+                      }
+                    }
+                  }
+                }
+
+                // Show search results
+                if (isMatch) {
+                  str += `<li>
+                <a href="${data_url}" class="search-result-title">${data_title}</a>`;
+                  var content = data.content.trim().replace(/<[^>]+>/g, "");
+                  if (first_occur >= 0) {
+                    var start = Math.max(0, first_occur - 20);
+                    var end = Math.min(content.length, first_occur + 80);
+                    var match_content = content.substring(start, end);
+
+                    keywords.forEach(function (keyword) {
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(
+                        regS,
+                        '<em class="search-keyword">$&</em>'
+                      );
+                    });
+
+                    str += `<p class="search-result">${match_content}...</p>`;
+                  }
+                  str += "</li>";
+                }
+              });
+
+              str += "</ul>";
+              $resultContent.innerHTML = str;
+            }, 300)
+          ); // 设置 300 毫秒延迟
+        },
+        error: function (xhr, status, error) {
+          console.error("Search failed:", error);
+          document.getElementById(content_id).innerHTML =
+            '<p class="search-error">Search failed to load. Please try again.</p>';
+        },
+      });
+    };
+
+    // 初始化搜索
+    searchFunc('/search.json', "searchInput", "searchResult");
+  });
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/js/matery.js"></script>
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/others/clicklove.js" async="async"></script>
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

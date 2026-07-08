@@ -1,0 +1,1792 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="3000元部署开源隐私&#34;大&#34;模型 on Mac mini 16gB, StanBlog">
+    <meta name="description" content="对于 20B以上的模型 Mac mini 16GB 还是不太够。 芯片虽然 CPU 单核强，NPU 功耗比也不错，但真要跑 LLM，最大瓶颈不是 CPU，而是内存带宽和总 RAM。你提到的内存带宽差异，才是关键：
+M4：带宽在 120GB/">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+    <title>3000元部署开源隐私&#34;大&#34;模型 on Mac mini 16gB | StanBlog</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/atom.xml" title="StanBlog" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3592614110969127"
+     crossorigin="anonymous"></script>
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">StanBlog</span>
+                </a>
+            </div>
+            
+<style>
+  #openSearchBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+#openSearchBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+  #searchIcon {
+    color: white;
+  }
+</style>
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>Index</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>Tags</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>Categories</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>Archives</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>About</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>Contact</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <button id="openSearchBtn" type="button" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </button>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">StanBlog</div>
+        <div class="logo-desc">
+            
+            A popular long-form, stick-figure-illustrated blog about almost everything. Material Themes / GitHub Pages 个性化定制的Hexo-Matery主题 
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			Index
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			Tags
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			Categories
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			Archives
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			About
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			Contact
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Stan370/stan370.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Stan370/stan370.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://a-us.storyblok.com/f/1014296/5000x3000/a4a9fdddc0/satechi_macmini2024_hub_env1-edit.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">3000元部署开源隐私&#34;大&#34;模型 on Mac mini 16gB</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/LLM/">
+                                    <span class="chip bg-color">
+                                        LLM
+                                    </span>
+                                </a>
+                                
+                        </div>
+                        
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                    <div class="post-date info-break-policy">
+                        <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                            2025-03-19
+                    </div>
+                    
+
+                        
+                            <div class="post-date info-break-policy">
+                                <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
+                                    2026-03-24
+                            </div>
+                            
+
+                                
+                                    <div class="info-break-policy">
+                                        <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
+                                            4.6k
+                                    </div>
+                                    
+
+                                        
+                                            <div class="info-break-policy">
+                                                <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
+                                                    18
+                                                        Min
+                                            </div>
+                                            
+
+                                                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+                
+
+                        <div class="card-content article-card-content">
+                            <div id="articleContent">
+                                <p>对于 20B以上的模型 Mac mini 16GB 还是不太够。 芯片虽然 CPU 单核强，NPU 功耗比也不错，但真要跑 LLM，最大瓶颈不是 CPU，而是内存带宽和总 RAM。你提到的内存带宽差异，才是关键：<br>
+M4：带宽在 120GB/s 左右，跟普通 DDR5 核显 PC 差不多，根本不是“显卡级”。<br>
+M3 Pro：256GB/s<br>
+M3 Max：400GB/s<br>
+M3 Ultra：800GB/s（双芯封装）<br>
+AI 推理 = 带宽 + 显存 + 内存 + 并发 IO<br>
+这个带宽决定了大模型参数读取速度，尤其是多头注意力层密集访问权重时，M4 根本顶不住。而且 16GB RAM 不仅容量小，统一内存结构还容易在多进程/模型切换时抖动，尤其你测试过加载 Qwen3-Coder-30B，swap 一上，性能完全废掉。<br>
+更别说 GGUF 模型加载时内存占用不只是模型权重，还有 KV Cache、临时缓冲、线程开销，这些加起来对 16GB 系统简直是极限拉扯。 14B 以下的量化模型（尤其是 Q4_K、Q5_K、甚至 Q2_K），在 Mac mini 上勉强可跑，但要看你容忍的响应速度和内存边界。但 3000元的价格还要什么自行车</p>
+<p>在大模型都想上云、绑API的时代，还有多少人愿意在家用小机器上，部署隐私友好、本地离线、完全控制的模型系统？如果你愿意折腾，一台**不到3000元的二手/教育优惠 Mac mini M4（16GB RAM）**就能跑起目前大多数开源 20B 以下的量化模型，甚至还能处理语音、图像、代码。</p>
+<p>我在2024年中到2025年间密集试了各种框架，从 Transformers 到 llama.cpp，再到 Apple 的 MLX + LM Studio，下面是基于实际使用体验 + 社区 benchmark 对比 + 本地推理日志的一份部署总结，适合有硬件限制但又想最大化利用现有芯片能力的开发者。 这篇文章会分享我的<strong>选型思考</strong>、<strong>用途场景</strong>，以及在折腾过程中收获的一些经验。</p>
+<hr>
+<h2 id="1-为什么选择-Mac-Mini-M4？"><strong>1. 为什么选择 Mac Mini M4？</strong></h2>
+<p>在挑选设备时，我主要考虑了以下几个因素：</p>
+<p>** 1.1 性能 vs. 能耗：M4 的性价比惊喜**<br>
+相比 Intel/AMD 服务器或台式机，<strong>Apple Silicon 的能耗比确实很强</strong>。M4 拥有<strong>10 核 CPU + 10 核 GPU + 16 核 NPU</strong>，而且功耗低到离谱（官方标称 30W）。<br>
+在选择硬件时，我研究了多个选项，包括自建 PC、云服务器和其他品牌的小型机，最终锁定了 Mac Mini M4。以下是我的理由。<br>
+Mac Mini M4 的核心亮点是 Apple Silicon 的 M4 芯片，其统一架构和高能效比在 AI 工作负载中表现出色。以下是 M4 的一些关键参数，以及它们如何提升 RAG 工作流的效率：<br>
+CPU 核心：<br>
+M4 配备 8 性能核心 + 4 效率核心（或更高版本的 12P+4E），在处理检索任务（如搜索和索引）时，性能核心负责高负载计算，而效率核心处理轻量任务如后台数据整理。<br>
+GPU 核心：<br>
+M4 的集成 GPU 提供了 16 核或更高的图形处理能力，并支持 Apple 的 Metal API。对于运行轻量化 LLM（如量化后的 LLaMA 2）或实时生成嵌入，这种 GPU 性能足以媲美中端独立显卡。<br>
+统一内存架构（Unified Memory Architecture, UMA）：<br>
+16GB 或 24GB 的统一内存使得 CPU 和 GPU 共享同一块高速内存池，避免了传统架构中频繁的数据拷贝与延迟问题。这对运行大型模型和向量检索的实时计算非常重要。<br>
+Neural Engine（神经引擎）：<br>
+每秒 15.8 万亿次运算（TOPS） 的专用 AI 加速器可以用来提升模型推理速度，尤其是在运行量化后的 LLM 时。<br>
+存储速度：<br>
+内置 NVMe SSD 提供 高达 7GB/s 的读写速度，大幅缩短数据检索和模型加载的时间。<br>
+相比之下：</p>
+<ul>
+<li>如果选择 <strong>AMD 9600X + 192G 内存</strong>，不仅功耗高，后期还得考虑风扇噪音、散热问题。</li>
+<li><strong>Epyc 服务器方案</strong>（768GB 内存那套）虽然可以跑更大的模型，但价格和功耗都太高，不适合个人玩家。</li>
+<li><strong>Mac Mini M4</strong> 价格加上国补 <strong>最低 3000 RMB</strong>，省去了折腾电源、散热、机箱的麻烦，而且 macOS 的生态也适合开发者。<br>
+使用云服务器（如 AWS、GCP）运行 RAG 系统，每月成本可能高达数百美元，而本地运行的 Mac Mini 一次性投入后，几乎没有额外费用。<br>
+综合来看，M4 是一个 <strong>低功耗高性价比的选择</strong>，特别适合日常推理小型 LLM（&lt;14B 参数规模）。</li>
+</ul>
+<hr>
+<p>好，这是一个面向技术读者、强调实际测试数据、部署体验和边际性价比的博客草稿。语气偏真实用户分享，内容结构松散但信息量高：</p>
+<hr>
+<p>用不到3000元部署开源“类大模型”：Mac mini 16GB的极限挑战与实践总结（截至2025-08-04）</p>
+<p>在大模型都想上云、绑API的时代，还有多少人愿意在家用小机器上，部署<strong>隐私友好、本地离线、完全控制的模型系统</strong>？如果你愿意折腾，一台**不到3000元的二手/教育优惠 Mac mini M4（16GB RAM）**就能跑起目前大多数开源 20B 以下的量化模型，甚至还能处理语音、图像、代码。</p>
+<p>我在2024年中到2025年间密集试了各种框架，从 Transformers 到 llama.cpp，再到 Apple 的 MLX + LM Studio，下面是基于<strong>实际使用体验 + 社区 benchmark 对比 + 本地推理日志</strong>的一份部署总结，适合有硬件限制但又想最大化利用现有芯片能力的开发者。</p>
+<hr>
+<h3 id="📦-系统与环境配置">📦 系统与环境配置</h3>
+<ul>
+<li>
+<p><strong>设备</strong>：Mac mini M4，16GB 统一内存，256GB SSD</p>
+</li>
+<li>
+<p><strong>系统</strong>：macOS 15，Terminal + zsh，iStat Menu 监控内存</p>
+</li>
+<li>
+<p><strong>框架</strong>：</p>
+<ul>
+<li><code>LM Studio</code> v0.2.12 (MLX 后端，支持 MLX safetensors 4bit)</li>
+<li><code>llama.cpp</code>（配合 llama-swap，自建模型 proxy）</li>
+<li><code>Ollama+OpenWebUI</code>（用于快速集成 + 可视化测试）</li>
+<li><code>Whisper.cpp</code>, <code>Bark</code>, <code>llava.cpp</code>，自编译支持本地音频和图文推理</li>
+<li><code>huggingface-cli</code>, <code>gguf-convert.py</code>, <code>mlx-community-convert</code> 脚本</li>
+</ul>
+</li>
+</ul>
+<h3 id="内存极限在哪里？">内存极限在哪里？</h3>
+<p>在 Mac mini 16GB 上，操作系统本身约占 2.5GB，即便关闭 iCloud、Spotlight、Stage Manager 等服务，理论最大模型体积也就在 <strong>11.5~12GB 左右</strong>。实践中：</p>
+<ul>
+<li>开启 <code>llama-swap</code> 可释放模型之间的 KV Cache，降低峰值内存（非常推荐）</li>
+<li><code>MLX</code> 加载更快，但占用 GPU RAM 多，不适合同时跑多模型</li>
+</ul>
+<h3 id="GGuf模型部署内存计算">GGuf模型部署内存计算</h3>
+<p>估算一个量化模型在内存里的真实占用，不能只看磁盘上 GGUF 文件的大小，还要把模型权重解压到内存、KV cache、以及 llama.cpp 运行时的各种缓冲区都算进去。最核心的三个部分是：</p>
+<p>首先，模型权重本身。量化后 GGUF 文件里存的就是压缩过的整数权重，但 llama.cpp 加载时会把它们解码到紧凑的张量里。对于 2 bit × group quant（Q2_K），实测内存占用约是文件大小的 1.5 倍左右——比如一个 9.3 GB 的 Q2_K 文件，加载后差不多要占 14 GB 左右。这跟社区里常说“量化模型加载要 ∼(文件大小) × (bits/8) × 解压系数”吻合，也印证了“内存需求大约是磁盘大小的 2 – 4 倍”这个经验（WizardLM–7B 14 GB 文件加载要用 ∼30 GB 内存）(<a target="_blank" rel="noopener" href="https://ai.stackexchange.com/questions/40839/for-an-llm-model-how-can-i-estimate-its-memory-requirements-based-on-storage-us?utm_source=chatgpt.com" title="For an LLM model, how can I estimate its memory ...">Artificial Intelligence Stack Exchange</a>)。</p>
+<p>其次，KV cache。语句上下文越长，需要存的 key/value 对越多。每个 Transformer 层要为 context_length（例如 4096）生成一份 KV 张量，形状是 (context_length, head_count_kv, head_size)，数字一般以 FP16 存储。以 Qwen3-Coder-30B 为例：48 层、head_count_kv=4、head_size=128、可是 embedding_length=2048，其实就是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">layers × context × embedding_length × 2 bytes  </span><br><span class="line">≈ 48 × 4096 × 2048 × 2 B  </span><br><span class="line">≈ 800 MiB</span><br></pre></td></tr></table></figure>
+<p>如果你开更长的 context（像 16 K），KV cache 就会线性翻倍。</p>
+<p>最后，运行时缓冲区和线程开销，会把总量再推高个几十到几百 MB。包括前向中间激活、多线程数据结构、stack buffer，macOS 下的 mmap 也会多占点。</p>
+<p>把它们合并，得出大致公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">总内存 ≈ 权重内存 + KV cache 内存 + 其他缓冲</span><br><span class="line">权重内存 ≈ GGUF 文件大小 × 解压系数（Q2_K 下大约 1.5）</span><br><span class="line">KV cache ≈ 层数 × context_length × embedding_length × bytes_per_value</span><br><span class="line">其他缓冲 ≈ 数百 MB</span><br></pre></td></tr></table></figure>
+<p>举个例子：<br>
+Qwen3-Coder-30B-A3B-Instruct-UD-Q2_K_XL.gguf 文件 9.3 GB，加上约 14 GB 权重解压、∼0.8 GB KV cache、∼0.2 GB 其他，就差不多需要 15 GB 以上才能稳定跑。Mac mini 16 GB 理论上勉强够，但是系统和其他进程还要占 2 – 4 GB，经常会触发 swap，性能就很糟。</p>
+<p>如果你改用 Q4_0（4 bit），解压系数掉到 ∼1.2，9.3 GB 文件只要 11 GB 左右；Q8_0（8 bit）基本是 1.0 倍，就是文件大小本身。但精度和速度也跟着走。</p>
+<p>这样你就能根据磁盘上不同 quant 格式的文件大小，按上述系数算出大概要多少内存，再比照自己硬件的可用 RAM，选最合适的模型量化等级。</p>
+<p>截止 2025-08，以下模型<strong>可稳定运行</strong></p>
+<table>
+<thead>
+<tr>
+<th>模型名</th>
+<th>格式</th>
+<th>大小</th>
+<th>Tokens/s (生成)</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gemma-3n-E4B-it</code></td>
+<td>MLX 4bit</td>
+<td>2.5GB</td>
+<td>100+</td>
+<td>实测最流畅</td>
+</tr>
+<tr>
+<td><code>deepseek-coder-1.3b-instruct</code></td>
+<td>GGUF Q4_K_M</td>
+<td>~2.8GB</td>
+<td>~80</td>
+<td>llama.cpp 跑</td>
+</tr>
+<tr>
+<td><code>qwen1.5-7b-chat</code></td>
+<td>GGUF Q4_K_M</td>
+<td>~5GB</td>
+<td>~35</td>
+<td>语义表现稳定</td>
+</tr>
+<tr>
+<td><code>unsloth/Qwen3-Coder-30B-A3B-Instruct</code></td>
+<td>GGUF Q2_K_S</td>
+<td>~11.8GB</td>
+<td>~10–13</td>
+<td>勉强可用，内存压线</td>
+</tr>
+<tr>
+<td><code>mistral-7b-instruct-v0.3</code></td>
+<td>GGUF Q4_K_M</td>
+<td>~5.8GB</td>
+<td>~30–40</td>
+<td>LLM 基线</td>
+</tr>
+<tr>
+<td><code>gemma3n</code> 8bit</td>
+<td>MLX 8bit</td>
+<td>~5GB</td>
+<td>~65</td>
+<td>稳定运行，CPU占比稍高</td>
+</tr>
+<tr>
+<td><code>openai/whisper-large-v3</code></td>
+<td>FP16</td>
+<td>~5.2GB</td>
+<td>~1×实时音频</td>
+<td>whisper.cpp 编译，表现好</td>
+</tr>
+</tbody>
+</table>
+<h3 id="❌-无法稳定运行的模型">❌ 无法稳定运行的模型</h3>
+<p>大于15B的模型</p>
+<table>
+<thead>
+<tr>
+<th>模型名</th>
+<th>格式</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>llama3-70b-instruct</code></td>
+<td>GGUF</td>
+<td>模型文件 &gt;30GB，直接 OOM</td>
+</tr>
+<tr>
+<td><code>deepseek-coder-33b</code></td>
+<td>GGUF Q2_K</td>
+<td>Q2_K 文件 &gt;14GB，模型加载后即 crash</td>
+</tr>
+<tr>
+<td><code>Claude 3 系列</code>, <code>Mixtral 12x7B</code></td>
+<td>Sharded/非 GGUF</td>
+<td>无法加载或格式不兼容</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<hr>
+<h2 id="RAG个人知识库能力评估">RAG个人知识库能力评估</h2>
+<p>在考虑在Mac系统上使用LLM构建和管理个人知识基础的工具时，LM Studio MLX和Ollama都是不错的选择，但具有自己的优势。让我们分解如何在功能，用例和易用性方面进行比较。有限的定制：Ollama 的简单性是以灵活性为代价的。如果您想要更好地控制模型行为、定制或与其他系统的集成，Ollama 可能不如 LM Studio MLX 强大。<br>
+基本功能：虽然 Ollama 非常适合简单查询和管理小型知识库，但它没有 LM Studio MLX 那么多高级功能，例如复杂的数据结构、训练或多模型集成。</p>
+<p>LM Studio用自己的UI带来了整个包装。在MacOS上，它也是运行MLX型号的最简单选择之一。与人们似乎想到的相反，它也可以在后台运行并成为其他应用程序的后端（OpenAi API +他们自己的API）。至于其缺陷，它是“Electron APP”，它更加臃肿（您可能不需要所有内容），并且显然是封闭的（部分是由开源技术支持）。</p>
+<ol>
+<li>
+<p><strong>Ollama</strong> + GGUF 量化模型（Q4、Q6）</p>
+<ul>
+<li><code>ollama pull deepseek-coder:6b</code>（本地代码助手）</li>
+<li><code>ollama pull phi3:4b</code>（轻量推理，快速响应）</li>
+<li>Ollama 生态丰富，内置 <code>RAG</code> 功能，可以快速搭建个人知识库。</li>
+</ul>
+</li>
+<li>
+<p><strong>MLX（Apple 自研的 PyTorch 替代品）</strong></p>
+<ul>
+<li>Apple 提供的 <code>MLX</code> 框架，可以让 LLM 充分利用 <strong>Mac 的 NPU</strong>，进一步提升推理性能。</li>
+<li>MLX 适合需要自己训练或者微调（fine-tune）小模型的用户，性能比 <code>torch-metal</code> 更稳定。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="1-3-价格-vs-扩展性：最划算的-macOS-设备">** 1.3 价格 vs. 扩展性：最划算的 macOS 设备**</h3>
+<p>买 Mac Mini M4 有几个隐藏的优点：</p>
+<ol>
+<li>
+<p><strong>比 Mac Studio / MacBook Pro 便宜得多</strong></p>
+<ul>
+<li>Mac Studio（M2 Ultra）起步价 20,000+，完全不划算。</li>
+<li>MacBook Pro 14/16 英寸价格高，但性能和 Mini 差不多。</li>
+</ul>
+</li>
+<li>
+<p><strong>内存和存储可以外接扩展</strong></p>
+<ul>
+<li>连接 <strong>Thunderbolt SSD</strong>，可以扩展大容量存储，不用买官方超贵的 SSD 版本。</li>
+<li><strong>64GB 内存的版本确实更贵</strong>，但考虑到 macOS 的 <strong>Swap 机制</strong>，16GB 也能凑合。</li>
+</ul>
+</li>
+<li>
+<p><strong>macOS 生态对开发者友好</strong></p>
+<ul>
+<li>自带 Unix 环境，比 Windows 好用（M4 也支持 Asahi Linux）。</li>
+<li><strong>Python + Homebrew + Rust + Ollama</strong> 一条龙支持，很适合 LLM 和 AI 开发。</li>
+</ul>
+</li>
+</ol>
+<p>综合来看，Mac Mini M4 <strong>在性能、价格、可扩展性之间找到了最优解</strong>，比 iMac、MacBook 更合适做 LLM 部署机。</p>
+<hr>
+<h2 id="2-Mac-Mini-M4-在我的-AI-工作流中的作用"><strong>2. Mac Mini M4 在我的 AI 工作流中的作用</strong></h2>
+<p>买了 Mac Mini M4 之后，我主要用它来做 <strong>本地 AI 助手 + 个人知识库</strong>，具体用途包括：</p>
+<h3 id="2-1-个人知识库（Local-RAG）">** 2.1 个人知识库（Local RAG）**</h3>
+<ul>
+<li>通过 <code>Ollama + LangChain</code> 搭建**本地 RAG（检索增强生成）**系统。</li>
+<li>数据存储在 <strong>ChromaDB</strong> 或 <strong>Qdrant</strong> 里，配合 <code>Mistral 7B</code> 或 <code>Phi-3</code> 进行查询。</li>
+<li>实现一个离线可用的 AI 助手，不依赖 OpenAI API。</li>
+</ul>
+<h3 id="2-2-本地代码助手">** 2.2 本地代码助手**</h3>
+<ul>
+<li>用 <code>Deepseek Coder</code> 作为 <strong>离线代码补全助手</strong>，在 VS Code 里运行 <code>ollama run deepseek-coder:6b</code>。</li>
+<li>结合 <code>Copilot</code>，提高代码写作效率，适合离线环境或数据隐私要求高的项目。</li>
+</ul>
+<h3 id="2-3-轻量级-AI-训练">** 2.3 轻量级 AI 训练**</h3>
+<ul>
+<li>主要用 <code>MLX</code> 跑一些小模型的微调（Fine-tune）。</li>
+<li><code>MLX</code> 可以充分利用 Mac 的 <strong>Neural Engine（NPU）</strong>，比 CPU-only 方案快很多。</li>
+</ul>
+<hr>
+<h2 id="3-折腾的收获"><strong>3. 折腾的收获</strong></h2>
+<p>以 DeepSeek-R1-0528-Qwen3-8B-GGUF为例， 这个模型的多个量化版本（比如 Q4_K_XL、Q5_K_M、Q6_K 等），该如何选择最合适的一个用于部署在 ollama 或其他本地推理环境上。下面从几个关键维度来帮你分析选型。<br>
+这些 Q4_K_M、Q5_K_S、Q6_K_XL 是 GGUF 格式模型的量化配置，代表不同精度和内存占用。数字代表位数（4bit、5bit、6bit…），K 表示使用 k-bit quantization 的算法变种（目前最佳实践），后缀 M/S/XL 表示精度差异与模型量化细节。</p>
+<p>Q4_0, Q4_1: 最基础的 4bit 量化，速度快，占用小，但准确率下降明显。</p>
+<p>Q4_K_M, Q4_K_XL: 属于 k-quant 家族中优化过的 4bit 版本，在精度和性能间折中较好。</p>
+<p>Q5_K_<em>, Q6_K_</em>: 精度更高，占用更多资源，适合需要较高准确度的任务。</p>
+<p>Q8_0, Q8_K_XL: 几乎是 FP16 级别的精度，占用大，推理慢但准确率接近原始模型。</p>
+<p>硬件资源约束（Mac mini M4 16GB）<br>
+你在 Mac mini M4 上跑本地模型（假设无 GPU，只用 CPU + NE），实际能用的 RAM 不到 13GB（系统和应用会吃掉一部分）。所以这就限制了你最多只能加载到 Q6_K_XL 甚至 Q6_K，而 Q8_K_XL 体积 &gt;10GB，会非常吃内存和 swap，严重拖慢响应。</p>
+<table>
+<thead>
+<tr>
+<th>版本名</th>
+<th>大小</th>
+<th>是否推荐（Mac mini 16GB）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q4_0</td>
+<td>4.79GB</td>
+<td>✅ 快速测试/微交互型任务</td>
+</tr>
+<tr>
+<td>Q4_K_M</td>
+<td>5.03GB</td>
+<td>✅ 推荐初始部署</td>
+</tr>
+<tr>
+<td>Q4_K_XL</td>
+<td>5.12GB</td>
+<td>✅ 平衡好性能和准确率</td>
+</tr>
+<tr>
+<td>Q5_K_S</td>
+<td>5.72GB</td>
+<td>✅ 若你追求更高准确率</td>
+</tr>
+<tr>
+<td>Q6_K_XL</td>
+<td>7.49GB</td>
+<td>⚠️ 临界，容易爆内存</td>
+</tr>
+<tr>
+<td>Q8_K_XL</td>
+<td>10.8GB</td>
+<td>❌ 可能无法加载或太慢</td>
+</tr>
+</tbody>
+</table>
+<p>这段时间折腾下来，我有几个感悟：</p>
+<ol>
+<li>
+<p><strong>Mac 确实适合本地推理，但不适合训练大模型。</strong></p>
+<ul>
+<li>Mac Mini M4 在 <strong>7B LLM 及以下的推理</strong> 体验很好，但要跑更大的模型（&gt;14B），还是得上 <strong>PC + 高内存方案</strong>。</li>
+<li>微调（Fine-tune）虽然可以用 MLX，但远不如 <strong>Linux + A100/3090 服务器</strong> 来得高效。</li>
+</ul>
+</li>
+<li>
+<p><strong>Ollama 的体验远超想象，但下载速度需要优化。</strong></p>
+<ul>
+<li><code>ollama pull</code> 速度后期骤降，<strong>可能是服务器/CDN 限流</strong>，需要手动优化下载策略（见我的 <code>pull -&gt; stop -&gt; sleep</code> 方案）。</li>
+</ul>
+</li>
+</ol>
+<h2 id="优化-Bash-版本（适用于-Linux-macOS）"><strong>优化 Bash 版本（适用于 Linux/macOS）</strong></h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">MODEL_NAME=<span class="string">"deepseek-coder-v2:16b"</span></span><br><span class="line">MAX_ATTEMPTS=10  <span class="comment"># 最大尝试次数</span></span><br><span class="line">TIMEOUT=120      <span class="comment"># 每次下载时间（秒）</span></span><br><span class="line">SLEEP_TIME=3     <span class="comment"># 停止后等待时间</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">trap</span> <span class="string">"echo 'Stopping...'; exit 1"</span> SIGINT SIGTERM</span><br><span class="line"></span><br><span class="line">attempt=1</span><br><span class="line"><span class="keyword">while</span> [ <span class="variable">$attempt</span> -le <span class="variable">$MAX_ATTEMPTS</span> ]; <span class="keyword">do</span></span><br><span class="line">    <span class="comment"># 检查是否已下载</span></span><br><span class="line">    <span class="keyword">if</span> ollama list | awk <span class="string">'{print $1}'</span> | grep -q <span class="string">"^$MODEL_NAME$"</span>; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">" Model <span class="variable">$MODEL_NAME</span> is fully downloaded."</span></span><br><span class="line">        <span class="built_in">exit</span> 0</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"⏳ Attempt <span class="variable">$attempt</span>: Pulling model <span class="variable">$MODEL_NAME</span>..."</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 开始下载</span></span><br><span class="line">    ollama pull <span class="string">"<span class="variable">$MODEL_NAME</span>"</span> &amp;</span><br><span class="line">    PID=$!</span><br><span class="line">    <span class="built_in">sleep</span> <span class="variable">$TIMEOUT</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 停止进程</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"⏹️ Stopping download..."</span></span><br><span class="line">    <span class="built_in">kill</span> <span class="variable">$PID</span> 2&gt;/dev/null</span><br><span class="line">    <span class="built_in">sleep</span> <span class="variable">$SLEEP_TIME</span></span><br><span class="line"></span><br><span class="line">    attempt=$((attempt+<span class="number">1</span>))</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"⚠️ Model download incomplete after <span class="variable">$MAX_ATTEMPTS</span> attempts. Please check manually."</span></span><br><span class="line"><span class="built_in">exit</span> 1</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Windows-PowerShell-版本"><strong>Windows PowerShell 版本</strong></h3>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$MODEL_NAME</span> = <span class="string">"deepseek-coder-v2:16b"</span></span><br><span class="line"><span class="variable">$MAX_ATTEMPTS</span> = <span class="number">10</span></span><br><span class="line"><span class="variable">$TIMEOUT</span> = <span class="number">120</span></span><br><span class="line"><span class="variable">$SLEEP_TIME</span> = <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$attempt</span> = <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> (<span class="variable">$attempt</span> <span class="operator">-le</span> <span class="variable">$MAX_ATTEMPTS</span>) {</span><br><span class="line">    <span class="comment"># 检查是否已下载</span></span><br><span class="line">    <span class="variable">$modelExists</span> = ollama list | <span class="built_in">Select-String</span> <span class="variable">$MODEL_NAME</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$modelExists</span>) {</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">" Model <span class="variable">$MODEL_NAME</span> is fully downloaded."</span></span><br><span class="line">        <span class="keyword">exit</span> <span class="number">0</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">"⏳ Attempt <span class="variable">$attempt:</span> Pulling model <span class="variable">$MODEL_NAME</span>..."</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 启动下载</span></span><br><span class="line">    <span class="built_in">Start-Process</span> <span class="literal">-NoNewWindow</span> <span class="literal">-FilePath</span> <span class="string">"ollama.exe"</span> <span class="literal">-ArgumentList</span> <span class="string">"pull <span class="variable">$MODEL_NAME</span>"</span></span><br><span class="line">    <span class="built_in">Start-Sleep</span> <span class="literal">-Seconds</span> <span class="variable">$TIMEOUT</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 终止下载</span></span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">"⏹️ Stopping download..."</span></span><br><span class="line">    <span class="built_in">Stop-Process</span> <span class="literal">-Name</span> <span class="string">"ollama"</span> <span class="literal">-Force</span> <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Start-Sleep</span> <span class="literal">-Seconds</span> <span class="variable">$SLEEP_TIME</span></span><br><span class="line"></span><br><span class="line">    <span class="variable">$attempt</span>++</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">"⚠️ Model download incomplete after <span class="variable">$MAX_ATTEMPTS</span> attempts. Please check manually."</span></span><br><span class="line"><span class="keyword">exit</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>本地 LLM 体验很棒</strong>，可以完全替代部分 ChatGPT 使用场景。</li>
+</ul>
+<ol start="3">
+<li><strong>Mac Mini M4 未来的价值很大。</strong>
+<ul>
+<li>Apple 的 <strong>Neural Engine（NPU）</strong> 越来越强，未来 M4 Pro、M5 可能会更适合 AI 部署。</li>
+<li><strong>本地 AI+RAG 是趋势</strong>，个人设备上的 LLM 会变得越来越普及。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<hr>
+<h2 id="🛠️-实用技巧-推荐社区">🛠️ 实用技巧 &amp; 推荐社区</h2>
+<ul>
+<li>善用 <a target="_blank" rel="noopener" href="https://huggingface.co/TheBloke">HuggingFace</a>, <a target="_blank" rel="noopener" href="https://huggingface.co/catalyst">catalyst</a>, <code>mlx-community</code> 模型仓库，第一时间能获取最新 GGUF 或 MLX 转换版本。</li>
+<li>加入 <a target="_blank" rel="noopener" href="https://www.reddit.com/r/LocalLLaMA/">r/LocalLLaMA</a> 和 Discord 群体，跟踪模型发布节奏与 benchmark，对实际能跑的模型一目了然。</li>
+<li>多关注 <code>TheBloke</code>, <code>Undi95</code>, <code>unsloth</code>, <code>ggerganov</code>, <code>mlx-examples</code> 仓库，90% 的量化模型都从这些 repo 起源。</li>
+<li>利用 <code>llama-cpp-server</code> + <code>llama-swap</code> 自建 API proxy，可复用模型并避免 LM Studio 多模型冲突。<br>
+💡 适合：你对 macOS/Linux 配置熟悉，只需要 1-2 个服务<br>
+如果你只想跑 Open WebUI 或 AnythingLLM，可以手动安装依赖，比如：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//1.Node.js</span><br><span class="line"></span><br><span class="line">brew install node </span><br><span class="line"></span><br><span class="line">//2.  安装 Open WebUI</span><br><span class="line">git clone https://github.com/open-webui/open-webui.git</span><br><span class="line">cd open-webui</span><br><span class="line">npm install</span><br><span class="line">npm run dev</span><br><span class="line">📌 优势：</span><br><span class="line"> 不需要 Docker，减少资源占用</span><br><span class="line"> 可以自己控制环境，避免 Docker 额外的磁盘消耗</span><br></pre></td></tr></table></figure>
+<h2 id="4-结论：Mac-Mini-M4，最具性价比的本地-AI-设备"><strong>4. 结论：Mac Mini M4，最具性价比的本地 AI 设备</strong></h2>
+<p>如果你的需求是 <strong>跑本地 AI 助手、LLM 推理、个人知识库</strong>，<strong>Mac Mini M4 绝对是目前最具性价比的 Apple 设备</strong>。</p>
+<p>📌 <strong>适合人群</strong>：<br>
+想折腾本地 AI，体验 Ollama / MLX<br>
+需要一个低功耗、高性价比的 macOS 设备<br>
+主要跑 7B 以内 LLM，或做小型 RAG / 本地 AI 应用</p>
+<p>💡 <strong>不适合</strong>：<br>
+❌ 训练大模型（建议上 Linux + 3090/A100）<br>
+❌ 需要 64GB 以上内存（M4 Mini 最高只支持 36GB）</p>
+<p>目前来看，Mac Mini M4 是 <strong>低成本个人 LLM 部署最划算的选择</strong>，比服务器或高端 Mac 方案都更适合折腾！</p>
+
+                                    
+                            </div>
+                            <hr />
+
+                            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        Author:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Stan ke</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        Link:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://stan370.github.io/2025/03/19/localLlama/">https://stan370.github.io/2025/03/19/localLlama/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        Reprint policy:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    All articles in this blog are used except for special statements
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    reprint policy. If reproduced, please indicate source
+                    <a href="/about" target="_blank">Stan ke</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+                                <div class="tag_share" style="display: block;">
+                                    <div class="post-meta__tag-list" style="display: inline-block;">
+                                        
+                                            <div class="article-tag">
+                                                
+                                                    <a href="/tags/LLM/">
+                                                        <span class="chip bg-color">
+                                                            LLM
+                                                        </span>
+                                                    </a>
+                                                    
+                                            </div>
+                                            
+                                    </div>
+                                    <div class="post_share"
+                                        style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                                        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                                    </div>
+                                </div>
+                                
+                                    <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                    </ul>
+                    
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/reward/wechat.JPG" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        TBD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+                                        
+                        </div>
+    </div>
+
+    
+
+                
+
+                            
+
+                                        
+
+                                                    
+
+                                                                
+
+                                                                            
+
+                                                                                        
+
+                                                                                                    
+
+                                                                                                                
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2025/04/07/capitalism/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/featureimages/0.jpg" class="responsive-img" alt="进步的幻象：生产力的发展带来了什么">
+                        
+                        <span class="card-title">进步的幻象：生产力的发展带来了什么</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2025-04-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Stan ke
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/marxism/">
+                        <span class="chip bg-color">marxism</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2025/03/11/Whoarewe/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/featureimages/5.jpg" class="responsive-img" alt="我们是被怎么塑造的？">
+                        
+                        <span class="card-title">我们是被怎么塑造的？</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2025-03-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%84%9F%E6%83%B3/" class="post-category">
+                                    感想
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeBlockFuction.js"></script>
+
+        
+            <script type="text/javascript"
+                src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeLang.js"></script>
+            
+
+                
+                    <script type="text/javascript"
+                        src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeCopy.js"></script>
+                    
+
+                        
+                            <script type="text/javascript"
+                                src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeShrink.js"></script>
+                            
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+  <div
+    class="container row center-align"
+    style="margin-bottom: 15px ! important;"
+  >
+    <div class="col s12 m8 l8 copy-right">
+      Copyright&nbsp;&copy; 
+      <span id="year"
+        >2019-2026</span
+      >
+      
+      <a href="/about" target="_blank"
+        >Stan ke</a
+      >
+      |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+      |&nbsp;Theme&nbsp;<a
+        href="https://github.com/Stan370/stan370.github.io"
+        target="_blank"
+        >Matery</a
+      >
+      <br />
+      &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:
+      &nbsp;<span class="white-color">314.4k</span>
+      <!--             <!-- Google tag (gtag.js) -->
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-MW85L5PYMX"
+      ></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+
+        gtag("config", "G-MW85L5PYMX");
+      </script>
+
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script defer src="https://events.vercount.one/js"></script>
+
+    <div id="busuanzi_section">
+        <span id="busuanzi_container_site_pv" style="display:none">
+            <i class="fa fa-eye"></i> Total Views: <span id="busuanzi_value_site_pv"></span>
+        </span>
+        <span class="post-meta-divider">|</span>
+        <span id="busuanzi_container_site_uv" style="display:none">
+            <i class="fa fa-user"></i> Total Visitors: <span id="busuanzi_value_site_uv"></span>
+        </span>
+    </div>
+
+    <div id="vercount_section" style="display:none">
+        <i class="fa fa-eye"></i> Total Views: <span id="vercount_value_site_pv"></span>
+        <span class="post-meta-divider">|</span>
+        <i class="fa fa-user"></i> Total Visitors: <span id="vercount_value_site_uv"></span>
+    </div>
+
+    <script>
+        // 自动降级逻辑
+        window.addEventListener('load', function() {
+            // 设置 3 秒超时
+            setTimeout(function() {
+                var bszContainer = document.getElementById('busuanzi_container_site_pv');
+                // 如果 3 秒后不蒜子的容器仍然是隐藏状态 (display: none)，说明加载失败
+                if (getComputedStyle(bszContainer).display === 'none') {
+                    document.getElementById('busuanzi_section').style.display = 'none';
+                    document.getElementById('vercount_section').style.display = 'block';
+                    console.log("Busuanzi failed or slow, switching to Vercount.");
+                }
+            }, 3000); 
+        });
+    </script>
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "673f49051091463d8b6de4925e46990a"}'
+      ></script>
+      <!-- <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+                <i class="fas fa-shield-alt"></i> This site uses Cloudflare Web Analytics for privacy-friendly analytics. 
+            </div>
+            
+            <!-- 运行天数提醒.  -->
+      
+      <span id="sitetime"> Loading ...</span>
+      <script>
+        var calcSiteTime = function () {
+          var seconds = 1000;
+          var minutes = seconds * 60;
+          var hours = minutes * 60;
+          var days = hours * 24;
+          var years = days * 365;
+          var today = new Date();
+          var startYear = "2019";
+          var startMonth = "6";
+          var startDate = "28";
+          var startHour = "0";
+          var startMinute = "0";
+          var startSecond = "0";
+          var todayYear = today.getFullYear();
+          var todayMonth = today.getMonth() + 1;
+          var todayDate = today.getDate();
+          var todayHour = today.getHours();
+          var todayMinute = today.getMinutes();
+          var todaySecond = today.getSeconds();
+          var t1 = Date.UTC(
+            startYear,
+            startMonth,
+            startDate,
+            startHour,
+            startMinute,
+            startSecond
+          );
+          var t2 = Date.UTC(
+            todayYear,
+            todayMonth,
+            todayDate,
+            todayHour,
+            todayMinute,
+            todaySecond
+          );
+          var diff = t2 - t1;
+          var diffYears = Math.floor(diff / years);
+          var diffDays = Math.floor(diff / days - diffYears * 365);
+
+          // 区分是否有年份.
+          var language = "en";
+          if (startYear === String(todayYear)) {
+            document.getElementById("year").innerHTML = todayYear;
+            var daysTip =
+              "This site has been running for " + diffDays + " days";
+            if (language === "zh-CN") {
+              daysTip = "本站已运行 " + diffDays + " 天";
+            } else if (language === "zh-HK") {
+              daysTip = "本站已運行 " + diffDays + " 天";
+            }
+            document.getElementById("sitetime").innerHTML = daysTip;
+          } else {
+            document.getElementById("year").innerHTML =
+              startYear + " - " + todayYear;
+            var yearsAndDaysTip =
+              "This site has been running for " +
+              diffYears +
+              " years and " +
+              diffDays +
+              " days";
+            if (language === "zh-CN") {
+              yearsAndDaysTip =
+                "本站已运行 " + diffYears + " 年 " + diffDays + " 天";
+            } else if (language === "zh-HK") {
+              yearsAndDaysTip =
+                "本站已運行 " + diffYears + " 年 " + diffDays + " 天";
+            }
+            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+          }
+        };
+
+        calcSiteTime();
+      </script>
+      
+      <br />
+      
+    </div>
+  </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+  <div class="modal-content">
+    <div class="search-header">
+      <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span  >
+      <input
+        type="search"
+        id="searchInput"
+        name="s"
+        placeholder="Please enter a search keyword"
+        class="search-input"
+      />
+    </div>
+    <div id="searchResult"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems, {
+        dismissible: true,    // Allow modal to be dismissed by clicking outside
+        preventScrolling: false, // Allow scrolling while modal is open
+        opacity: 0.5,        // Opacity of modal background
+        inDuration: 250,     // Transition in duration
+        outDuration: 250,    // Transition out duration
+        onOpenStart: function() {
+            document.body.style.overflow = 'auto';
+        },
+        onCloseEnd: function() {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Get modal instance
+    const searchModal = document.getElementById("searchModal");
+    const modalInstance = M.Modal.getInstance(searchModal);
+    
+    // Only open modal when search button is clicked
+    document.getElementById("openSearchBtn")?.addEventListener("click", function() {
+        modalInstance.open();
+        searchInput.focus(); 
+    });
+    function closeSearchModal() {
+        modalInstance.close();
+    }
+
+    // Handle clicks outside modal
+    document.addEventListener("click", function(event) {
+        const modalContent = searchModal.querySelector(".modal-content");
+        // Check if click is outside modal content
+        if (event.target === searchModal && !modalContent.contains(event.target)) {
+            closeSearchModal();
+        }
+    });
+
+    // Add ESC key to close modal
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape" && searchModal.classList.contains('open')) {
+            closeSearchModal();
+        }
+    });
+
+    var searchFunc = function (path, search_id, content_id) {
+      "use strict";
+      function debounce(func, wait) {
+        let timeout;
+        return function () {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, arguments), wait);
+        };
+      }
+      $.ajax({
+        url: path,
+        dataType: "json",
+        success: function (jsonData) {
+          // 获取所有文章数据
+          console.log(jsonData);
+          var datas = jsonData.map(function (post) {
+            return {
+              title: post.title,
+              content: post.content,
+              url: post.url,
+            };
+          });
+
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+
+          // 搜索输入监听
+          $input.addEventListener(
+            "input",
+            debounce(function () {
+              var str = '<ul class="search-result-list">';
+              var keywords = this.value
+                .trim()
+                .toLowerCase()
+                .split(/[\s\-]+/);
+              $resultContent.innerHTML = "";
+              if (this.value.trim().length <= 0) {
+                return;
+              }
+              // Perform local searching
+              datas.forEach(function (data) {
+                var isMatch = true;
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content
+                  .trim()
+                  .replace(/<[^>]+>/g, "")
+                  .toLowerCase();
+                var data_url =
+                  data.url.indexOf("/") === 0 ? data.url : "/" + data.url;
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                console.log(data_title, data_content, data_url);
+                if (data_title !== "" && data_content !== "") {
+                  for (let i = 0; i < keywords.length; i++) {
+                    let keyword = keywords[i];
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+
+                    if (index_title < 0 && index_content < 0) {
+                      isMatch = false;
+                      break; // 直接退出关键词遍历
+                    } else {
+                      if (index_content < 0) {
+                        index_content = 0;
+                      }
+                      if (i === 0) {
+                        first_occur = index_content;
+                      }
+                    }
+                  }
+                }
+
+                // Show search results
+                if (isMatch) {
+                  str += `<li>
+                <a href="${data_url}" class="search-result-title">${data_title}</a>`;
+                  var content = data.content.trim().replace(/<[^>]+>/g, "");
+                  if (first_occur >= 0) {
+                    var start = Math.max(0, first_occur - 20);
+                    var end = Math.min(content.length, first_occur + 80);
+                    var match_content = content.substring(start, end);
+
+                    keywords.forEach(function (keyword) {
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(
+                        regS,
+                        '<em class="search-keyword">$&</em>'
+                      );
+                    });
+
+                    str += `<p class="search-result">${match_content}...</p>`;
+                  }
+                  str += "</li>";
+                }
+              });
+
+              str += "</ul>";
+              $resultContent.innerHTML = str;
+            }, 300)
+          ); // 设置 300 毫秒延迟
+        },
+        error: function (xhr, status, error) {
+          console.error("Search failed:", error);
+          document.getElementById(content_id).innerHTML =
+            '<p class="search-error">Search failed to load. Please try again.</p>';
+        },
+      });
+    };
+
+    // 初始化搜索
+    searchFunc('/search.json', "searchInput", "searchResult");
+  });
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/js/matery.js"></script>
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/others/clicklove.js" async="async"></script>
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

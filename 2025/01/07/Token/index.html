@@ -1,0 +1,1785 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="WebAPP怎么保存状态？ Token设计与选型, StanBlog">
+    <meta name="description" content="认证系统的设计与选型：JWT到长短生命周期的Token管理
+大约在 2010 年，大多数Web服务器都使用session来存储状态信息，用户将执行用户/密码登录，后端将为该session ID创建SessionID。 人们开始琢磨一个新点子">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+    <title>WebAPP怎么保存状态？ Token设计与选型 | StanBlog</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/atom.xml" title="StanBlog" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3592614110969127"
+     crossorigin="anonymous"></script>
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">StanBlog</span>
+                </a>
+            </div>
+            
+<style>
+  #openSearchBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+#openSearchBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+  #searchIcon {
+    color: white;
+  }
+</style>
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>Index</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>Tags</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>Categories</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>Archives</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>About</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>Contact</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <button id="openSearchBtn" type="button" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </button>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">StanBlog</div>
+        <div class="logo-desc">
+            
+            A popular long-form, stick-figure-illustrated blog about almost everything. Material Themes / GitHub Pages 个性化定制的Hexo-Matery主题 
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			Index
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			Tags
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			Categories
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			Archives
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			About
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			Contact
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Stan370/stan370.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Stan370/stan370.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/featureimages/18.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">WebAPP怎么保存状态？ Token设计与选型</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                                    <span class="chip bg-color">
+                                        计算机基础
+                                    </span>
+                                </a>
+                                
+                                <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">
+                                    <span class="chip bg-color">
+                                        分布式系统
+                                    </span>
+                                </a>
+                                
+                                <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                                    <span class="chip bg-color">
+                                        网络安全
+                                    </span>
+                                </a>
+                                
+                        </div>
+                        
+                </div>
+                <div class="col s5 right-align">
+                    
+                        <div class="post-cate">
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                                <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%B7%A5%E7%A8%8B/" class="post-category">
+                                    计算机工程
+                                </a>
+                                
+                        </div>
+                        
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                    <div class="post-date info-break-policy">
+                        <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                            2025-01-07
+                    </div>
+                    
+
+                        
+                            <div class="post-date info-break-policy">
+                                <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
+                                    2025-09-25
+                            </div>
+                            
+
+                                
+                                    <div class="info-break-policy">
+                                        <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
+                                            5.2k
+                                    </div>
+                                    
+
+                                        
+                                            <div class="info-break-policy">
+                                                <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
+                                                    19
+                                                        Min
+                                            </div>
+                                            
+
+                                                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+                
+
+                        <div class="card-content article-card-content">
+                            <div id="articleContent">
+                                <h3 id="认证系统的设计与选型：JWT到长短生命周期的Token管理">认证系统的设计与选型：JWT到长短生命周期的Token管理</h3>
+<p>大约在 2010 年，大多数Web服务器都使用session来存储状态信息，用户将执行用户/密码登录，后端将为该session ID创建SessionID。 人们开始琢磨一个新点子：用 令牌 (token) 进行身份认证。JWT (JSON Web Token) 一战成名，成为这个时代的宠儿！在此之前，每次用户访问系统，服务器都得去数据库查一查：“嘿，这哥们儿还算是登录状态吗？” 这不仅拖慢了系统，还让分布式身份认证变得异常麻烦。</p>
+<p>而 JWT 的出现，彻底改变了游戏规则。<br>
+👉 服务器不需要查询数据库，只需验证 JWT 的签名 就能知道用户是否登录。<br>
+这不仅提升了性能，还让那些酷炫的分布式认证系统成为可能。而分布式认证系统之所以变得重要，是因为那时候全世界都陷入了微服务（Microservice）**的热潮。</p>
+<p>不过，令牌也有个问题：唯一重要的是令牌本身。没有数据库来确认会话的有效性，这意味着如果有人偷了你的令牌，他们就可以在令牌有效期内假装成你。因此，令牌的生命周期应该很短。以前会话可以持续几个小时，而令牌的生命周期可能只有几分钟。</p>
+<p>短命令牌的烦恼：用户得反复登录<br>
+但如果令牌的生命周期太短，用户就会觉得很烦，因为他们需要一次又一次地登录。更糟糕的是，令牌可能在他们正用着应用的时候突然“死掉”。于是，**刷新令牌（Refresh Token）**应运而生。<br>
+有了刷新令牌，你可以在令牌快要过期的时候，偷偷发个请求去续命。每个刷新令牌只能用一次，而且当你用它的时候，你还会得到一个新的刷新令牌。这样一来，如果有人试图重复使用同一个刷新令牌，我们就知道出事了，然后可以把所有跟这个被盗令牌相关的刷新令牌都废掉。最终，所有使用该账号的用户都会被强制登出。</p>
+<p>工程师的永恒饭碗：自己制造问题，再解决问题！<br>
+现在你明白为什么工程师的工作永远干不完了吧？因为我们总是先发明一些新问题，然后再发明一些解决方案，而这些解决方案又会带来更多的问题！😄</p>
+<p>在现代的认证与授权机制中，<strong>Token</strong>扮演着关键角色，用于标识和验证用户的身份。</p>
+<p>Token是一个令牌，客户端访问服务器时，验证通过后服务端会为其签发一张令牌，之后客户端就可以携带令牌访问服务器，服务端只需要验证令牌的有效性即可。一句话概括；<strong>访问资源接口（API）时所需要的资源凭证</strong><br>
+JWT（JSON Web Token）常常是一个热门选择。下面我将从设计原则、优势与劣势、以及实际应用场景等角度详细说明 JWT 的设计与选型问题。JWT 的标准结构由三部分组成：</p>
+<p>Header（头部）：通常包含令牌的类型（通常为 JWT）以及所使用的签名算法（如 HMAC SHA256 或 RSA）。<br>
+Payload（载荷）：包含声明（Claims），如注册声明（如 iss、sub、aud、exp、nbf、iat 和 jti）以及自定义数据。<br>
+Signature（签名）：通过对 Header 和 Payload 进行编码后，使用指定的算法和密钥（或私钥）进行签名，确保数据未被篡改。</p>
+<p>然而，如何设计Token，尤其是在选择使用<strong>Access Token</strong>和<strong>Refresh Token</strong>的组合（简称AT&amp;RT方案）还是单Token方案时，往往需要根据业务需求和安全性做权衡。本文将从原理、场景和安全性三个角度入手，深入探讨Token设计中的抉择。</p>
+<hr>
+<h4 id="Access-Token-与-Refresh-Token-的角色分工"><strong>Access Token 与 Refresh Token 的角色分工</strong></h4>
+<p>Access Token 和 Refresh Token 的设计理念源于 OAuth 2.0 协议，而 OAuth 2.0 是由 Internet Engineering Task Force (IETF) 在 2012年 正式发布的（RFC 6749）。虽然 OAuth 2.0 是这一设计的主要推动者，但它的灵感可以追溯到早期的身份验证和授权机制。Access Token（简称AT）和 Refresh Token（简称RT）的设计，背后的核心思想是将<strong>授权</strong>与<strong>资源访问</strong>的行为分离。</p>
+<ol>
+<li>
+<p><strong>Access Token</strong>：用于快速访问受保护的资源。它通常有较短的有效期，直接携带用户授权信息（如权限、身份等），在API请求中传递给服务器进行验证。</p>
+<ul>
+<li><strong>特点</strong>：短时有效、高频使用。</li>
+<li><strong>风险</strong>：一旦被窃取，可能导致短期内资源被恶意访问。</li>
+</ul>
+</li>
+<li>
+<p><strong>Refresh Token</strong>：用于刷新Access Token的有效期。它通常只在认证服务器（Authorization Server）和客户端之间交互，不会直接参与资源访问。</p>
+<ul>
+<li><strong>特点</strong>：长时有效、低频使用。</li>
+<li><strong>风险</strong>：被窃取后可能允许恶意用户长期续签Access Token。</li>
+</ul>
+</li>
+</ol>
+<p>通过将两者分工，AT&amp;RT方案将<strong>获取授权</strong>这一高危、低频的操作与<strong>获取资源</strong>这一低危、高频的操作分离开，从而降低安全风险。</p>
+<hr>
+<h4 id="AT-RT-与单Token方案的核心区别"><strong>AT&amp;RT 与单Token方案的核心区别</strong></h4>
+<p>AT&amp;RT方案与单Token方案的区别，可以总结为一个核心理念：<strong>控制风险的暴露面</strong>。</p>
+<ol>
+<li>
+<p><strong>单Token方案</strong>：</p>
+<ul>
+<li>单Token同时承担授权和资源访问功能。</li>
+<li>一旦泄漏，恶意用户可以直接访问资源，且可能长时间有效。</li>
+<li>适用场景：小型应用、内网服务、对安全性要求较低的系统。</li>
+</ul>
+</li>
+<li>
+<p><strong>AT&amp;RT方案</strong>：</p>
+<ul>
+<li>将授权功能剥离到Refresh Token，Access Token则专注于资源访问。</li>
+<li><strong>好处</strong>：
+<ul>
+<li>如果Access Token泄漏，由于其短时效性，攻击者只能在有限时间内使用。</li>
+<li>即使Refresh Token泄漏，也可以通过令牌轮换机制（Token Rotation）降低风险。</li>
+</ul>
+</li>
+<li>适用场景：安全敏感、用户访问频繁的场景，如银行、社交媒体、云服务等。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="设计Token时需要考虑的关键问题"><strong>设计Token时需要考虑的关键问题</strong></h4>
+<p>在实际系统中，选择单Token还是AT&amp;RT方案，取决于以下几个因素：</p>
+<ol>
+<li>
+<p><strong>安全性需求</strong>：</p>
+<ul>
+<li>如果系统中涉及敏感数据或存在较高的Token泄露风险（如公网环境、多终端接入），推荐使用AT&amp;RT方案。</li>
+<li>单Token方案适用于风险较低的场景，如开发测试环境或不涉及关键数据的内部服务。</li>
+</ul>
+</li>
+<li>
+<p><strong>使用频率</strong>：</p>
+<ul>
+<li>高频访问的API更倾向于AT&amp;RT方案，因为Access Token的短时效性可以有效减少潜在攻击窗口。</li>
+<li>如果访问频率较低，单Token方案可能更简洁高效。</li>
+</ul>
+</li>
+<li>
+<p><strong>复杂度与成本</strong>：</p>
+<ul>
+<li>AT&amp;RT方案需要维护多种令牌状态（如失效、刷新、轮换），实现复杂度较高。</li>
+<li>单Token方案实现简单，适合中小型团队或初创项目。</li>
+</ul>
+</li>
+<li>
+<p><strong>Token有效期</strong>：</p>
+<ul>
+<li>Access Token通常设置为几分钟到几小时的有效期，降低泄漏风险。</li>
+<li>Refresh Token的有效期则更长，通常为数天到数月。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="AT-RT方案的安全机制"><strong>AT&amp;RT方案的安全机制</strong></h4>
+<p>为了进一步提高安全性，AT&amp;RT方案通常配合以下技术：</p>
+<ol>
+<li>
+<p><strong>令牌轮换（Token Rotation）</strong>：</p>
+<ul>
+<li>每次使用Refresh Token时，返回新的Refresh Token并使旧的失效。</li>
+<li>即使Refresh Token被窃取，也只能使用一次，降低攻击风险。</li>
+</ul>
+</li>
+<li>
+<p><strong>短期有效Access Token</strong>：</p>
+<ul>
+<li>将Access Token有效期控制在较短时间内（如5分钟）。</li>
+<li>即便被窃取，攻击窗口也极为有限。</li>
+</ul>
+</li>
+<li>
+<p><strong>设备绑定与IP限制</strong>：</p>
+<ul>
+<li>将Refresh Token绑定到特定设备或IP，防止跨设备滥用。</li>
+</ul>
+</li>
+<li>
+<p><strong>安全存储</strong>：</p>
+<ul>
+<li>客户端应妥善存储Refresh Token（如使用Secure Storage或HttpOnly Cookie）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="实践中的选型建议"><strong>实践中的选型建议</strong></h4>
+<table>
+<thead>
+<tr>
+<th><strong>场景</strong></th>
+<th><strong>推荐方案</strong></th>
+<th><strong>原因</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内网微服务通信</td>
+<td>单Token方案</td>
+<td>安全风险较低，实现简单，且内部环境对Token泄漏容忍度高。</td>
+</tr>
+<tr>
+<td>移动端应用（电商、社交媒体等）</td>
+<td>AT&amp;RT方案</td>
+<td>需要支持多终端、频繁访问资源且对安全性要求较高。</td>
+</tr>
+<tr>
+<td>低频后台管理系统</td>
+<td>单Token方案</td>
+<td>后台系统操作频率低，可通过严格控制用户行为降低风险。</td>
+</tr>
+<tr>
+<td>高敏感性业务（银行、金融等）</td>
+<td>AT&amp;RT方案+Token轮换</td>
+<td>涉及敏感数据，需最大限度减少Token泄漏后的攻击可能性。</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="总结"><strong>总结</strong></h2>
+<p>AT&amp;RT方案的核心在于用双Token机制分隔高频和高危操作，从而降低风险的暴露面。而单Token方案则以简洁性取胜，适合对安全性要求较低的场景。在实际应用中，开发者需要根据业务特点、用户行为模式以及系统复杂度，选择最合适的方案。</p>
+<p><strong>Token设计没有“银弹”，但对风险的正确理解，才是高效与安全并行的基石。</strong></p>
+<h2 id="背景知识">背景知识</h2>
+<p>在身份验证和授权领域，“有状态”（stateful）和"无状态"（stateless）通常用来描述系统处理用户认证信息的方式。</p>
+<p>有状态（Stateful）：</p>
+<p>有状态的认证系统在服务器端会维护用户的会话状态信息。这意味着服务器端会存储关于用户认证状态的信息，比如用户的登录状态、会话信息、权限等。<br>
+在有状态的认证系统中，服务器端在处理用户请求时，会根据存储的会话状态来验证用户的身份和权限，通常会使用会话标识（如 Session ID）来识别用户的会话状态。<br>
+典型的例子包括传统的基于会话的认证方式，用户在登录后会获得一个会话标识（Session ID），服务器端会在会话管理中保持用户的登录状态，并在后续请求中使用该会话标识来验证用户的身份。</p>
+<p>使用有状态令牌（Stateful Token）在特定场景中具有显著优势，特别是在需要服务器端管理会话状态和即时控制会话生命周期的情况下。以下是一些适合使用有状态令牌的场景：</p>
+<h3 id="1-高度安全性要求的应用">1. <strong>高度安全性要求的应用</strong></h3>
+<ul>
+<li><strong>即时会话撤销</strong>：在高安全性应用中，例如金融服务、在线支付和医疗系统，可能需要立即撤销某些会话。服务器端存储会话状态，可以在需要时立即无效化令牌。</li>
+<li><strong>敏感操作</strong>：对于涉及敏感数据和操作的系统，服务器端管理可以提供额外的控制和审计能力。</li>
+</ul>
+<h3 id="2-单一服务器或共享存储的系统">2. <strong>单一服务器或共享存储的系统</strong></h3>
+<ul>
+<li><strong>集中式会话管理</strong>：在单服务器应用或使用集中式共享存储的环境中，服务器端存储和管理会话状态较为简单和高效。</li>
+<li><strong>小规模系统</strong>：对于小规模系统或负载较低的系统，管理会话状态的开销相对较低。</li>
+</ul>
+<h3 id="3-需要复杂的会话控制-需长时间会话管理的应用">3. <strong>需要复杂的会话控制,需长时间会话管理的应用</strong></h3>
+<ul>
+<li><strong>细粒度权限控制</strong>：服务器端可以根据用户会话状态进行细粒度的权限控制，例如临时提升权限、基于活动时间段的权限控制等。</li>
+<li><strong>动态会话属性</strong>：在会话期间可能需要动态调整用户的会话属性（如角色、权限等），服务器端管理更加灵活。</li>
+<li><strong>长期会话</strong>：在需要长时间保持用户会话的应用中，例如企业内部应用或需要频繁交互的应用，服务器端可以更好地管理和维护会话状态。</li>
+<li><strong>会话恢复</strong>：支持会话恢复，用户可以在不同设备和会话中无缝切换。</li>
+</ul>
+<h3 id="4-严格的会话一致性需求-不需要跨域">4. <strong>严格的会话一致性需求,不需要跨域</strong></h3>
+<ul>
+<li><strong>强一致性</strong>：需要确保会话状态的一致性，如电商购物车、多人协作工具等，服务器端可以更好地保证一致性和数据同步。</li>
+<li><strong>内部系统</strong>：主要用于内部系统，不需要跨域、跨平台访问，这类系统更适合使用有状态令牌。</li>
+</ul>
+<p>无状态（Stateless）：</p>
+<p>无状态的认证系统不会在服务器端维护用户的会话状态信息。每个请求都是独立的，服务器不会存储任何关于用户的会话状态。<br>
+在无状态的认证系统中，服务器端不需要存储任何会话状态，所有的认证信息都被包含在每个请求中，通常是在请求的头部（Header）或参数中。<br>
+典型的例子包括基于令牌（Token）的认证方式，比如 JSON Web Token（JWT）。在这种方式下，用户在登录后会获得一个令牌（Token），服务器端会使用令牌中的信息来验证用户的身份和权限，而不需要存储任何会话状态。</p>
+<p>即使使用 JWT 进行用户认证，后端数据库仍然需要存储用户的账户和密码信息。这是因为：</p>
+<ul>
+<li><strong>用户注册和登录</strong>：在用户注册时，需要存储他们的账户信息（如用户名、邮箱）和密码（通常是经过哈希处理的密码）。</li>
+<li><strong>身份验证</strong>：在用户登录时，后端需要验证用户输入的密码是否正确，这需要与数据库中存储的密码进行比对。</li>
+</ul>
+<p>JWT 是在用户成功登录后生成的令牌，通常包含用户的身份信息和权限信息。其生成和使用过程如下：</p>
+<ul>
+<li><strong>用户登录</strong>：用户提交用户名和密码。</li>
+<li><strong>身份验证</strong>：服务器验证用户名和密码。如果验证成功，服务器生成一个 JWT，包含用户的身份信息（如用户ID）和其他必要的声明（claims）。</li>
+<li><strong>返回 JWT</strong>：服务器将生成的 JWT 返回给客户端。</li>
+<li><strong>后续请求</strong>：客户端在后续请求中携带 JWT，服务器通过验证 JWT 的签名和有效期来确认用户身份。</li>
+</ul>
+<p>JWT 在用户认证和授权方面具有以下优势：</p>
+<ul>
+<li>
+<p><strong>无状态性</strong>：服务器不需要存储用户的会话信息，每次请求都可以通过验证 JWT 来确认用户身份。</p>
+</li>
+<li>
+<p><strong>扩展性</strong>：适用于分布式系统和微服务架构，因为令牌是自包含的，不需要共享会话状态。</p>
+</li>
+<li>
+<p><strong>安全性</strong>：通过加密和签名，确保令牌的完整性和可信度。<br>
+<strong>Cookie-Based Session</strong>：</p>
+</li>
+<li>
+<p><strong>优点</strong>：简单、安全性高（服务器端存储）。</p>
+</li>
+<li>
+<p><strong>缺点</strong>：扩展性差，服务器压力大。</p>
+</li>
+</ul>
+<p><strong>Token-Based Authentication</strong>：</p>
+<ul>
+<li><strong>优点</strong>：无状态、扩展性好。</li>
+<li><strong>缺点</strong>：客户端存储安全性较差。</li>
+</ul>
+<p><strong>JWT</strong>：</p>
+<ul>
+<li><strong>优点</strong>：无状态、自包含、适合分布式系统。</li>
+<li><strong>缺点</strong>：安全性依赖于客户端存储和令牌签名。</li>
+</ul>
+<p><strong>Cookie-Based Session</strong>：适用于简单的 Web 应用，特别是单服务器或小规模应用。</p>
+<p><strong>Token-Based Authentication</strong>：适用于需要跨多个客户端（如移动端、单页应用）的应用。</p>
+<p><strong>JWT</strong>：适用于分布式系统和微服务架构，提供更高的扩展性和灵活性。</p>
+<p>如果是在一个只有帐号跟密码的世界上，我就必须要把我的 Google 帐号和密码告诉给这第三方服务行事历服务，它才有办法取得这些资讯。但如果我把帐号密码告诉了第三方，它可能就可以在暗地里窃取行事历以外的资讯，像是在 Gmail 里的机密资讯。这时候就出现了使用 <strong>Access Token 来解决这个问题的协议，OAuth 2.0。</strong></p>
+<p>在 OAuth 2.0 中，使用短期的 Access Token 有几个主要的优势和原因：</p>
+<ol>
+<li><strong>安全性：</strong> 短期的 Access Token 有效期较短，如果被盗或泄露，攻击者可利用的时间窗口较小，减少了被滥用的风险。相比之下，长期有效的 Token 更容易成为攻击者的攻击目标。</li>
+<li>可控制资源的访问权限（最小权限原则</li>
+<li><strong>强制刷新：</strong> 通过设定较短的有效期，强制客户端定期刷新 Access Token。这有助于保持令牌的有效性和安全性，并且可以促使客户端与认证服务器交互，更新并重新授权访问权限。</li>
+<li><strong>可撤销性:</strong> 您可以随时撤销第三方服务的访问权限。</li>
+</ol>
+<p>但同时也要权衡安全性和效率。 Access Token应该维持在较短有效期，<strong>过长不安全，过短也会影响用户体验</strong>，因为频繁去刷新带来没有必要的网络请求。可以参考我们常常在某些网站停止操作一段时间之后就会掉线，这个时间是Refresh Token的有效期，Access Token不应长过这个时间。</p>
+<p>Refresh Token的有效期就是允许用户在多久时间内不用重新登录的时间，可以很长，视业务而定。我们在使用某些APP的时候，即使一个月没有开过也是登录状态的，这6y就是Refresh Token决定的。授权服务在接到Refresh Token的时候还要进一步做客户端的验证，尽可能排除盗用的情况。</p>
+<p>A refresh token can help you balance security with usability. Since refresh tokens are typically longer-lived, you can use them <strong>to request new access tokens after the shorter-lived access tokens expire</strong>.</p>
+<p><strong>It’s a common practice for some JWT frameworks or authentication systems to use a combination of JWT access tokens and opaque refresh tokens. This hybrid approach aims to leverage the advantages of both token types while mitigating their respective drawbacks.</strong></p>
+<p><strong>通过引入 refresh token，系统设计者实现了一种混合模型：保持了大部分请求的无状态性（通过 JWT），同时通过 refresh token 实现必要的有状态管理（如 token 的更新和撤销）。这种方法有效地在用户体验、安全性和系统性能之间取得了平衡。<br>
+你的总结确实很好地解释了为什么在现代架构中，尽管追求无状态（stateless）</strong>，但还是需要一些有状态（stateful）元素来解决实际问题。这样的设计既保持了分布式系统的优势，又提供了必要的安全控制和用户体验优化。</p>
+<p>所有token应该保管在private的地方，也就是只能客户端自己使用，所有token都应该在<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%2582%25B3%25E8%25BC%25B8%25E5%25B1%25A4%25E5%25AE%2589%25E5%2585%25A8%25E6%2580%25A7%25E5%258D%2594%25E5%25AE%259A%23TLS_1.3">TLS</a>信道下发送（比如HTTPS）。</p>
+<p>In an SSO/Auth system, the token you design should store information essential for secure and efficient authentication and authorization. Here’s a breakdown of the key information that should be included in your token:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">v.Set("scope", "iauth_token")</span><br><span class="line">  v.Set("response_type", "code")</span><br><span class="line">  v.Set("client_id", testService.ServiceID)</span><br><span class="line">  v.Set("state", uuid.NewString())</span><br><span class="line">  v.Set("redirect_uri", "https://test.hotstar.com:9999/callback")</span><br><span class="line">  tokenClaims := &amp;iauth.TokenClaims{}</span><br><span class="line">    parser := jwt.Parser{}</span><br><span class="line">    _, _, err = parser.ParseUnverified(result.AccessToken, tokenClaims)</span><br><span class="line">    assert.Nil(t, err)</span><br><span class="line">    assert.Equal(t, tokenClaims.SubjectID, testUserId)</span><br><span class="line">    assert.Equal(t, tokenClaims.ExpiresAt, int64(result.ExpiresAt))</span><br><span class="line">    assert.Equal(t, tokenClaims.ExpiresAt-12*3600-2, tokenClaims.IssuedAt) //we set 2 second offset in issueAt</span><br><span class="line">    assert.True(t, tokenClaims.IssuedAt == tokenClaims.NotBefore)</span><br><span class="line">    assert.NotNil(t, tokenClaims.Id)</span><br></pre></td></tr></table></figure>
+<p><strong>Essential Information:</strong></p>
+<ul>
+<li><strong>User Identifier (UID):</strong> A unique identifier for the user, typically a numerical ID. This is crucial for identifying the user associated with the token.</li>
+<li><strong>Issuer (iss):</strong> Identifies the system that issued the token. This helps verify the token’s origin and prevent forgery.</li>
+<li><strong>Audience (aud):</strong> Specifies the intended recipient or service for the token. This ensures the token is used only by the intended service.</li>
+<li><strong>Expiration Time (exp):</strong> A timestamp indicating when the token expires. This limits the token’s validity and reduces the risk of unauthorized access if compromised.</li>
+<li><strong>Issued At Time (iat):</strong> A timestamp indicating when the token was issued. This helps track token age and detect potential issues.</li>
+<li><strong>Token Type (typ):</strong> Specifies the type of token being used (e.g., JWT, opaque token). This helps the receiving service correctly handle the token.</li>
+</ul>
+<p><strong>Optional but Recommended Information:</strong></p>
+<ul>
+<li><strong>Scope (scp):</strong> Defines the permissions granted to the token holder. This allows for fine-grained control over what resources the user can access.</li>
+<li><strong>Nonce (jti):</strong> A unique identifier for the token, preventing replay attacks where a stolen token is used multiple times.</li>
+<li><strong>Session ID:</strong> A unique identifier for the user’s session. This allows for session management and revocation.</li>
+<li><strong>User Roles/Groups:</strong> Information about the user’s roles or groups within the system. This can be used for authorization decisions.</li>
+<li><strong>Refresh Token ID:</strong> If using a refresh token strategy, this identifies the associated refresh token for seamless token renewal.</li>
+</ul>
+<p><strong>Considerations:</strong></p>
+<ul>
+<li><strong>Security:</strong> Prioritize security by using strong encryption algorithms and proper key management for token generation and validation.</li>
+<li><strong>Performance:</strong> Balance the amount of information stored in the token with performance considerations. Larger tokens can impact performance.</li>
+<li><strong>Privacy:</strong> Only include necessary information to minimize the risk of exposing sensitive user data.</li>
+<li><strong>Token Format:</strong> Choose a suitable token format like JWT (JSON Web Token) for its standardized structure and ease of parsing.</li>
+</ul>
+<p><strong>参考文献与数据来源</strong>：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7519">RFC 7519 - JSON Web Token (JWT)</a></li>
+<li><a target="_blank" rel="noopener" href="https://auth0.com/blog/jwt-best-practices/">JWT Best Practices</a></li>
+<li><a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java.html">OWASP JWT Cheat Sheet</a></li>
+<li><a target="_blank" rel="noopener" href="https://pages.nist.gov/800-63-3/">NIST Guidelines on Authentication</a></li>
+</ul>
+
+                                    
+                            </div>
+                            <hr />
+
+                            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        Author:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Stan ke</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        Link:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://stan370.github.io/2025/01/07/Token/">https://stan370.github.io/2025/01/07/Token/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        Reprint policy:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    All articles in this blog are used except for special statements
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    reprint policy. If reproduced, please indicate source
+                    <a href="/about" target="_blank">Stan ke</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+                                <div class="tag_share" style="display: block;">
+                                    <div class="post-meta__tag-list" style="display: inline-block;">
+                                        
+                                            <div class="article-tag">
+                                                
+                                                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                                                        <span class="chip bg-color">
+                                                            计算机基础
+                                                        </span>
+                                                    </a>
+                                                    
+                                                    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">
+                                                        <span class="chip bg-color">
+                                                            分布式系统
+                                                        </span>
+                                                    </a>
+                                                    
+                                                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                                                        <span class="chip bg-color">
+                                                            网络安全
+                                                        </span>
+                                                    </a>
+                                                    
+                                            </div>
+                                            
+                                    </div>
+                                    <div class="post_share"
+                                        style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                                        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                                    </div>
+                                </div>
+                                
+                                    <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                    </ul>
+                    
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/reward/wechat.JPG" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        TBD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+                                        
+                        </div>
+    </div>
+
+    
+
+                
+
+                            
+
+                                        
+
+                                                    
+
+                                                                
+
+                                                                            
+
+                                                                                        
+
+                                                                                                    
+
+                                                                                                                
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2025/02/06/shannon/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/medias/featureimages/14.jpg" class="responsive-img" alt="美剧硅谷的middle-out algorithm 压缩算法">
+                        
+                        <span class="card-title">美剧硅谷的middle-out algorithm 压缩算法</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2025-02-06
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E9%9A%8F%E8%B0%88/" class="post-category">
+                                    随谈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/">
+                        <span class="chip bg-color">概率论</span>
+                    </a>
+                    
+                    <a href="/tags/%E4%BF%A1%E6%81%AF%E8%AE%BA/">
+                        <span class="chip bg-color">信息论</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2025/01/06/security/">
+                    <div class="card-image">
+                        
+                        <img src="https://raw.githubusercontent.com/Stan370/stan370.github.io/main/themes/hexo-theme-matery/source/medias/featureimages/1.jpg" class="responsive-img" alt="网络安全实践">
+                        
+                        <span class="card-title">网络安全实践</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2025-01-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Stan ke
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">网络安全</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeBlockFuction.js"></script>
+
+        
+            <script type="text/javascript"
+                src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeLang.js"></script>
+            
+
+                
+                    <script type="text/javascript"
+                        src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeCopy.js"></script>
+                    
+
+                        
+                            <script type="text/javascript"
+                                src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/codeBlock/codeShrink.js"></script>
+                            
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+  <div
+    class="container row center-align"
+    style="margin-bottom: 15px ! important;"
+  >
+    <div class="col s12 m8 l8 copy-right">
+      Copyright&nbsp;&copy; 
+      <span id="year"
+        >2019-2026</span
+      >
+      
+      <a href="/about" target="_blank"
+        >Stan ke</a
+      >
+      |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+      |&nbsp;Theme&nbsp;<a
+        href="https://github.com/Stan370/stan370.github.io"
+        target="_blank"
+        >Matery</a
+      >
+      <br />
+      &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:
+      &nbsp;<span class="white-color">314.4k</span>
+      <!--             <!-- Google tag (gtag.js) -->
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-MW85L5PYMX"
+      ></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+
+        gtag("config", "G-MW85L5PYMX");
+      </script>
+
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script defer src="https://events.vercount.one/js"></script>
+
+    <div id="busuanzi_section">
+        <span id="busuanzi_container_site_pv" style="display:none">
+            <i class="fa fa-eye"></i> Total Views: <span id="busuanzi_value_site_pv"></span>
+        </span>
+        <span class="post-meta-divider">|</span>
+        <span id="busuanzi_container_site_uv" style="display:none">
+            <i class="fa fa-user"></i> Total Visitors: <span id="busuanzi_value_site_uv"></span>
+        </span>
+    </div>
+
+    <div id="vercount_section" style="display:none">
+        <i class="fa fa-eye"></i> Total Views: <span id="vercount_value_site_pv"></span>
+        <span class="post-meta-divider">|</span>
+        <i class="fa fa-user"></i> Total Visitors: <span id="vercount_value_site_uv"></span>
+    </div>
+
+    <script>
+        // 自动降级逻辑
+        window.addEventListener('load', function() {
+            // 设置 3 秒超时
+            setTimeout(function() {
+                var bszContainer = document.getElementById('busuanzi_container_site_pv');
+                // 如果 3 秒后不蒜子的容器仍然是隐藏状态 (display: none)，说明加载失败
+                if (getComputedStyle(bszContainer).display === 'none') {
+                    document.getElementById('busuanzi_section').style.display = 'none';
+                    document.getElementById('vercount_section').style.display = 'block';
+                    console.log("Busuanzi failed or slow, switching to Vercount.");
+                }
+            }, 3000); 
+        });
+    </script>
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "673f49051091463d8b6de4925e46990a"}'
+      ></script>
+      <!-- <div class="privacy-notice" style="font-size: 0.8em; margin-top: 10px;">
+                <i class="fas fa-shield-alt"></i> This site uses Cloudflare Web Analytics for privacy-friendly analytics. 
+            </div>
+            
+            <!-- 运行天数提醒.  -->
+      
+      <span id="sitetime"> Loading ...</span>
+      <script>
+        var calcSiteTime = function () {
+          var seconds = 1000;
+          var minutes = seconds * 60;
+          var hours = minutes * 60;
+          var days = hours * 24;
+          var years = days * 365;
+          var today = new Date();
+          var startYear = "2019";
+          var startMonth = "6";
+          var startDate = "28";
+          var startHour = "0";
+          var startMinute = "0";
+          var startSecond = "0";
+          var todayYear = today.getFullYear();
+          var todayMonth = today.getMonth() + 1;
+          var todayDate = today.getDate();
+          var todayHour = today.getHours();
+          var todayMinute = today.getMinutes();
+          var todaySecond = today.getSeconds();
+          var t1 = Date.UTC(
+            startYear,
+            startMonth,
+            startDate,
+            startHour,
+            startMinute,
+            startSecond
+          );
+          var t2 = Date.UTC(
+            todayYear,
+            todayMonth,
+            todayDate,
+            todayHour,
+            todayMinute,
+            todaySecond
+          );
+          var diff = t2 - t1;
+          var diffYears = Math.floor(diff / years);
+          var diffDays = Math.floor(diff / days - diffYears * 365);
+
+          // 区分是否有年份.
+          var language = "en";
+          if (startYear === String(todayYear)) {
+            document.getElementById("year").innerHTML = todayYear;
+            var daysTip =
+              "This site has been running for " + diffDays + " days";
+            if (language === "zh-CN") {
+              daysTip = "本站已运行 " + diffDays + " 天";
+            } else if (language === "zh-HK") {
+              daysTip = "本站已運行 " + diffDays + " 天";
+            }
+            document.getElementById("sitetime").innerHTML = daysTip;
+          } else {
+            document.getElementById("year").innerHTML =
+              startYear + " - " + todayYear;
+            var yearsAndDaysTip =
+              "This site has been running for " +
+              diffYears +
+              " years and " +
+              diffDays +
+              " days";
+            if (language === "zh-CN") {
+              yearsAndDaysTip =
+                "本站已运行 " + diffYears + " 年 " + diffDays + " 天";
+            } else if (language === "zh-HK") {
+              yearsAndDaysTip =
+                "本站已運行 " + diffYears + " 年 " + diffDays + " 天";
+            }
+            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+          }
+        };
+
+        calcSiteTime();
+      </script>
+      
+      <br />
+      
+    </div>
+  </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+  <div class="modal-content">
+    <div class="search-header">
+      <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span  >
+      <input
+        type="search"
+        id="searchInput"
+        name="s"
+        placeholder="Please enter a search keyword"
+        class="search-input"
+      />
+    </div>
+    <div id="searchResult"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems, {
+        dismissible: true,    // Allow modal to be dismissed by clicking outside
+        preventScrolling: false, // Allow scrolling while modal is open
+        opacity: 0.5,        // Opacity of modal background
+        inDuration: 250,     // Transition in duration
+        outDuration: 250,    // Transition out duration
+        onOpenStart: function() {
+            document.body.style.overflow = 'auto';
+        },
+        onCloseEnd: function() {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Get modal instance
+    const searchModal = document.getElementById("searchModal");
+    const modalInstance = M.Modal.getInstance(searchModal);
+    
+    // Only open modal when search button is clicked
+    document.getElementById("openSearchBtn")?.addEventListener("click", function() {
+        modalInstance.open();
+        searchInput.focus(); 
+    });
+    function closeSearchModal() {
+        modalInstance.close();
+    }
+
+    // Handle clicks outside modal
+    document.addEventListener("click", function(event) {
+        const modalContent = searchModal.querySelector(".modal-content");
+        // Check if click is outside modal content
+        if (event.target === searchModal && !modalContent.contains(event.target)) {
+            closeSearchModal();
+        }
+    });
+
+    // Add ESC key to close modal
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape" && searchModal.classList.contains('open')) {
+            closeSearchModal();
+        }
+    });
+
+    var searchFunc = function (path, search_id, content_id) {
+      "use strict";
+      function debounce(func, wait) {
+        let timeout;
+        return function () {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, arguments), wait);
+        };
+      }
+      $.ajax({
+        url: path,
+        dataType: "json",
+        success: function (jsonData) {
+          // 获取所有文章数据
+          console.log(jsonData);
+          var datas = jsonData.map(function (post) {
+            return {
+              title: post.title,
+              content: post.content,
+              url: post.url,
+            };
+          });
+
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+
+          // 搜索输入监听
+          $input.addEventListener(
+            "input",
+            debounce(function () {
+              var str = '<ul class="search-result-list">';
+              var keywords = this.value
+                .trim()
+                .toLowerCase()
+                .split(/[\s\-]+/);
+              $resultContent.innerHTML = "";
+              if (this.value.trim().length <= 0) {
+                return;
+              }
+              // Perform local searching
+              datas.forEach(function (data) {
+                var isMatch = true;
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content
+                  .trim()
+                  .replace(/<[^>]+>/g, "")
+                  .toLowerCase();
+                var data_url =
+                  data.url.indexOf("/") === 0 ? data.url : "/" + data.url;
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                console.log(data_title, data_content, data_url);
+                if (data_title !== "" && data_content !== "") {
+                  for (let i = 0; i < keywords.length; i++) {
+                    let keyword = keywords[i];
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+
+                    if (index_title < 0 && index_content < 0) {
+                      isMatch = false;
+                      break; // 直接退出关键词遍历
+                    } else {
+                      if (index_content < 0) {
+                        index_content = 0;
+                      }
+                      if (i === 0) {
+                        first_occur = index_content;
+                      }
+                    }
+                  }
+                }
+
+                // Show search results
+                if (isMatch) {
+                  str += `<li>
+                <a href="${data_url}" class="search-result-title">${data_title}</a>`;
+                  var content = data.content.trim().replace(/<[^>]+>/g, "");
+                  if (first_occur >= 0) {
+                    var start = Math.max(0, first_occur - 20);
+                    var end = Math.min(content.length, first_occur + 80);
+                    var match_content = content.substring(start, end);
+
+                    keywords.forEach(function (keyword) {
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(
+                        regS,
+                        '<em class="search-keyword">$&</em>'
+                      );
+                    });
+
+                    str += `<p class="search-result">${match_content}...</p>`;
+                  }
+                  str += "</li>";
+                }
+              });
+
+              str += "</ul>";
+              $resultContent.innerHTML = str;
+            }, 300)
+          ); // 设置 300 毫秒延迟
+        },
+        error: function (xhr, status, error) {
+          console.error("Search failed:", error);
+          document.getElementById(content_id).innerHTML =
+            '<p class="search-error">Search failed to load. Please try again.</p>';
+        },
+      });
+    };
+
+    // 初始化搜索
+    searchFunc('/search.json', "searchInput", "searchResult");
+  });
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/js/matery.js"></script>
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/others/clicklove.js" async="async"></script>
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@master/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
