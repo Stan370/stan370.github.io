@@ -1,9 +1,11 @@
 ---
-title: 社会“加速”前进对个人生活的影响
+title: 技术加速主义
 date: 2026-06-03 21:00:40
 tags: 
 - marxism
 ---
+
+'Accelerationism' is a term used by white supremacists and other extremist groups to refer to “their desire to hasten the collapse of society.加速主义是一系列意识形态的总称，它呼吁利用资本主义及其相关进程来实现激进的社会变革。广义而言，加速主义与反人类主义[1]以及后人类主义[2]密切相关，并试图以牺牲负面趋势为代价，加速资本主义内部的积极趋势。然而，不同的加速主义流派在具体关注哪些趋势以及这种加速最终是超越资本主义还是进一步深陷其中等方面存在很大差异。
 
 生产力的进步，通常被视为人类社会发展的核心动力。它意味着用更少的资源和时间创造更多的价值，理应带来更高效的生产、更富裕的生活和更多的闲暇。然而，现实却常常呈现出一种令人困惑甚至绝望的景象。
 ![新異化的誕生](https://im2.book.com.tw/image/getImage?i=https://www.books.com.tw/img/CN1/151/82/CN11518205.jpg&v=69ccf3ack&w=375&h=375)
