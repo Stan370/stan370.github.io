@@ -3,7 +3,6 @@ title: Coding philosophy
 date: 2024-10-10 12:49:46
 categories: 感想
 tags: personal growth
-img: https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/0.jpg
 ---
 
 # Coding philosophy
