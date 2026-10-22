@@ -1,0 +1,102 @@
+---
+import { render } from 'astro:content';
+import Post from '../../../../layouts/Post.astro';
+import PrevNext from '../../../../components/PrevNext.astro';
+import Giscus from '../../../../components/Giscus.astro';
+import {
+  absoluteUrl,
+  categoryHref,
+  dateParts,
+  getPosts,
+  langOf,
+  plainText,
+  postHref,
+  readingMinutes,
+  summaryOf,
+  type Post as PostEntry,
+} from '../../../../lib/posts';
+import { site } from '../../../../site.config';
+
+export async function getStaticPaths() {
+  const all = await getPosts({ includeHidden: true });
+  const listed = all.filter((p) => !p.data.hide);
+  return all.map((post) => {
+    const i = listed.indexOf(post);
+    return {
+      params: { ...dateParts(post.data.date), slug: post.id },
+      props: {
+        post,
+        newer: i > 0 ? listed[i - 1] : undefined,
+        older: i >= 0 ? listed[i + 1] : undefined,
+      },
+    };
+  });
+}
+
+interface Props {
+  post: PostEntry;
+  newer?: PostEntry;
+  older?: PostEntry;
+}
+
+const { post, newer, older } = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
+const { title, date, updated, tags, categories } = post.data;
+
+const text = plainText(post.body);
+const lang = langOf(text, post.data.lang);
+const description = summaryOf(post, 120);
+const url = absoluteUrl(postHref(post));
+const image = encodeURI(`/og/${post.id}.png`);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description,
+    datePublished: date.toISOString(),
+    dateModified: (updated ?? date).toISOString(),
+    inLanguage: lang,
+    keywords: tags.join(', ') || undefined,
+    image: absoluteUrl(image),
+    url,
+    mainEntityOfPage: url,
+    author: { '@type': 'Person', name: site.author, url: absoluteUrl('/about/') },
+    publisher: { '@type': 'Person', name: site.author },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: site.title, item: absoluteUrl('/') },
+      ...(categories[0]
+        ? [{ '@type': 'ListItem', position: 2, name: categories[0], item: absoluteUrl(categoryHref(categories[0])) }]
+        : []),
+      { '@type': 'ListItem', position: categories[0] ? 3 : 2, name: title, item: url },
+    ],
+  },
+];
+---
+
+<Post
+  title={title}
+  description={description}
+  lang={lang}
+  headings={headings}
+  date={date}
+  updated={updated}
+  minutes={readingMinutes(text)}
+  tags={tags}
+  categories={categories}
+  image={image}
+  cover={post.data.img}
+  math={Boolean(remarkPluginFrontmatter.hasMath)}
+  jsonLd={jsonLd}
+>
+  <Content />
+  <Fragment slot="after">
+    <PrevNext older={older} newer={newer} />
+    <Giscus />
+  </Fragment>
+</Post>

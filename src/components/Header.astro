@@ -1,0 +1,59 @@
+---
+import { site } from '../site.config';
+import ThemeToggle from './ThemeToggle.astro';
+import Search from './Search.astro';
+
+const nav = [
+  { href: '/archives/', label: '归档' },
+  { href: '/tags/', label: '标签' },
+  { href: '/about/', label: '关于' },
+];
+const path = Astro.url.pathname;
+---
+
+<header class="site-header wrap">
+  <a class="brand" href="/" aria-label={`${site.title} 首页`}>{site.title}</a>
+  <nav aria-label="主导航">
+    {
+      nav.map(({ href, label }) => (
+        <a href={href} aria-current={path.startsWith(href) ? 'page' : undefined}>
+          {label}
+        </a>
+      ))
+    }
+    <Search />
+    <ThemeToggle />
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.6rem 0.6rem;
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+  }
+  .brand {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  nav a {
+    padding: 0.3rem 0.5rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  nav a:hover,
+  nav a[aria-current='page'] {
+    color: var(--ink);
+  }
+</style>

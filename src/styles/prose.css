@@ -1,0 +1,151 @@
+/* Long-form article typography. Scoped to .prose so UI chrome stays untouched. */
+.prose {
+  font-size: 1em;
+  line-height: 1.8;
+}
+
+.prose > * + * {
+  margin-top: 1.2em;
+}
+
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose table,
+.prose figure {
+  margin-block: 0 1.2em;
+}
+
+.prose h2 {
+  margin: 2.4em 0 0.7em;
+  font-size: 1.5em;
+}
+
+.prose h3 {
+  margin: 2em 0 0.6em;
+  font-size: 1.24em;
+}
+
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin: 1.8em 0 0.5em;
+  font-size: 1.06em;
+}
+
+.prose :is(h2, h3, h4, h5, h6) .anchor {
+  margin-left: 0.4em;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 120ms var(--ease);
+}
+
+.prose :is(h2, h3, h4, h5, h6):hover .anchor,
+.prose .anchor:focus-visible {
+  opacity: 1;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose strong {
+  font-weight: 700;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+}
+
+.prose li + li {
+  margin-top: 0.3em;
+}
+
+.prose li::marker {
+  color: var(--muted);
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding: 0.1em 0 0.1em 1.1em;
+  border-left: 2px solid var(--rule);
+  color: var(--muted);
+}
+
+.prose blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.prose :not(pre) > code {
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  overflow-wrap: anywhere;
+}
+
+.prose img {
+  display: block;
+  margin: 1.6em auto;
+  border-radius: 4px;
+}
+
+.prose table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.88em;
+  line-height: 1.6;
+}
+
+.prose th,
+.prose td {
+  padding: 0.45em 0.8em;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  font-weight: 600;
+  border-bottom-color: var(--muted);
+}
+
+.prose .expressive-code {
+  margin-block: 1.6em;
+}
+
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.4em;
+}
+
+.prose .footnotes {
+  margin-top: 3em;
+  font-size: 0.86em;
+  color: var(--muted);
+}
+
+.img-missing {
+  display: inline-block;
+  padding: 0.15em 0.6em;
+  border: 1px dashed var(--rule);
+  border-radius: 4px;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 0.8em;
+}

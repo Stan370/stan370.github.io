@@ -1,0 +1,136 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  variant: 'side' | 'inline';
+}
+
+const { headings, variant } = Astro.props;
+// Show the two shallowest heading levels present (posts mix h2/h3 and h3/h4 bodies).
+const depths = [...new Set(headings.map((h) => h.depth))].sort().slice(0, 2);
+const items = headings.filter((h) => depths.includes(h.depth));
+const top = depths[0];
+const list = items.map((h) => ({ ...h, nested: h.depth !== top }));
+---
+
+{
+  items.length >= 3 &&
+    (variant === 'side' ? (
+      <nav class="toc toc-side" aria-label="目录">
+        <p class="toc-title">目录</p>
+        <ol>
+          {list.map((h) => (
+            <li class:list={{ nested: h.nested }}>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    ) : (
+      <details class="toc toc-inline">
+        <summary>目录</summary>
+        <ol>
+          {list.map((h) => (
+            <li class:list={{ nested: h.nested }}>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    ))
+}
+
+<style>
+  .toc {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    margin: 0.32rem 0;
+  }
+  li.nested {
+    padding-left: 0.9rem;
+  }
+  a {
+    display: block;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--ink);
+  }
+  a[aria-current='true'] {
+    color: var(--accent);
+  }
+
+  .toc-side {
+    display: none;
+  }
+  .toc-title {
+    margin: 0 0 0.6rem;
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+  }
+
+  .toc-inline {
+    margin: 0 0 2rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+  }
+  .toc-inline summary {
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .toc-inline ol {
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 1200px) {
+    .toc-side {
+      display: block;
+      position: sticky;
+      top: 2.5rem;
+      max-height: calc(100vh - 5rem);
+      overflow-y: auto;
+      padding-left: 1rem;
+      border-left: 1px solid var(--rule);
+    }
+    .toc-inline {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Highlight the section currently being read.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+  const targets = [...new Set(links.map((a) => decodeURIComponent(a.hash.slice(1))))]
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (targets.length) {
+    const visible = new Set<string>();
+    const mark = () => {
+      const current = targets.find((t) => visible.has(t.id))?.id;
+      if (!current) return;
+      for (const a of links) a.setAttribute('aria-current', String(decodeURIComponent(a.hash.slice(1)) === current));
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) e.isIntersecting ? visible.add(e.target.id) : visible.delete(e.target.id);
+        mark();
+      },
+      { rootMargin: '0px 0px -70% 0px' },
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+</script>

@@ -1,0 +1,374 @@
+/* ───────────────── Tokens ───────────────── */
+:root {
+  --paper: #faf7f2;
+  --ink: #1f1d1a;
+  --muted: #6b655c;
+  --rule: #e8e1d5;
+  --accent: #c2410c; /* 朱砂 — links, progress bar, active TOC item only */
+  --code-bg: #f3eee5;
+  --code-bar: #ece6db;
+  --mark: #f5e6c8;
+  --indigo: #2b4c7e; /* 黛蓝 — only in decorative washes */
+
+  --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', serif;
+  --font-heading: 'LXGW WenKai Screen', 'Noto Serif SC', 'Kaiti SC', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-ui: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  --measure: 680px;
+  --gutter: clamp(1.1rem, 4vw, 2rem);
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  color-scheme: light;
+}
+
+/* English pages: Latin glyphs (notably ’ and “ ”) from Noto Serif, the Latin sibling of
+   Noto Serif SC — CJK fonts draw those quotes full-width. Chinese pages keep CJK punctuation. */
+:lang(en) {
+  --font-serif: 'Noto Serif', 'Noto Serif SC', 'Source Han Serif SC', serif;
+  --font-heading: 'Noto Serif', 'LXGW WenKai Screen', 'Noto Serif SC', serif;
+}
+
+[data-theme='dark'] {
+  --paper: #1a1917;
+  --ink: #e8e4dc;
+  --muted: #a19b90;
+  --rule: #34312c;
+  --accent: #f08a5d;
+  --code-bg: #22201d;
+  --code-bar: #2a2824;
+  --mark: #4a3a22;
+  --indigo: #6f8fc4;
+
+  color-scheme: dark;
+}
+
+/* ───────────────── Base ───────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 1.5rem;
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 17px/1.8 var(--font-serif);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  text-autospace: normal;
+  hanging-punctuation: allow-end;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 720px) {
+  body {
+    font-size: 18px;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+  transition: color 120ms var(--ease), text-decoration-color 120ms var(--ease);
+}
+
+a:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--mark);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.5em 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--measure) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ───────────────── Backdrop ───────────────── */
+/* Paper grain: a tiny tiled noise texture so the page reads as paper, not flat fill. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .1 0 0 0 0 .08 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+[data-theme='dark'] body::before {
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  filter: invert(1);
+}
+
+/* Two slow, very faint washes of 朱砂 and 黛蓝 drifting behind everything. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient span {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.ambient span:first-child {
+  top: -32vmax;
+  right: -26vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 13%, transparent), transparent);
+  animation: wash-a 40s ease-in-out infinite alternate;
+}
+
+.ambient span:last-child {
+  bottom: -38vmax;
+  left: -30vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--indigo) 13%, transparent), transparent);
+  animation: wash-b 52s ease-in-out infinite alternate;
+}
+
+@keyframes wash-a {
+  to {
+    transform: translate(-12vmax, 10vmax) scale(1.15);
+  }
+}
+
+@keyframes wash-b {
+  to {
+    transform: translate(14vmax, -8vmax) scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient span {
+    animation: none;
+  }
+}
+
+/* ───────────── Reading column + right sidebar ───────────── */
+.grid3 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) min(var(--measure), calc(100% - 2 * var(--gutter))) minmax(0, 1fr);
+  column-gap: var(--gutter);
+}
+
+.grid3 > .main {
+  grid-column: 2;
+  min-width: 0;
+}
+
+/* Narrow screens: the sidebar drops below the content. */
+.grid3 > .aside {
+  grid-column: 2;
+  margin-top: 4rem;
+}
+
+@media (min-width: 1200px) {
+  .grid3 > .aside {
+    grid-column: 3;
+    grid-row: 1;
+    width: 100%;
+    max-width: 16rem;
+    margin-top: 0;
+    padding-top: 3rem;
+  }
+}
+
+.sticky {
+  position: sticky;
+  top: 2rem;
+}
+
+/* ───────────────── Motion ───────────────── */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 160ms;
+  animation-timing-function: var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  * {
+    transition: none !important;
+  }
+}
+
+/* Reading progress — pure CSS scroll-driven animation; absent where unsupported. */
+.progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .progress {
+    display: block;
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: var(--accent);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    animation: progress linear both;
+    animation-timeline: scroll(root);
+    z-index: 20;
+  }
+}
+
+@keyframes progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ───────────────── Lists (home / archive / tags) ───────────────── */
+.year {
+  margin: 2.6rem 0 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-list li {
+  display: grid;
+  grid-template-columns: 3.6rem 1fr;
+  column-gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.post-list li:last-child {
+  border-bottom: 0;
+}
+
+.post-list time {
+  padding-top: 0.28em;
+  color: var(--muted);
+}
+
+.post-list a {
+  text-decoration: none;
+  font-size: 1.04em;
+}
+
+.post-list p {
+  grid-column: 2;
+  margin: 0.1rem 0 0;
+  font-size: 0.86em;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.page-title {
+  margin: 3.2rem 0 0.4rem;
+  font-size: 1.9rem;
+}
+
+.page-lede {
+  margin: 0 0 1rem;
+  color: var(--muted);
+}
+
+.term-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.2rem;
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+
+.term-list a {
+  text-decoration: none;
+}
+
+.term-list sup {
+  margin-left: 0.15em;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.68em;
+}

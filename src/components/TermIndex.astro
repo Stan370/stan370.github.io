@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import WithSidebar from './WithSidebar.astro';
+import { getPosts, taxonomy } from '../lib/posts';
+
+interface Props {
+  kind: 'tags' | 'categories';
+}
+
+const { kind } = Astro.props;
+const label = kind === 'tags' ? '标签' : '分类';
+const terms = taxonomy(await getPosts(), kind);
+---
+
+<Base title={label} description={`按${label}浏览全部文章。`}>
+  <WithSidebar>
+    <h1 class="page-title">{label}</h1>
+    <ul class="term-list">
+      {
+        terms.map(([slug, { name, posts }]) => (
+          <li>
+            <a href={encodeURI(`/${kind}/${slug}/`)}>
+              {kind === 'tags' ? `#${name}` : name}
+              <sup>{posts.length}</sup>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </WithSidebar>
+</Base>

@@ -1,0 +1,94 @@
+<button class="icon-btn search-open" type="button" aria-label="搜索 (⌘K)" title="搜索 (⌘K)">
+  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
+    ><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-4.2-4.2"></path></svg
+  >
+</button>
+
+<dialog class="search-dialog" aria-label="搜索">
+  <div id="search"></div>
+  <p class="hint mono">Esc 关闭 · ⌘K / Ctrl K 打开</p>
+</dialog>
+
+<script>
+  // Pagefind's index is generated after `astro build`; load its UI only on first open.
+  const dialog = document.querySelector<HTMLDialogElement>('.search-dialog')!;
+  let ready: Promise<void> | undefined;
+
+  function load() {
+    return (ready ??= new Promise<void>((resolve, reject) => {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = '/pagefind/pagefind-ui.css';
+      document.head.append(css);
+      const js = document.createElement('script');
+      js.src = '/pagefind/pagefind-ui.js';
+      js.onload = () => {
+        // @ts-expect-error — global provided by pagefind-ui.js
+        new PagefindUI({ element: '#search', showSubResults: true, showImages: false, autofocus: true });
+        resolve();
+      };
+      js.onerror = reject;
+      document.head.append(js);
+    }).catch(() => {
+      document.querySelector('#search')!.textContent = '搜索索引尚未生成 —— 运行 npm run build 后可用。';
+    }));
+  }
+
+  async function open() {
+    if (dialog.open) return;
+    dialog.showModal();
+    await load();
+    dialog.querySelector<HTMLInputElement>('input')?.focus();
+  }
+
+  document.querySelector('.search-open')?.addEventListener('click', open);
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      dialog.open ? dialog.close() : open();
+    }
+  });
+  // Close when clicking the backdrop.
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+</script>
+
+<style is:global>
+  .search-dialog {
+    width: min(640px, calc(100vw - 2rem));
+    max-height: min(70vh, 640px);
+    margin: 12vh auto auto;
+    padding: 1rem 1.1rem 0.6rem;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.35);
+  }
+  .search-dialog::backdrop {
+    background: rgb(20 18 15 / 0.35);
+    backdrop-filter: blur(2px);
+  }
+  .search-dialog .hint {
+    margin: 0.6rem 0 0;
+    color: var(--muted);
+    text-align: right;
+    font-size: 0.72rem;
+  }
+  #search {
+    --pagefind-ui-scale: 0.82;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--ink);
+    --pagefind-ui-background: var(--paper);
+    --pagefind-ui-border: var(--rule);
+    --pagefind-ui-tag: var(--code-bg);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 6px;
+    --pagefind-ui-font: var(--font-serif);
+  }
+  #search mark {
+    background: var(--mark);
+    color: inherit;
+  }
+</style>

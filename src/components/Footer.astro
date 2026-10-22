@@ -1,0 +1,39 @@
+---
+import { site } from '../site.config';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer wrap">
+  <span>© 2019–{year} {site.author}</span>
+  <span class="links">
+    <a href="/atom.xml">RSS</a>
+    <a href={site.social.github} rel="me">GitHub</a>
+    <a href={site.social.zhihu} rel="me">知乎</a>
+  </span>
+</footer>
+
+<style>
+  .site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-top: 5rem;
+    padding-block: 1.6rem 2.4rem;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+  }
+  .links {
+    display: flex;
+    gap: 1rem;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--ink);
+  }
+</style>

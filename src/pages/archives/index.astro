@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import WithSidebar from '../../components/WithSidebar.astro';
+import { getPosts } from '../../lib/posts';
+import { noteTitle } from '../../lib/notes';
+
+const posts = await getPosts();
+const notes = (await getCollection('notes')).sort((a, b) => a.id.localeCompare(b.id));
+---
+
+<Base title="归档" description={`全部 ${posts.length} 篇文章，按年份排列。`}>
+  <WithSidebar>
+    <h1 class="page-title">归档</h1>
+    <p class="page-lede">共 {posts.length} 篇文章。</p>
+    <PostList posts={posts} />
+
+    <h2 class="year" id="notes">NOTES</h2>
+    <ul class="term-list">
+      {
+        notes.map((n) => (
+          <li>
+            <a href={encodeURI(`/notes/${n.id}/`)}>{noteTitle(n)}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </WithSidebar>
+</Base>

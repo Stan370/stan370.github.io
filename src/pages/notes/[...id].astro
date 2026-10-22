@@ -1,0 +1,30 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Post from '../../layouts/Post.astro';
+import { langOf, plainText, truncate } from '../../lib/posts';
+import { noteTitle } from '../../lib/notes';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  return notes.map((note) => ({ params: { id: note.id }, props: { note } }));
+}
+
+interface Props {
+  note: CollectionEntry<'notes'>;
+}
+
+const { note } = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(note);
+const text = plainText(note.body);
+---
+
+<Post
+  title={noteTitle(note)}
+  description={truncate(text, 120)}
+  lang={langOf(text, note.data.lang)}
+  headings={headings}
+  date={note.data.date}
+  math={Boolean(remarkPluginFrontmatter.hasMath)}
+>
+  <Content />
+</Post>

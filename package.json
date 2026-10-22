@@ -1,33 +1,42 @@
 {
-  "name": "StanBlog",
-  "version": "0.1.0",
+  "name": "stanblog",
+  "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "build": "hexo generate",
-    "clean": "hexo clean",
-    "deploy": "hexo deploy",
-    "server": "hexo server"
+  "type": "module",
+  "engines": {
+    "node": ">=22.23.4"
   },
-  "hexo": {
-    "version": "7.3.0"
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro check && astro build && npm run postbuild:search && node scripts/check-urls.mjs",
+    "postbuild:search": "pagefind --site dist --force-language zh --include-characters \"+#\"",
+    "preview": "astro preview"
   },
   "dependencies": {
-    "hexo": "^7.3.0",
-    "hexo-browsersync": "^0.3.0",
-    "hexo-deployer-git": "^3.0.0",
-    "hexo-deployer-rsync": "^3.0.0",
-    "hexo-filter-mathjax": "^0.9.0",
-    "hexo-generator-archive": "^1.0.0",
-    "hexo-generator-category": "^1.0.0",
-    "hexo-generator-feed": "^3.0.0",
-    "hexo-generator-index": "^2.0.0",
-    "hexo-generator-searchdb": "^1.4.1",
-    "hexo-generator-tag": "^1.0.0",
-    "hexo-renderer-ejs": "^2.0.0",
-    "hexo-renderer-markdown-it": "^7.1.1",
-    "hexo-renderer-stylus": "^2.0.0",
-    "hexo-server": "^3.0.0",
-    "hexo-theme-landscape": "^0.0.3",
-    "hexo-wordcount": "^6.0.1"
+    "@astrojs/markdown-remark": "^7.3.4",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/noto-serif": "^5.3.0",
+    "@fontsource/noto-serif-sc": "^5.3.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^7.4.2",
+    "astro-expressive-code": "^0.44.3",
+    "katex": "^0.19.0",
+    "lxgw-wenkai-screen-webfont": "^1.7.0",
+    "mdast-util-to-string": "^4.0.0",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "sanitize-html": "^2.18.1",
+    "satori": "^0.63.2",
+    "unist-util-visit": "^5.1.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/sanitize-html": "^2.16.2",
+    "pagefind": "^1.5.2",
+    "typescript": "^6.0.3"
   }
 }
