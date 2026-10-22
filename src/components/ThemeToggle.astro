@@ -1,0 +1,63 @@
+<button class="icon-btn theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
+    ><circle cx="12" cy="12" r="4"></circle><path
+      d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+    ></path></svg
+  >
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
+    ><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg
+  >
+</button>
+
+<script>
+  const root = document.documentElement;
+
+  function apply(theme: string, persist: boolean) {
+    root.dataset.theme = theme;
+    if (persist) localStorage.setItem('theme', theme);
+    // Keep Giscus in step with the page.
+    const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    frame?.contentWindow?.postMessage(
+      { giscus: { setConfig: { theme: theme === 'dark' ? 'noborder_dark' : 'noborder_light' } } },
+      'https://giscus.app',
+    );
+  }
+
+  document.querySelector('.theme-toggle')?.addEventListener('click', () => {
+    apply(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
+  });
+
+  // Follow the OS setting until the reader picks one explicitly.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) apply(e.matches ? 'dark' : 'light', false);
+  });
+</script>
+
+<style is:global>
+  .icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .icon-btn:hover {
+    color: var(--ink);
+  }
+  .icon-btn svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  [data-theme='dark'] .theme-toggle .sun,
+  :root:not([data-theme='dark']) .theme-toggle .moon {
+    display: none;
+  }
+</style>

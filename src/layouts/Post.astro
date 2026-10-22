@@ -1,0 +1,174 @@
+---
+import type { MarkdownHeading } from 'astro';
+import '../styles/prose.css';
+import Base from './Base.astro';
+import Toc from '../components/Toc.astro';
+import ProfileCard from '../components/ProfileCard.astro';
+import { categoryHref, formatDate, tagHref } from '../lib/posts';
+
+interface Props {
+  title: string;
+  description: string;
+  lang: string;
+  headings: MarkdownHeading[];
+  date?: Date;
+  updated?: Date;
+  minutes?: number;
+  tags?: string[];
+  categories?: string[];
+  image?: string;
+  /** Optional cover from the old Hexo `img:` front matter. */
+  cover?: string;
+  math?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description, lang, headings, date, updated, minutes, tags = [], categories = [], image, cover, math, jsonLd } =
+  Astro.props;
+---
+
+<Base
+  title={title}
+  description={description}
+  lang={lang}
+  type="article"
+  image={image}
+  published={date}
+  modified={updated ?? date}
+  tags={tags}
+  jsonLd={jsonLd}
+  progress
+  math={math}
+>
+  <div class="grid3">
+    <article class="main post" data-pagefind-body>
+      <header class="post-header">
+        <h1 data-pagefind-meta="title">{title}</h1>
+        <p class="meta">
+          {date && <time datetime={date.toISOString()}>{formatDate(date)}</time>}
+          {
+            categories.map((c) => (
+              <>
+                <span aria-hidden="true">·</span>
+                <a href={categoryHref(c)}>{c}</a>
+              </>
+            ))
+          }
+          {
+            minutes && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{minutes} 分钟</span>
+              </>
+            )
+          }
+        </p>
+      </header>
+
+      {
+        cover && (
+          <figure class="cover">
+            <img src={cover} alt="" referrerpolicy="no-referrer" decoding="async" fetchpriority="high" />
+          </figure>
+        )
+      }
+
+      <Toc headings={headings} variant="inline" />
+
+      <div class="prose">
+        <slot />
+      </div>
+
+      {
+        tags.length > 0 && (
+          <p class="tags" data-pagefind-ignore>
+            {tags.map((t) => (
+              <a href={tagHref(t)}>#{t}</a>
+            ))}
+          </p>
+        )
+      }
+
+      <div data-pagefind-ignore>
+        <slot name="after" />
+      </div>
+    </article>
+
+    <aside class="aside" data-pagefind-ignore>
+      <ProfileCard />
+      <Toc headings={headings} variant="side" />
+    </aside>
+  </div>
+</Base>
+
+<script>
+  // Old posts hotlink images from Notion/S3 links that have since expired.
+  // Replace any image that fails with a quiet placeholder instead of a broken icon.
+  function replace(img: HTMLImageElement) {
+    const note = document.createElement('span');
+    note.className = 'img-missing';
+    note.textContent = img.alt && !/^(untitled|image|img|alt text)/i.test(img.alt) ? `图片已失效：${img.alt}` : '图片已失效';
+    (img.closest('a') ?? img).replaceWith(note);
+  }
+  for (const img of document.querySelectorAll<HTMLImageElement>('.prose img, .cover img')) {
+    if (img.complete && img.naturalWidth === 0 && img.src) replace(img);
+    else img.addEventListener('error', () => replace(img), { once: true });
+  }
+</script>
+
+<style>
+  .aside :global(.toc-side) {
+    margin-top: 2rem;
+  }
+  .post-header {
+    margin: 3rem 0 2.2rem;
+  }
+  .cover {
+    margin: -0.6rem 0 2.4rem;
+  }
+  .cover img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    border-radius: 10px;
+    background: var(--code-bg);
+  }
+  h1 {
+    margin: 0 0 0.6rem;
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 2.4rem);
+    line-height: 1.3;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.55rem;
+    margin: 0;
+    color: var(--muted);
+    font-family: var(--font-ui);
+    font-size: 0.84rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .meta a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .meta a:hover {
+    color: var(--ink);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.9rem;
+    margin: 2.5rem 0 0;
+    font-family: var(--font-ui);
+    font-size: 0.86rem;
+  }
+  .tags a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .tags a:hover {
+    color: var(--accent);
+  }
+</style>

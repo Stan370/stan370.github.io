@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import { getPosts } from '../lib/posts';
+
+const recent = (await getPosts()).slice(0, 5);
+---
+
+<Base title="页面不存在" noindex>
+  <div class="wrap">
+    <h1 class="page-title">404</h1>
+    <p class="page-lede">这个页面不存在，或者已经搬走了。可以试试 ⌘K 搜索，或者看看最近的文章：</p>
+    <PostList posts={recent} />
+  </div>
+</Base>

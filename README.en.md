@@ -1,110 +1,58 @@
-# [stanBlog](https://stan370.github.io/)
-**StanBlog** is a blog theme built with Hexo and the EJS template engine, featuring material design and responsive layouts. This comprehensive, visually appealing personal tech blog theme supports Markdown and HTML syntax, offers built-in RSS and Atom feeds, customizable themes and layouts, code highlighting, and syntax checking, as well as mobile device access.
+# [StanBlog](https://stan370.github.io/)
 
-A beautiful Hexo blog theme with material design and responsive design.
+[中文](README.md)
 
-<img width="878" alt="image" src="https://github.com/Stan370/stan370.github.io/assets/56168768/bf7c495d-a51c-4c2b-a454-7a66aa036b86">
+Stan Ke's personal tech blog: engineering notes on Go, distributed systems, operating systems, networking and LLMs, plus the occasional essay. Most posts are in Chinese.
 
-> - 🔁 Project synced at: [Github](https://github.com/Stan370/stan370.github.io/) 
-> - 📖 Ebook reader at: [Github Pages](https://stan370.github.io//) 
+From 2019 to 2025 the site ran on Hexo + hexo-theme-matery. In 2026 it moved to [Astro](https://astro.build) with a quiet, book-like reading design. The old version lives on in git history.
 
-## Features
+## Highlights
 
-*   Uses Hexo as the blogging framework
-*   Uses EJS as the template engine
-*   Supports Markdown and HTML syntax
-*   Built-in RSS and Atom feed support
-*   Customizable themes and layouts
-*   Code highlighting and syntax checking
-*   Mobile device support
-*   Clean, visually appealing design with easy-to-read article pages
-*   Supports Material Design - [Material Design](https://material.io/)
-*   Responsive layout for desktop, tablet, and mobile
-*   Carousel articles on the homepage with a daily changing banner image
-*   Waterfall layout for the article list (24 default images displayed if no feature image is provided)
-*   Timeline layout for the archive page
-*   Tag page displayed as a word cloud, category page displayed as a radar chart
-*   Rich "About" page (includes About Me, article stats, my projects, my skills, photo album, etc.)
-*   Customizable data for the Links page
-*   Option to add copyright information when copying article content
-*   Option for password protection on articles
+- **Reading first.** A single 680px column, with Noto Serif SC for body text, LXGW WenKai for headings and JetBrains Mono for code. Fonts are self-hosted as `unicode-range` chunks, with no Google Fonts dependency.
+- **CJK typography.** 1.8 line height, build-time spacing between CJK and Latin text, and `text-autospace` as progressive enhancement.
+- **Light / dark.** Follows the system setting and has a manual toggle. Paper `#FAF7F2` with a single vermilion `#C2410C` accent.
+- **Technical details.** Expressive Code blocks (file names, line markers, copy button), KaTeX loaded only on pages that use math, a sticky table of contents, a CSS-only reading progress bar, and native View Transitions.
+- **Home page.** An ink-wash landscape banner (SVG generated at build time, with slowly drifting mist), a one-year GitHub contribution map with post days marked, and a sticky profile card showing posts, tags, categories, word count and days writing.
+- **Search.** Pagefind full-text search, opened with ⌘K / Ctrl K.
+- **SEO.** Canonical URLs, Open Graph and Twitter cards, JSON-LD, sitemap, robots.txt, per-page `lang` detection, and per-post social images generated at build time with Satori.
+- **No client framework.** Post pages ship three tiny scripts: the theme toggle, the TOC highlight and a broken-image fallback.
+- **Comments.** Giscus (GitHub Discussions).
 
-## Project Structure
-```
-├── _config.yml
-├── package.json
-├── scaffolds
-│   ├── draft.md
-│   ├── page.md
-│   └── post.md
-├── scripts
-│   ├── deploy.sh
-│   └── server.sh
-├── source
-│   ├── _drafts
-│   ├── _posts
-│   └── index.ejs
-├── themes
-│   └── ejs-theme
-│       ├── _config.yml
-│       ├── layout.ejs
-│       ├── index.ejs
-│       └── partials
-│           ├── footer.ejs
-│           ├── header.ejs
-│           └── sidebar.ejs
-└── yarn.lock
+## Development
+
+Requires Node.js ≥ 22.23.
+
+```bash
+npm install
+npm run dev       # http://localhost:4321
+npm run build     # type-check → build → Pagefind index → legacy URL check
+npm run preview   # serve the build (search works here)
 ```
 
-## Fork Guide
+## Writing
 
-After forking this project, you'll need to complete a few steps to set up your own blog page.
+Add Markdown to `src/content/posts/`, either as a single file or as `folder/index.md` with images alongside:
 
-1. **Set the correct project name and branch.**
-
-   According to GitHub Pages guidelines, a project named `username.github.io` on the master branch or a project with a different name on the gh-pages branch can automatically generate a GitHub Pages page.
-
-2. **Modify the domain.**
-
-   If you want to bind a custom domain, modify the content of the CNAME file and follow [GitHub Pages Custom Domain Configuration](https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site). If you don't need a custom domain, delete the CNAME file.
-
-3. **Edit the configuration.**
-
-   The site configuration is primarily in the `_config.yml` file. Update the personal information fields, such as `url`, `title`, `subtitle`, and any third-party comment module settings, as needed. Use a CDN such as JsDelivr to accelerate file loading from GitHub.
-
-4. **Remove my posts and images.**
-
-   You can delete all content in the following folders, except for the `template.md` file, and add your content:
-
-   * The `_posts` folder contains my published blog posts.
-   * The `_drafts` folder contains my unpublished drafts.
-   * The `_wiki` folder contains my published wiki pages.
-   * The `images` folder contains images used in articles and pages.
-
-5. **Update the "About" page.**
-
-   The `pages/about.md` file corresponds to the "About" page, which contains personal information. Update it with your details, including `skills.yml` and `social.yml` in the `_data` directory.
-
-6. **Test Locally and Deploy**
-
-To deploy, choose a method such as GitHub Pages or Vercel. Here's a quick setup guide for GitHub Pages:
-
-```
-npm install hexo-deployer-git --save
-
-Configure deployment in _config.yml:
-deploy:
-  type: git
-  repo: <repository url>
-  branch: gh-pages
-Generate and Deploy:
-
-hexo generate
-hexo deploy
+```markdown
+---
+title: Post title
+date: 2026-10-22 20:00:00
+tags: [Go]
+categories: [Engineering]
+description: Optional; used for summaries and SEO.
+---
 ```
 
-## Acknowledgments
+URLs follow `/:year/:month/:day/:file-path/`, which matches the old Hexo permalinks.
 
-This theme is based on [BlinkFox](http://blinkfox.com/) with modifications—thank you!
+## Configuration
 
-The longer a piece of code is intended to last, the cleaner it should be. Temporary code, like quick scripts, can be less strict. Conversely, only clean code can achieve exceptional longevity.
+All site settings live in [`src/site.config.ts`](src/site.config.ts): GA4 ID, Giscus `repoId` / `categoryId`, and the AdSense client.
+
+## Deployment
+
+Pushing to `main` triggers `.github/workflows/page.yml`, which builds the site and deploys it to GitHub Pages. Pull requests build but don't deploy.
+
+## License
+
+[MIT](LICENSE)

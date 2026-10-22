@@ -1,0 +1,183 @@
+---
+import { getActivity } from '../lib/activity';
+import { getPosts } from '../lib/posts';
+import { site } from '../site.config';
+
+const posts = await getPosts();
+const { days, total, source } = await getActivity(posts);
+
+// Columns are Sunday-aligned weeks; label a column when a new month starts in it.
+const weeks: (typeof days)[] = [];
+days.forEach((d, i) => {
+  if (i % 7 === 0) weeks.push([]);
+  weeks.at(-1)!.push(d);
+});
+let lastMonth = -1;
+const months = weeks.map((w) => {
+  const m = Number(w[0].date.slice(5, 7));
+  if (m === lastMonth) return '';
+  lastMonth = m;
+  return `${m}月`;
+});
+months[0] = ''; // first column is usually a partial month
+
+const postDays = days.filter((d) => d.posts.length).length;
+const label = (d: (typeof days)[number]) =>
+  [`${d.date}`, d.count ? `${d.count} 次提交` : '没有提交', ...d.posts.map((t) => `✎ ${t}`)].join(' · ');
+const profile = `https://github.com/${site.githubUser}`;
+---
+
+<section class="commit-map" aria-labelledby="commit-map-title">
+  <header>
+    <h2 id="commit-map-title">过去一年</h2>
+    <p class="mono">
+      {source === 'github' ? <a href={profile}>{total} 次 GitHub 贡献</a> : <span>{total} 次提交</span>}
+      <span aria-hidden="true"> · </span>
+      {postDays} 天发布了文章
+    </p>
+  </header>
+
+  <div class="scroller">
+    <div class="calendar" style={`--weeks:${weeks.length}`}>
+      <div class="months" aria-hidden="true">
+        {months.map((m) => <span>{m}</span>)}
+      </div>
+      <div class="weekdays mono" aria-hidden="true"><span></span><span>一</span><span></span><span>三</span><span></span><span>五</span><span></span></div>
+      <div class="cells" role="img" aria-label={`过去一年共 ${total} 次贡献，${postDays} 天发布了文章`}>
+        {
+          days.map((d) => (
+            <span class:list={['cell', `l${d.level}`, { post: d.posts.length > 0 }]} title={label(d)} />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <footer class="legend mono" aria-hidden="true">
+    <span class="post-key"><span class="cell l0 post"></span>发布文章</span>
+    <span class="scale">
+      少 <span class="cell l0"></span><span class="cell l1"></span><span class="cell l2"></span><span
+        class="cell l3"></span><span class="cell l4"></span> 多
+    </span>
+  </footer>
+</section>
+
+<style>
+  .commit-map {
+    --cell: 10px;
+    --gap: 2.5px;
+    margin: 2.2rem 0 0.5rem;
+    padding: 1.1rem 1.2rem 0.9rem;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--paper) 70%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.2rem 1rem;
+    margin-bottom: 0.7rem;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.74rem;
+  }
+  header a {
+    color: inherit;
+  }
+
+  /* Start scrolled to the most recent weeks on narrow screens. */
+  .scroller {
+    overflow-x: auto;
+    direction: rtl;
+    scrollbar-width: thin;
+  }
+  .calendar {
+    direction: ltr;
+    display: grid;
+    grid-template-columns: 1.4rem auto;
+    grid-template-rows: auto auto;
+    column-gap: 4px;
+    width: max-content;
+    margin-inline: auto;
+  }
+  .months {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(var(--weeks), var(--cell));
+    gap: var(--gap);
+    height: 1rem;
+    color: var(--muted);
+    font-family: var(--font-ui);
+    font-size: 0.62rem;
+    white-space: nowrap;
+  }
+  .weekdays {
+    display: grid;
+    grid-template-rows: repeat(7, var(--cell));
+    gap: var(--gap);
+    color: var(--muted);
+    font-size: 0.56rem;
+    line-height: var(--cell);
+  }
+  .cells {
+    display: grid;
+    grid-template-rows: repeat(7, var(--cell));
+    grid-auto-flow: column;
+    grid-auto-columns: var(--cell);
+    gap: var(--gap);
+  }
+
+  .cell {
+    display: inline-block;
+    width: var(--cell);
+    height: var(--cell);
+    border-radius: 2.5px;
+    transition: transform 120ms var(--ease);
+  }
+  .cells .cell:hover {
+    transform: scale(1.35);
+  }
+  .l0 {
+    background: color-mix(in srgb, var(--ink) 7%, transparent);
+  }
+  .l1 {
+    background: color-mix(in srgb, var(--accent) 28%, var(--paper));
+  }
+  .l2 {
+    background: color-mix(in srgb, var(--accent) 50%, var(--paper));
+  }
+  .l3 {
+    background: color-mix(in srgb, var(--accent) 75%, var(--paper));
+  }
+  .l4 {
+    background: var(--accent);
+  }
+  /* Days a post went out get an ink ring. */
+  .post {
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+
+  .legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 0.66rem;
+  }
+  .legend .cell {
+    margin: 0 1px;
+    vertical-align: -1px;
+  }
+  .post-key .cell {
+    margin-right: 0.35rem;
+  }
+</style>

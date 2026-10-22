@@ -1,0 +1,30 @@
+---
+import { formatDate, groupByYear, postHref, summaryOf, type Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+  summaries?: boolean;
+}
+
+const { posts, summaries = false } = Astro.props;
+const groups = groupByYear(posts, (p) => p.data.date);
+---
+
+{
+  groups.map(([year, items]) => (
+    <section aria-labelledby={`y${year}`}>
+      <h2 class="year" id={`y${year}`}>{year}</h2>
+      <ul class="post-list">
+        {items.map((post) => (
+          <li>
+            <time class="mono" datetime={post.data.date.toISOString()}>
+              {formatDate(post.data.date, 'short')}
+            </time>
+            <a href={postHref(post)}>{post.data.title}</a>
+            {summaries && <p>{summaryOf(post, 80)}</p>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))
+}

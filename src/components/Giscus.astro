@@ -1,0 +1,43 @@
+---
+import { site } from '../site.config';
+const { repo, repoId, category, categoryId } = site.giscus;
+const enabled = Boolean(repoId && categoryId);
+---
+
+{
+  enabled && (
+    <section class="comments" aria-label="评论">
+      <div class="giscus" />
+      <script is:inline define:vars={{ repo, repoId, category, categoryId }}>
+        const s = document.createElement('script');
+        const dark = document.documentElement.dataset.theme === 'dark';
+        Object.entries({
+          repo,
+          repoId,
+          category,
+          categoryId,
+          mapping: 'pathname',
+          strict: '0',
+          reactionsEnabled: '1',
+          emitMetadata: '0',
+          inputPosition: 'top',
+          lang: 'zh-CN',
+          loading: 'lazy',
+          theme: dark ? 'noborder_dark' : 'noborder_light',
+        }).forEach(([k, v]) => (s.dataset[k] = v));
+        s.src = 'https://giscus.app/client.js';
+        s.crossOrigin = 'anonymous';
+        s.async = true;
+        document.currentScript.before(s);
+      </script>
+    </section>
+  )
+}
+
+<style>
+  .comments {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+  }
+</style>

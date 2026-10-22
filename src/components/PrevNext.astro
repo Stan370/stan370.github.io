@@ -1,0 +1,63 @@
+---
+import { postHref, type Post } from '../lib/posts';
+
+interface Props {
+  older?: Post;
+  newer?: Post;
+}
+const { older, newer } = Astro.props;
+---
+
+{
+  (older || newer) && (
+    <nav class="prev-next" aria-label="相邻文章">
+      {older ? (
+        <a href={postHref(older)} rel="prev">
+          <span class="label">上一篇</span>
+          <span class="title">{older.data.title}</span>
+        </a>
+      ) : (
+        <span />
+      )}
+      {newer && (
+        <a class="next" href={postHref(newer)} rel="next">
+          <span class="label">下一篇</span>
+          <span class="title">{newer.data.title}</span>
+        </a>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .prev-next {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    text-decoration: none;
+  }
+  .next {
+    text-align: right;
+  }
+  .label {
+    color: var(--muted);
+    font-family: var(--font-ui);
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+  }
+  .title {
+    font-size: 0.96em;
+    line-height: 1.5;
+  }
+  a:hover .title {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+import TermPage from '../../components/TermPage.astro';
+import { getPosts, taxonomy, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  return taxonomy(await getPosts(), 'tags').map(([term, { name, posts }]) => ({
+    params: { term },
+    props: { name, posts },
+  }));
+}
+
+interface Props {
+  name: string;
+  posts: Post[];
+}
+
+const { name, posts } = Astro.props;
+---
+
+<TermPage kind="tags" name={name} posts={posts} />

@@ -1,0 +1,63 @@
+---
+import '../styles/prose.css';
+import Base from '../layouts/Base.astro';
+import { getPosts, taxonomy, tagHref } from '../lib/posts';
+import { site } from '../site.config';
+
+// TODO(Stan): replace with your own projects — name, link, one line on what it is.
+const projects: { name: string; url: string; desc: string }[] = [
+  { name: 'StanBlog', url: 'https://github.com/Stan370/stan370.github.io', desc: '这个博客本身：Astro 静态站点，部署在 GitHub Pages。' },
+];
+
+const posts = await getPosts();
+const topTags = taxonomy(posts, 'tags').slice(0, 10);
+---
+
+<Base title="关于" description={`关于 ${site.author}：${site.intro}`}>
+  <div class="wrap">
+    <h1 class="page-title">关于</h1>
+    <div class="prose">
+      <p>
+        我是 {site.author}, {site.intro}
+      </p>
+      <p>
+        这里的文章大多是学习与排查问题时的笔记，偶尔也会写一些关于技术、社会与个人成长的想法。从 2019 年至今共写了 {posts.length} 篇。
+      </p>
+
+      <h2>项目</h2>
+      <ul class="projects">
+        {
+          projects.map((p) => (
+            <li>
+              <a href={p.url}>{p.name}</a>
+              <span class="muted"> — {p.desc}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2>常写的话题</h2>
+      <p class="topics">
+        {topTags.map(([, { name }]) => <a href={tagHref(name)}>#{name}</a>)}
+      </p>
+
+      <h2>联系</h2>
+      <p>
+        <a href={site.social.github} rel="me">GitHub</a> · <a href={site.social.zhihu} rel="me">知乎</a> ·
+        <a href="/atom.xml">RSS 订阅</a>
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .projects {
+    list-style: none;
+    padding: 0;
+  }
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
+  }
+</style>

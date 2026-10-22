@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import WithSidebar from '../components/WithSidebar.astro';
+import InkHero from '../components/InkHero.astro';
+import CommitMap from '../components/CommitMap.astro';
+import { absoluteUrl, getPosts } from '../lib/posts';
+import { site } from '../site.config';
+
+const posts = await getPosts();
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.title,
+    url: absoluteUrl('/'),
+    description: site.description,
+    inLanguage: site.defaultLang,
+    author: { '@type': 'Person', name: site.author },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: site.author,
+    url: absoluteUrl('/about/'),
+    sameAs: Object.values(site.social),
+  },
+];
+---
+
+<Base jsonLd={jsonLd}>
+  <InkHero slot="backdrop" />
+  <WithSidebar>
+    <section class="intro">
+      <h1 class="visually-hidden">{site.title}</h1>
+      <p>{site.intro}</p>
+    </section>
+    <CommitMap />
+    <PostList posts={posts} summaries />
+  </WithSidebar>
+</Base>
+
+<style>
+  .intro {
+    margin: 3.2rem 0 0;
+    max-width: 30em;
+  }
+  .intro p {
+    margin: 0;
+    font-size: 1.08em;
+    line-height: 1.75;
+  }
+</style>

@@ -1,126 +1,78 @@
-# [stanBlog](https://stan370.github.io/)
-StanBlog是一个基于Hexo和EJS模板引擎的博客主题，具有材料设计和响应式设计的特点。它是一个全面、美观的个人技术博客主题，支持 Markdown 和 HTML 语法，自带 RSS 和 Atom 订阅功能，支持自定义主题和布局，支持代码高亮和语法检查，支持移动设备访问。
+# [StanBlog](https://stan370.github.io/)
 
-[![](https://data.jsdelivr.com/v1/package/gh/Stan370/stan370.github.io/badge)](https://www.jsdelivr.com/package/gh/Stan370/stan370.github.io)
+[English](README.en.md)
 
-A beautiful hexo blog theme with material design and responsive design.
+Stan Ke 的个人技术博客：Go、分布式系统、操作系统、网络与 LLM 的工程笔记，以及一些随笔。
 
-<img width="878" alt="image" src="https://github.com/Stan370/stan370.github.io/assets/56168768/bf7c495d-a51c-4c2b-a454-7a66aa036b86">
+2019–2025 年间基于 Hexo + hexo-theme-matery，2026 年迁移到 [Astro](https://astro.build)，重新设计为安静、像书一样的阅读界面。旧版本保留在 git 历史中。
 
-一个基于材料设计和响应式设计而成的全面、美观的Hexo主题的个人技术博客Blog
+## 特点
 
+- **以阅读为中心**：单栏 680px 版心，正文 Noto Serif SC，标题霞鹜文楷，代码 JetBrains Mono；字体按 `unicode-range` 分片自托管，不依赖 Google Fonts。
+- **中文排版细节**：1.8 行高、构建时自动在中英文之间加空格、`text-autospace` 渐进增强。
+- **浅色 / 深色**：跟随系统，可手动切换；纸色 `#FAF7F2` + 朱砂 `#C2410C` 单一强调色。
+- **技术细节**：Expressive Code 代码块（文件名、行高亮、复制按钮）、KaTeX（仅在含公式的页面加载）、粘性目录、纯 CSS 阅读进度条、原生 View Transitions。
+- **首页**：水墨山水横幅（构建时生成的 SVG，雾气缓慢流动）、过去一年的 GitHub 贡献热力图（标出发文日）、右侧随页面滚动的个人卡片（文章 / 标签 / 分类 / 总字数 / 写作天数）。
+- **搜索**：Pagefind 全文搜索，⌘K / Ctrl K 打开，中英文混合索引。
+- **SEO**：canonical、Open Graph / Twitter Card、JSON-LD（BlogPosting / BreadcrumbList / WebSite）、sitemap、robots.txt、按内容自动判断 `lang`，构建时用 Satori 生成每篇文章的社交分享图。
+- **零客户端框架**：文章页只有主题切换、目录高亮、失效图片占位三段小脚本。
+- **评论**：Giscus（基于 GitHub Discussions）。
 
-> - 🔁 项目同步维护：[Github](https://github.com/Stan370/stan370.github.io/) 
-> - 📖 电子书阅读：[Github Pages](https://stan370.github.io//) 
+## 本地开发
 
-## Features
+需要 Node.js ≥ 22.23。
 
-*   使用Hexo作为博客框架
-*   使用EJS作为模板引擎
-*   支持 Markdown 和 HTML 语法
-*   自带 RSS 和 Atom 订阅功能
-*   支持自定义主题和布局
-*   支持代码高亮和语法检查
-*   支持移动设备访问
-*   简单美观的设计，文章页面美观易读
-*   支持Material Design- [Material Design](https://material.io/).
-*   响应式设计，适用于桌面、平板、手机等设备
-*   首页轮播文章和每日动态更换的banner图片
-*   文章列表采用瀑布流布局（如果文章没有特色图片，则显示24张图片）
-*   归档页面采用时间轴布局
-*   标签页面采用词云布局，分类页面采用雷达图布局
-*   丰富的"关于"页面（包括关于我、文章统计、我的项目、我的技能、相册等）
-*   友情链接页面支持自定义数据
-*   可以设置在复制文章内容时追加版权信息
-*   可以设置阅读文章时需要密码验证
-
-## 项目结构
-```
-├── _config.yml
-├── package.json
-├── scaffolds
-│   ├── draft.md
-│   ├── page.md
-│   └── post.md
-├── scripts
-│   ├── deploy.sh
-│   └── server.sh
-├── source
-│   ├── _drafts
-│   ├── _posts
-│   └── index.ejs
-themes/hexo-theme-matery/
-├── layout/                  # Main layout templates
-│   ├── _partial/          # Reusable template parts
-│   │   ├── header.ejs     # Page header template
-│   │   ├── footer.ejs     # Page footer template 
-│   │   ├── head.ejs       # HTML head section
-│   ├── layout.ejs         # Main layout template
-│   ├── index.ejs          # Homepage template
-│   ├── post.ejs           # Single post template
-│   ├── about.ejs          # About page template
-│   ├── contact.ejs        # Contact page template
-│   └── gallery.ejs        # Gallery page template
-│
-├── source/                # Static assets
-│   ├── posts
-│
-└── _config.yml            # Theme configuration file
-└── yarn.lock
+```bash
+npm install
+npm run dev       # http://localhost:4321
+npm run build     # 类型检查 → 构建 → Pagefind 索引 → 旧链接校验
+npm run preview   # 预览构建结果（含搜索）
 ```
 
-## Fork 指南
+## 写文章
 
-Fork 本项目之后，还需要做一些事情才能让你的页面「正确」跑起来。
+在 `src/content/posts/` 下新建 Markdown 文件（也可以是 `目录/index.md`，图片放在同一目录用相对路径引用）：
 
-1. 正确设置项目名称与分支。
-
-   按照 GitHub Pages 的规定，名称为 `username.github.io` 的项目的 master 分支，或者其它名称的项目的 gh-pages 分支可以自动生成 GitHub Pages 页面。
-
-2. 修改域名。
-
-   如果你需要绑定自己的域名，那么修改 CNAME 文件的内容，并参考 [配置 GitHub Pages 站点的自定义域](https://docs.github.com/cn/pages/configuring-a-custom-domain-for-your-github-pages-site) 做好配置；如果不需要绑定自己的域名，那么删掉 CNAME 文件。
-
-3. 修改配置。
-
-   网站的配置基本都集中在 \_config.yml 文件中，将其中与个人信息相关的部分替换成你自己的，比如网站的 url、title、subtitle 和第三方评论模块的配置等。
-   使用 JsDelivr图床 来加速 GitHub 上托管的文件
-
-4. 删除我的文章与图片。
-
-   如下文件夹中除了 template.md 文件外，都可以全部删除，然后添加你自己的内容。
-
-   * \_posts 文件夹中是我已发布的博客文章。
-   * \_drafts 文件夹中是我尚未发布的博客文章。
-   * \_wiki 文件夹中是我已发布的 wiki 页面。
-   * images 文件夹中是我的文章和页面里使用的图片。
-
-5. 修改「关于」页面。
-
-   pages/about.md 文件内容对应网站的「关于」页面，里面的内容多为个人相关，将它们替换成你自己的信息，包括 \_data 目录下的 skills.yml 和 social.yml 文件里的数据。
-
-6. 进行本地部署测试
-部署您的博客
-您需要选择一种部署方法。Hexo支持GitHub Pages、Vercel等多种平台。以下是如何设置GitHub页面：
+```markdown
+---
+title: 文章标题
+date: 2026-10-22 20:00:00
+tags: [Go, 分布式系统]
+categories: [计算机工程]
+description: 可选，用于列表摘要和 SEO；不写则自动截取正文。
+---
 ```
-npm set audit false
 
-npm install hexo-deployer-git --save
+文章 URL 为 `/:year/:month/:day/:文件路径/`，与旧 Hexo 站点保持一致。`hide: true` 可以让文章不出现在列表中。
 
-Configure deployment in _config.yml:
-deploy:
-  type: git
-  repo: <repository url>
-  branch: gh-pages
-Generate and Deploy:
+## 目录结构
 
-hexo generate
-hexo deploy
 ```
-Layouts and Partials: EJS themes often use .ejs files for layouts and partials. For example, layout.ejs might be the main layout file where you define the structure of your pages.
+src/
+├── content/posts/     # 文章（原 source/_posts）
+├── content/notes/     # 早期零散笔记，/notes/<name>/
+├── components/        # Header、TOC、搜索、评论等
+├── layouts/           # Base（head / SEO）与 Post
+├── pages/             # 路由：首页、归档、标签、分类、关于、RSS、OG 图片
+├── plugins/           # remark 插件：迁移修复、中英文空格、标题层级
+├── styles/            # 设计 token 与正文排版
+└── site.config.ts     # 站点标题、简介、社交链接、AdSense、GA4、Giscus
+public/                # 静态文件、旧链接跳转页、ads.txt、robots.txt
+scripts/               # legacy-urls.txt + check-urls.mjs（构建时校验旧链接）
+```
 
-## 致谢
+## 配置
 
-本博客外观基于 [BlinkFox](http://blinkfox.com/) 修改，感谢！
+所有站点级设置都在 [`src/site.config.ts`](src/site.config.ts)：
 
-生命周期越长的代码，一定要写的越干净；临时使用代码，比如小脚本，就可以不讲究一些。反过来，也正是干净的代码才能成就超长的生命周期。
+- `ga4Id`：填写 GA4 衡量 ID 后才会加载统计脚本。
+- `giscus.repoId` / `giscus.categoryId`：在仓库开启 Discussions、安装 giscus app，然后从 [giscus.app](https://giscus.app) 复制这两个值。
+- `adsenseClient`：留空即关闭 AdSense。
+
+## 部署
+
+推送到 `main` 后，GitHub Actions（`.github/workflows/page.yml`）会自动构建并发布到 GitHub Pages。Pull request 只构建不发布。
+
+## License
+
+[MIT](LICENSE)

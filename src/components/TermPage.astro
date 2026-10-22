@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from './PostList.astro';
+import WithSidebar from './WithSidebar.astro';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  kind: 'tags' | 'categories';
+  name: string;
+  posts: Post[];
+}
+
+const { kind, name, posts } = Astro.props;
+const label = kind === 'tags' ? '标签' : '分类';
+const heading = kind === 'tags' ? `#${name}` : name;
+---
+
+<Base title={`${label}：${name}`} description={`${label}「${name}」下的 ${posts.length} 篇文章。`}>
+  <WithSidebar>
+    <h1 class="page-title">{heading}</h1>
+    <p class="page-lede">
+      {posts.length} 篇文章 · <a href={`/${kind}/`}>全部{label}</a>
+    </p>
+    <PostList posts={posts} summaries />
+  </WithSidebar>
+</Base>
