@@ -45,11 +45,13 @@ const family = (fonts: { name: string }[]) => fonts.map((f) => `'${f.name}'`).jo
 
 const h = (type: string, style: Record<string, unknown>, children?: unknown) => ({ type, props: { style, children } });
 
+const host = new URL(site.url).host;
+
 /** 1200×630 social card on the site's paper / ink / vermilion palette. */
 export async function renderCard({ title, meta }: { title: string; meta: string }) {
   const brand = site.title;
   const bold = fontsFor(title, 700);
-  const regular = fontsFor(`${brand}${meta}stan370.github.io`, 400);
+  const regular = fontsFor(`${brand}${meta}${host}`, 400);
   const size = [...title].length > 28 ? 56 : 68;
 
   const svg = await satori(
@@ -74,7 +76,7 @@ export async function renderCard({ title, meta }: { title: string; meta: string 
         h(
           'div',
           { display: 'flex', justifyContent: 'space-between', fontSize: 26, color: '#6B655C', fontWeight: 400, borderTop: '2px solid #E8E1D5', paddingTop: 28 },
-          [h('div', {}, meta), h('div', {}, 'stan370.github.io')],
+          [h('div', {}, meta), h('div', {}, host)],
         ),
       ],
     ) as never,

@@ -24,7 +24,7 @@ const jsonLd = [
     '@type': 'Person',
     name: site.author,
     url: absoluteUrl('/about/'),
-    sameAs: Object.values(site.social),
+    sameAs: site.social.map((s) => s.url),
   },
 ];
 ---

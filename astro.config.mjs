@@ -6,10 +6,11 @@ import expressiveCode from 'astro-expressive-code';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import { site } from './src/site.config.ts';
 import { remarkMigrationFixes, remarkCjkSpacing, remarkDemoteHeadings, rehypeExternalImages } from './src/plugins/markdown.mjs';
 
 export default defineConfig({
-  site: 'https://stan370.github.io',
+  site: site.url,
   integrations: [
     expressiveCode({
       themes: ['github-light', 'github-dark-dimmed'],
@@ -47,7 +48,7 @@ export default defineConfig({
         rehypeHeadingIds,
         [
           rehypeAutolinkHeadings,
-          { behavior: 'append', properties: { className: ['anchor'], ariaHidden: 'true', tabIndex: -1 }, content: { type: 'text', value: '#' } },
+          { behavior: 'append', properties: { className: ['anchor'], ariaHidden: 'true', tabIndex: -1, dataPagefindIgnore: '' }, content: { type: 'text', value: '#' } },
         ],
       ],
     }),

@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://stan370.github.io/sitemap-index.xml

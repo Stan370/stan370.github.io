@@ -12,10 +12,11 @@ export const site = {
   avatar: '/avatar.jpg',
   // Drives the contribution map on the home page.
   githubUser: 'Stan370',
-  social: {
-    github: 'https://github.com/Stan370',
-    zhihu: 'https://www.zhihu.com/people/chat.openai',
-  },
+  // Shown in the footer and About page, in this order. Add or remove freely.
+  social: [
+    { label: 'GitHub', url: 'https://github.com/Stan370' },
+    { label: '知乎', url: 'https://www.zhihu.com/people/chat.openai' },
+  ],
 
   // Google AdSense auto ads. Leave empty to disable.
   adsenseClient: 'ca-pub-3592614110969127',

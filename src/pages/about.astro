@@ -43,7 +43,16 @@ const topTags = taxonomy(posts, 'tags').slice(0, 10);
 
       <h2>联系</h2>
       <p>
-        <a href={site.social.github} rel="me">GitHub</a> · <a href={site.social.zhihu} rel="me">知乎</a> ·
+        {
+          site.social.map(({ label, url }) => (
+            <>
+              <a href={url} rel="me">
+                {label}
+              </a>{' '}
+              ·{' '}
+            </>
+          ))
+        }
         <a href="/atom.xml">RSS 订阅</a>
       </p>
     </div>
