@@ -5,8 +5,8 @@ export const site = {
   author: 'Stan Ke',
   // Used for <meta name="description"> on index pages and in the feed.
   description:
-    'Stan Ke 的个人博客：Go、分布式系统、操作系统、网络与 LLM 的工程笔记，以及一些关于技术与社会的随笔。',
-  intro: '一名软件工程师。写 Go、分布式系统、操作系统和 LLM 的工程笔记，偶尔也写点随笔。',
+    'Stan Ke 的个人博客：Go、Typescript、操作系统、网络与 LLM 的工程笔记，以及一些关于技术与社会的随笔。',
+  intro: 'Learning ability is the most important skill in the world.',
   defaultLang: 'zh-CN',
   career: 'Write for fun',
   avatar: '/avatar.jpg',
