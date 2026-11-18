@@ -8,13 +8,14 @@ export const site = {
     'Stan Ke 的个人博客：Go、分布式系统、操作系统、网络与 LLM 的工程笔记，以及一些关于技术与社会的随笔。',
   intro: '一名软件工程师。写 Go、分布式系统、操作系统和 LLM 的工程笔记，偶尔也写点随笔。',
   defaultLang: 'zh-CN',
-  career: 'Software Engineer',
+  career: 'Write for fun',
   avatar: '/avatar.jpg',
   // Drives the contribution map on the home page.
   githubUser: 'Stan370',
   // Shown in the footer and About page, in this order. Add or remove freely.
   social: [
     { label: 'GitHub', url: 'https://github.com/Stan370' },
+    { label: 'Repo', url: 'https://github.com/Stan370/stan370.github.io' },
     { label: '知乎', url: 'https://www.zhihu.com/people/chat.openai' },
   ],
 
