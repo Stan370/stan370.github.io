@@ -1,19 +1,30 @@
 ---
 import { site } from '../site.config';
+import { getLocaleFromPath, localizePath, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
 import ThemeToggle from './ThemeToggle.astro';
+import LanguageToggle from './LanguageToggle.astro';
 import Search from './Search.astro';
 
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
+const t = useTranslations(locale);
+
 const nav = [
-  { href: '/archives/', label: '归档' },
-  { href: '/tags/', label: '标签' },
-  { href: '/about/', label: '关于' },
+  { href: localizePath('/archives/', locale), label: t('nav.archives') },
+  { href: localizePath('/tags/', locale), label: t('nav.tags') },
+  { href: localizePath('/about/', locale), label: t('nav.about') },
 ];
+const homeHref = localizePath('/', locale);
 const path = Astro.url.pathname;
 ---
 
 <header class="site-header wrap">
-  <a class="brand" href="/" aria-label={`${site.title} 首页`}>{site.title}</a>
-  <nav aria-label="主导航">
+  <a class="brand" href={homeHref} aria-label={t('a11y.home', { title: site.title })}>{site.title}</a>
+  <nav aria-label={t('a11y.mainNav')}>
     {
       nav.map(({ href, label }) => (
         <a href={href} aria-current={path.startsWith(href) ? 'page' : undefined}>
@@ -21,8 +32,9 @@ const path = Astro.url.pathname;
         </a>
       ))
     }
-    <Search />
-    <ThemeToggle />
+    <Search locale={locale} />
+    <LanguageToggle locale={locale} />
+    <ThemeToggle locale={locale} />
   </nav>
 </header>
 
@@ -31,7 +43,7 @@ const path = Astro.url.pathname;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.75rem;
     padding-block: 1.6rem 0.6rem;
     font-family: var(--font-ui);
     font-size: 0.92rem;
@@ -41,19 +53,41 @@ const path = Astro.url.pathname;
     font-size: 1.25rem;
     letter-spacing: 0.02em;
     text-decoration: none;
+    white-space: nowrap;
   }
   nav {
     display: flex;
     align-items: center;
-    gap: 0.2rem;
+    gap: 0.15rem;
   }
-  nav a {
-    padding: 0.3rem 0.5rem;
+  nav > a:not(.lang-toggle) {
+    padding: 0.3rem 0.48rem;
     color: var(--muted);
     text-decoration: none;
+    white-space: nowrap;
   }
-  nav a:hover,
-  nav a[aria-current='page'] {
+  nav > a:not(.lang-toggle):hover,
+  nav > a:not(.lang-toggle)[aria-current='page'] {
     color: var(--ink);
+  }
+  @media (max-width: 520px) {
+    .site-header {
+      gap: 0.4rem;
+      font-size: 0.84rem;
+    }
+    .brand {
+      font-size: 1.08rem;
+    }
+    nav {
+      gap: 0.05rem;
+    }
+    nav > a:not(.lang-toggle) {
+      padding: 0.25rem 0.28rem;
+    }
+    nav :global(.icon-btn) {
+      width: 1.75rem;
+      height: 1.75rem;
+      flex-shrink: 0;
+    }
   }
 </style>

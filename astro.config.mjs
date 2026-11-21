@@ -11,6 +11,22 @@ import { remarkMigrationFixes, remarkCjkSpacing, remarkDemoteHeadings, rehypeExt
 
 export default defineConfig({
   site: site.url,
+  i18n: {
+    defaultLocale: 'zh',
+    locales: ['zh', 'en'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+  },
+  vite: {
+    server: {
+      allowedHosts: true,
+    },
+  },
   integrations: [
     expressiveCode({
       themes: ['github-light', 'github-dark-dimmed'],
@@ -36,7 +52,14 @@ export default defineConfig({
       },
     }),
     sitemap({
-      filter: (page) => !page.includes('/og/') && !page.endsWith('/404/'),
+      filter: (page) => !page.includes('/og/') && !page.endsWith('/404/') && !page.endsWith('/en/404/'),
+      i18n: {
+        defaultLocale: 'zh',
+        locales: {
+          zh: 'zh-CN',
+          en: 'en-US',
+        },
+      },
     }),
   ],
   markdown: {

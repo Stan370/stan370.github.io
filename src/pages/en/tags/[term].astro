@@ -1,0 +1,16 @@
+---
+import TermPage from '../../../components/TermPage.astro';
+import { getTermStaticPaths } from '../../../lib/routes';
+import type { Post } from '../../../lib/posts';
+
+export const getStaticPaths = () => getTermStaticPaths('en', 'tags');
+
+interface Props {
+  name: string;
+  posts: Post[];
+}
+
+const { name, posts } = Astro.props;
+---
+
+<TermPage kind="tags" locale="en" name={name} posts={posts} />

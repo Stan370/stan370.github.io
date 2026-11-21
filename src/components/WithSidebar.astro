@@ -1,5 +1,13 @@
 ---
 import ProfileCard from './ProfileCard.astro';
+import { getLocaleFromPath } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
 ---
 
 <div class="grid3">
@@ -8,7 +16,7 @@ import ProfileCard from './ProfileCard.astro';
   </div>
   <aside class="aside">
     <div class="sticky">
-      <ProfileCard />
+      <ProfileCard locale={locale} />
     </div>
   </aside>
 </div>

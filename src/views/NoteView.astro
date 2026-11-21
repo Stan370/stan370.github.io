@@ -1,0 +1,34 @@
+---
+import { render } from 'astro:content';
+import Post from '../layouts/Post.astro';
+import { plainText, truncate } from '../lib/posts';
+import { noteTitle, type LocalizedNote } from '../lib/notes';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  item: LocalizedNote;
+}
+
+const { locale, item } = Astro.props;
+const { entry: note, meta } = item;
+const { Content, headings, remarkPluginFrontmatter } = await render(note);
+const text = plainText(note.body);
+const noindexFallback = locale === 'en' && meta.isFallback;
+const hasBilingualPair = meta.isTranslated || meta.hasAlternateTranslation;
+---
+
+<Post
+  locale={locale}
+  title={noteTitle(note)}
+  description={truncate(text, 120)}
+  contentLang={meta.contentLang}
+  headings={headings}
+  date={note.data.date}
+  math={Boolean(remarkPluginFrontmatter.hasMath)}
+  noindex={noindexFallback}
+  emitHreflang={hasBilingualPair && !noindexFallback}
+  translationMeta={meta}
+>
+  <Content />
+</Post>

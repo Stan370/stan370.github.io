@@ -6,6 +6,10 @@ export const site = {
   // Used for <meta name="description"> on index pages and in the feed.
   description:
     'Stan Ke 的个人博客：Go、Typescript、操作系统、网络与 LLM 的工程笔记，以及一些关于技术与社会的随笔。',
+  descriptions: {
+    zh: 'Stan Ke 的个人博客：Go、Typescript、操作系统、网络与 LLM 的工程笔记，以及一些关于技术与社会的随笔。',
+    en: "Stan Ke's personal blog: engineering notes on Go, TypeScript, operating systems, networking, and LLMs, plus essays on technology and society.",
+  },
   intro: 'Learning ability is the most important skill in the world.',
   defaultLang: 'zh-CN',
   career: 'Write for fun',
@@ -14,9 +18,9 @@ export const site = {
   githubUser: 'Stan370',
   // Shown in the footer and About page, in this order. Add or remove freely.
   social: [
-    { label: 'GitHub', url: 'https://github.com/Stan370' },
-    { label: 'Repo', url: 'https://github.com/Stan370/stan370.github.io' },
-    { label: '知乎', url: 'https://www.zhihu.com/people/chat.openai' },
+    { label: 'GitHub', labelEn: 'GitHub', url: 'https://github.com/Stan370' },
+    { label: 'Repo', labelEn: 'Repo', url: 'https://github.com/Stan370/stan370.github.io' },
+    { label: '知乎', labelEn: 'Zhihu', url: 'https://www.zhihu.com/people/chat.openai' },
   ],
 
   // Google AdSense auto ads. Leave empty to disable.

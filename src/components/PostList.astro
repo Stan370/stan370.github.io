@@ -1,12 +1,16 @@
 ---
 import { formatDate, groupByYear, postHref, summaryOf, type Post } from '../lib/posts';
+import { getLocaleFromPath } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
 
 interface Props {
   posts: Post[];
   summaries?: boolean;
+  locale?: Locale;
 }
 
 const { posts, summaries = false } = Astro.props;
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
 const groups = groupByYear(posts, (p) => p.data.date);
 ---
 
@@ -20,7 +24,7 @@ const groups = groupByYear(posts, (p) => p.data.date);
             <time class="mono" datetime={post.data.date.toISOString()}>
               {formatDate(post.data.date, 'short')}
             </time>
-            <a href={postHref(post)}>{post.data.title}</a>
+            <a href={postHref(post, locale)}>{post.data.title}</a>
             {summaries && <p>{summaryOf(post, 80)}</p>}
           </li>
         ))}

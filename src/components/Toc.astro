@@ -1,12 +1,18 @@
 ---
 import type { MarkdownHeading } from 'astro';
+import { getLocaleFromPath, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
 
 interface Props {
   headings: MarkdownHeading[];
   variant: 'side' | 'inline';
+  locale?: Locale;
 }
 
 const { headings, variant } = Astro.props;
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
+const t = useTranslations(locale);
+
 // Show the two shallowest heading levels present (posts mix h2/h3 and h3/h4 bodies).
 const depths = [...new Set(headings.map((h) => h.depth))].sort().slice(0, 2);
 const items = headings.filter((h) => depths.includes(h.depth));
@@ -17,8 +23,8 @@ const list = items.map((h) => ({ ...h, nested: h.depth !== top }));
 {
   items.length >= 3 &&
     (variant === 'side' ? (
-      <nav class="toc toc-side" aria-label="目录">
-        <p class="toc-title">目录</p>
+      <nav class="toc toc-side" aria-label={t('a11y.toc')}>
+        <p class="toc-title">{t('toc.title')}</p>
         <ol>
           {list.map((h) => (
             <li class:list={{ nested: h.nested }}>
@@ -29,7 +35,7 @@ const list = items.map((h) => ({ ...h, nested: h.depth !== top }));
       </nav>
     ) : (
       <details class="toc toc-inline">
-        <summary>目录</summary>
+        <summary>{t('toc.title')}</summary>
         <ol>
           {list.map((h) => (
             <li class:list={{ nested: h.nested }}>

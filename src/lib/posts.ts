@@ -1,12 +1,29 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/ui';
+import { localizePath } from '../i18n/utils';
+import { parseVariantId, resolveEntriesForLocale, type ResolvedEntry, type TranslationMeta } from './content-i18n';
 import { site } from '../site.config';
 
 export type Post = CollectionEntry<'posts'>;
+export type LocalizedPost = ResolvedEntry<Post>;
+export type { TranslationMeta };
 
-/** All published posts, newest first. `hide: true` posts are built but not listed. */
-export async function getPosts({ includeHidden = false } = {}): Promise<Post[]> {
-  const posts = await getCollection('posts', (p) => !p.data.draft && (includeHidden || !p.data.hide));
-  return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+/** Resolve published posts for a target locale, deduplicating co-located `.en.md` / `.zh.md` sidecars. */
+export async function getLocalizedPosts({
+  includeHidden = false,
+  locale = DEFAULT_LOCALE,
+}: {
+  includeHidden?: boolean;
+  locale?: Locale;
+} = {}): Promise<LocalizedPost[]> {
+  const raw = await getCollection('posts', (p) => !p.data.draft && (includeHidden || !p.data.hide));
+  const resolved = resolveEntriesForLocale(raw, locale, (p) => langOf(plainText(p.body), p.data.lang));
+  return resolved.sort((a, b) => b.entry.data.date.valueOf() - a.entry.data.date.valueOf());
+}
+
+/** All published posts for a locale, newest first. `hide: true` posts are built but not listed. */
+export async function getPosts(opts: { includeHidden?: boolean; locale?: Locale } = {}): Promise<Post[]> {
+  return (await getLocalizedPosts(opts)).map((r) => r.entry);
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -15,14 +32,19 @@ export function dateParts(d: Date) {
   return { year: String(d.getUTCFullYear()), month: pad(d.getUTCMonth() + 1), day: pad(d.getUTCDate()) };
 }
 
-/** Hexo permalink `:year/:month/:day/:title/`. */
-export function postPath(post: Post) {
+/** Canonical base slug without sidecar `.en` / `.zh` suffix. */
+export function postBaseId(post: Post): string {
+  return parseVariantId(post.id).baseId;
+}
+
+/** Hexo permalink `:year/:month/:day/:title/`, prefixed with `/en` when locale is `'en'`. */
+export function postPath(post: Post, locale: Locale = DEFAULT_LOCALE) {
   const { year, month, day } = dateParts(post.data.date);
-  return `/${year}/${month}/${day}/${post.id}/`;
+  return localizePath(`/${year}/${month}/${day}/${postBaseId(post)}/`, locale);
 }
 
 /** Encoded form for hrefs (ids may contain spaces / CJK). */
-export const postHref = (post: Post) => encodeURI(postPath(post));
+export const postHref = (post: Post, locale: Locale = DEFAULT_LOCALE) => encodeURI(postPath(post, locale));
 
 export function formatDate(d: Date, style: 'full' | 'short' = 'full') {
   const { year, month, day } = dateParts(d);
@@ -40,10 +62,13 @@ export function slugize(str: string) {
     .replace(/^-+|-+$/g, '');
 }
 
-export const tagHref = (name: string) => encodeURI(`/tags/${slugize(name)}/`);
-export const categoryHref = (name: string) => encodeURI(`/categories/${slugize(name)}/`);
+export const tagHref = (name: string, locale: Locale = DEFAULT_LOCALE) =>
+  encodeURI(localizePath(`/tags/${slugize(name)}/`, locale));
 
-/** Markdown → plain text, good enough for summaries, language detection and reading time. */
+export const categoryHref = (name: string, locale: Locale = DEFAULT_LOCALE) =>
+  encodeURI(localizePath(`/categories/${slugize(name)}/`, locale));
+
+/** Markdown -> plain text, good enough for summaries, language detection and reading time. */
 export function plainText(md = '') {
   return md
     .replace(/```[\s\S]*?```/g, ' ')
@@ -70,8 +95,8 @@ export function summaryOf(post: Post, max = 110) {
 export const CJK = /[\u3400-\u9fff\uf900-\ufaff]/g;
 
 /** Front-matter `lang`, otherwise zh-CN when CJK makes up a meaningful share of the text. */
-export function langOf(text: string, explicit?: string) {
-  if (explicit) return explicit;
+export function langOf(text: string, explicit?: string): 'zh-CN' | 'en' {
+  if (explicit) return explicit.toLowerCase().startsWith('en') ? 'en' : 'zh-CN';
   const sample = text.slice(0, 4000);
   const cjk = sample.match(CJK)?.length ?? 0;
   const latin = sample.match(/[A-Za-z]+/g)?.length ?? 0;
@@ -94,7 +119,7 @@ export function groupByYear<T>(items: T[], date: (item: T) => Date) {
   return [...groups.entries()];
 }
 
-/** Map of slug → { name, posts } for tags or categories. */
+/** Map of slug -> { name, posts } for tags or categories. */
 export function taxonomy(posts: Post[], key: 'tags' | 'categories') {
   const map = new Map<string, { name: string; posts: Post[] }>();
   for (const post of posts) {

@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import WithSidebar from '../components/WithSidebar.astro';
+import InkHero from '../components/InkHero.astro';
+import CommitMap from '../components/CommitMap.astro';
+import { absoluteUrl, getPosts } from '../lib/posts';
+import { getLocaleMeta, localizePath } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
+import { site } from '../site.config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const posts = await getPosts({ locale });
+const localeMeta = getLocaleMeta(locale);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.title,
+    url: absoluteUrl(localizePath('/', locale)),
+    description: site.descriptions[locale],
+    inLanguage: localeMeta.htmlLang,
+    author: { '@type': 'Person', name: site.author },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: site.author,
+    url: absoluteUrl(localizePath('/about/', locale)),
+    sameAs: site.social.map((s) => s.url),
+  },
+];
+---
+
+<Base locale={locale} description={site.descriptions[locale]} jsonLd={jsonLd}>
+  <InkHero slot="backdrop" />
+  <WithSidebar locale={locale}>
+    <section class="intro">
+      <h1 class="visually-hidden">{site.title}</h1>
+      <p>{site.intro}</p>
+    </section>
+    <CommitMap locale={locale} />
+    <PostList posts={posts} summaries locale={locale} />
+  </WithSidebar>
+</Base>
+
+<style>
+  .intro {
+    margin: 3.2rem 0 0;
+    max-width: 30em;
+  }
+  .intro p {
+    margin: 0;
+    font-size: 1.08em;
+    line-height: 1.75;
+  }
+</style>

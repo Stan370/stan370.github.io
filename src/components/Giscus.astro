@@ -1,14 +1,25 @@
 ---
 import { site } from '../site.config';
+import { getLocaleFromPath, getLocaleMeta, stripLocalePrefix, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
+const t = useTranslations(locale);
+const giscusLang = getLocaleMeta(locale).giscusLang;
+const canonicalPath = stripLocalePrefix(Astro.url.pathname);
 const { repo, repoId, category, categoryId } = site.giscus;
 const enabled = Boolean(repoId && categoryId);
 ---
 
 {
   enabled && (
-    <section class="comments" aria-label="评论">
+    <section class="comments" aria-label={t('a11y.comments')}>
       <div class="giscus" />
-      <script is:inline define:vars={{ repo, repoId, category, categoryId }}>
+      <script is:inline define:vars={{ repo, repoId, category, categoryId, giscusLang, canonicalPath }}>
         const s = document.createElement('script');
         const dark = document.documentElement.dataset.theme === 'dark';
         Object.entries({
@@ -16,12 +27,13 @@ const enabled = Boolean(repoId && categoryId);
           repoId,
           category,
           categoryId,
-          mapping: 'pathname',
+          mapping: 'specific',
+          term: canonicalPath,
           strict: '0',
           reactionsEnabled: '1',
           emitMetadata: '0',
           inputPosition: 'top',
-          lang: 'zh-CN',
+          lang: giscusLang,
           loading: 'lazy',
           theme: dark ? 'noborder_dark' : 'noborder_light',
         }).forEach(([k, v]) => (s.dataset[k] = v));

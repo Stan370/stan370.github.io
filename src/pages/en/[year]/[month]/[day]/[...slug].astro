@@ -1,0 +1,11 @@
+---
+import PostView from '../../../../../views/PostView.astro';
+import { getPostStaticPaths, type PostRouteProps } from '../../../../../lib/routes';
+
+export const getStaticPaths = () => getPostStaticPaths('en');
+
+type Props = PostRouteProps;
+const { item, newer, older } = Astro.props;
+---
+
+<PostView locale="en" item={item} newer={newer} older={older} />

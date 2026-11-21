@@ -1,0 +1,15 @@
+---
+import NoteView from '../../../views/NoteView.astro';
+import { getNoteStaticPaths } from '../../../lib/routes';
+import type { LocalizedNote } from '../../../lib/notes';
+
+export const getStaticPaths = () => getNoteStaticPaths('en');
+
+interface Props {
+  item: LocalizedNote;
+}
+
+const { item } = Astro.props;
+---
+
+<NoteView locale="en" item={item} />

@@ -1,0 +1,77 @@
+---
+import { getAlternateLocale, getLocaleFromPath, getLocaleMeta, switchLocalePath, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
+const targetLocale = getAlternateLocale(locale);
+const targetMeta = getLocaleMeta(targetLocale);
+const targetHref = switchLocalePath(Astro.url.pathname, targetLocale);
+const t = useTranslations(locale);
+---
+
+<a
+  class="lang-toggle"
+  href={targetHref}
+  hreflang={targetMeta.hreflang}
+  lang={targetMeta.htmlLang}
+  aria-label={t('lang.switchTo')}
+  title={t('lang.switchTo')}
+  data-target-locale={targetLocale}
+>
+  {t('lang.switchShort')}
+</a>
+
+<script>
+  document.querySelector<HTMLAnchorElement>('.lang-toggle')?.addEventListener('click', (e) => {
+    const target = (e.currentTarget as HTMLAnchorElement).dataset.targetLocale;
+    if (target) {
+      try {
+        localStorage.setItem('preferred-locale', target);
+      } catch {}
+    }
+  });
+</script>
+
+<style>
+  .lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.75rem;
+    min-width: 2.2rem;
+    padding: 0 0.45rem;
+    margin-inline: 0.15rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-decoration: none;
+    transition:
+      color 140ms var(--ease),
+      border-color 140ms var(--ease),
+      background 140ms var(--ease);
+  }
+  .lang-toggle:hover {
+    color: var(--ink);
+    border-color: color-mix(in srgb, var(--ink) 30%, var(--rule));
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+  }
+  @media (max-width: 520px) {
+    .lang-toggle {
+      height: 1.65rem;
+      min-width: auto;
+      padding: 0 0.38rem;
+      margin-inline: 0.08rem;
+      font-size: 0.7rem;
+    }
+  }
+</style>
