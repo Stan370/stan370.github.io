@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        .paper { fill: #1a1917; }
+        .border { stroke: #34312c; }
+        .sun { fill: url(#sun-dark); }
+        .far-ridge { fill: url(#far-dark); }
+        .near-ridge { fill: url(#near-dark); }
+        .base-ridge { fill: #f4f0e8; opacity: 0.14; }
+      }
+    </style>
+
+    <clipPath id="tile-clip">
+      <rect x="1" y="1" width="62" height="62" rx="14" />
+    </clipPath>
+
+    <!-- Soft ink-bleed vermilion sun matching InkHero.astro -->
+    <radialGradient id="sun-light" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c2410c" stop-opacity="0.96" />
+      <stop offset="68%" stop-color="#c2410c" stop-opacity="0.92" />
+      <stop offset="86%" stop-color="#c2410c" stop-opacity="0.24" />
+      <stop offset="100%" stop-color="#c2410c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="sun-dark" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f08a5d" stop-opacity="0.96" />
+      <stop offset="68%" stop-color="#f08a5d" stop-opacity="0.9" />
+      <stop offset="86%" stop-color="#f08a5d" stop-opacity="0.26" />
+      <stop offset="100%" stop-color="#f08a5d" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Distant indigo ridge fading naturally into valley mist -->
+    <linearGradient id="far-light" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2b4c7e" stop-opacity="0.62" />
+      <stop offset="52%" stop-color="#2b4c7e" stop-opacity="0.28" />
+      <stop offset="82%" stop-color="#faf7f2" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="far-dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6f8fc4" stop-opacity="0.64" />
+      <stop offset="52%" stop-color="#6f8fc4" stop-opacity="0.26" />
+      <stop offset="82%" stop-color="#1a1917" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Solid charcoal ink foreground ridge (opaque so distant ridge doesn't bleed through) -->
+    <linearGradient id="near-light" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c2925" />
+      <stop offset="100%" stop-color="#1f1d1a" />
+    </linearGradient>
+    <linearGradient id="near-dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8e4dc" stop-opacity="0.88" />
+      <stop offset="100%" stop-color="#a8a296" stop-opacity="0.72" />
+    </linearGradient>
+  </defs>
+
+  <g clip-path="url(#tile-clip)">
+    <rect class="paper" width="64" height="64" fill="#faf7f2" />
+
+    <!-- Vermilion sun (朱砂) -->
+    <circle class="sun" cx="21" cy="21" r="11.2" fill="url(#sun-light)" />
+
+    <!-- Distant indigo ridge (黛蓝远山) -->
+    <path class="far-ridge" fill="url(#far-light)" d="M0,47 C13,46 25,36 37,25.5 C42.5,20.8 47.5,21.2 52.5,26.5 C56.5,30.8 60,33.5 64,35 L64,64 L0,64 Z" />
+
+    <!-- Foreground ink ridge (水墨近山) -->
+    <path class="near-ridge" fill="url(#near-light)" d="M0,42.5 C7,37.8 13.5,36.2 20.5,39.8 C28.5,44 35,48 44,45.2 C51.5,42.8 57.5,38.8 64,40.8 L64,64 L0,64 Z" />
+
+    <!-- Subtle foreground ink layer -->
+    <path class="base-ridge" fill="#141311" opacity="0.28" d="M0,54.5 C20,49.5 39,56.5 64,50 L64,64 L0,64 Z" />
+  </g>
+
+  <rect class="border" x="1" y="1" width="62" height="62" rx="14" fill="none" stroke="#e4dcd0" stroke-width="1" />
+</svg>
