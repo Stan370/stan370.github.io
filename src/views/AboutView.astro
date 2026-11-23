@@ -1,0 +1,84 @@
+---
+import '../styles/prose.css';
+import Base from '../layouts/Base.astro';
+import { getPosts, taxonomy, tagHref } from '../lib/posts';
+import { localizePath, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
+import { site } from '../site.config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const projects: { name: string; url: string; desc: string }[] = [
+  {
+    name: 'StanBlog',
+    url: 'https://github.com/Stan370/stan370.github.io',
+    desc: t('about.projectSelfDesc'),
+  },
+];
+
+const posts = await getPosts({ locale });
+const topTags = taxonomy(posts, 'tags').slice(0, 10);
+---
+
+<Base
+  locale={locale}
+  title={t('about.title')}
+  description={t('about.description', { author: site.author, intro: site.intro })}
+>
+  <div class="wrap">
+    <h1 class="page-title">{t('about.title')}</h1>
+    <div class="prose">
+      <p>{t('about.bioIntro', { author: site.author, intro: site.intro })}</p>
+      <p>{t('about.bioBody', { count: posts.length })}</p>
+
+      <h2>{t('about.projects')}</h2>
+      <ul class="projects">
+        {
+          projects.map((p) => (
+            <li>
+              <a href={p.url}>{p.name}</a>
+              <span class="muted"> — {p.desc}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2>{t('about.topics')}</h2>
+      <p class="topics">
+        {topTags.map(([, { name }]) => <a href={tagHref(name, locale)}>#{name}</a>)}
+      </p>
+
+      <h2>{t('about.contact')}</h2>
+      <p>
+        {
+          site.social.map(({ label, labelEn, url }) => (
+            <>
+              <a href={url} rel="me">
+                {locale === 'en' ? labelEn : label}
+              </a>{' '}
+              ·{' '}
+            </>
+          ))
+        }
+        <a href={localizePath('/atom.xml', locale)}>{t('about.rss')}</a>
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .projects {
+    list-style: none;
+    padding: 0;
+  }
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
+  }
+</style>

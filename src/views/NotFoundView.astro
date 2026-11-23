@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import { getPosts } from '../lib/posts';
+import { useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const recent = (await getPosts({ locale })).slice(0, 5);
+---
+
+<Base locale={locale} title={t('notFound.title')} noindex>
+  <div class="wrap">
+    <h1 class="page-title">404</h1>
+    <p class="page-lede">{t('notFound.lede')}</p>
+    <PostList posts={recent} locale={locale} />
+  </div>
+</Base>

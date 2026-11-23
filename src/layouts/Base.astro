@@ -8,12 +8,21 @@ import latinSerif from '@fontsource/noto-serif-sc/files/noto-serif-sc-latin-400-
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Analytics from '../components/Analytics.astro';
+import {
+  getAlternateLinks,
+  getAlternateLocale,
+  getLocaleFromPath,
+  getLocaleMeta,
+  useTranslations,
+} from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
 import { site } from '../site.config';
 
 export interface Props {
   /** Page title without the site suffix. Omit on the home page. */
   title?: string;
   description?: string;
+  locale?: Locale;
   lang?: string;
   type?: 'website' | 'article';
   /** Site-relative path to the social card image. */
@@ -23,29 +32,40 @@ export interface Props {
   tags?: string[];
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   noindex?: boolean;
+  /** Emit bidirectional hreflang alternate links (disabled automatically on noindex pages). */
+  emitHreflang?: boolean;
   progress?: boolean;
   math?: boolean;
 }
 
+const routeLocale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
+const localeMeta = getLocaleMeta(routeLocale);
+const altLocale = getAlternateLocale(routeLocale);
+const altLocaleMeta = getLocaleMeta(altLocale);
+const t = useTranslations(routeLocale);
+
 const {
   title,
-  description = site.description,
-  lang = site.defaultLang,
+  description = site.descriptions[routeLocale],
+  lang = localeMeta.htmlLang,
   type = 'website',
-  image = '/og/_site.png',
+  image = routeLocale === 'en' ? '/og/en/_site.png' : '/og/_site.png',
   published,
   modified,
   tags = [],
   jsonLd,
   noindex = false,
+  emitHreflang = true,
   progress = false,
   math = false,
 } = Astro.props;
 
 const fullTitle = title ? `${title} | ${site.title}` : site.title;
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const imageUrl = new URL(image, Astro.site).href;
-const ogLocale = lang.startsWith('zh') ? 'zh_CN' : 'en_US';
+const siteOrigin = Astro.site?.href ?? site.url;
+const canonical = new URL(Astro.url.pathname, siteOrigin).href;
+const imageUrl = new URL(image, siteOrigin).href;
+const alternates = getAlternateLinks(Astro.url.pathname, siteOrigin);
+const shouldEmitHreflang = emitHreflang && !noindex;
 ---
 
 <!doctype html>
@@ -56,6 +76,15 @@ const ogLocale = lang.startsWith('zh') ? 'zh_CN' : 'en_US';
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {
+      shouldEmitHreflang && (
+        <>
+          <link rel="alternate" hreflang="zh-CN" href={alternates.zh} />
+          <link rel="alternate" hreflang="en" href={alternates.en} />
+          <link rel="alternate" hreflang="x-default" href={alternates.xDefault} />
+        </>
+      )
+    }
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="author" content={site.author} />
     <meta name="generator" content={Astro.generator} />
@@ -68,7 +97,8 @@ const ogLocale = lang.startsWith('zh') ? 'zh_CN' : 'en_US';
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale" content={localeMeta.ogLocale} />
+    {shouldEmitHreflang && <meta property="og:locale:alternate" content={altLocaleMeta.ogLocale} />}
     {published && <meta property="article:published_time" content={published.toISOString()} />}
     {modified && <meta property="article:modified_time" content={modified.toISOString()} />}
     {tags.map((tag) => <meta property="article:tag" content={tag} />)}
@@ -78,7 +108,8 @@ const ogLocale = lang.startsWith('zh') ? 'zh_CN' : 'en_US';
     <meta name="twitter:image" content={imageUrl} />
 
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="alternate" type="application/rss+xml" title={site.title} href="/atom.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.title} (中文)`} href="/atom.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.title} (English)`} href="/en/atom.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preload" href={latinSerif} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)" />
@@ -113,12 +144,12 @@ const ogLocale = lang.startsWith('zh') ? 'zh_CN' : 'en_US';
     <div class="ambient" aria-hidden="true"><span></span><span></span></div>
     <slot name="backdrop" />
     {progress && <div class="progress" aria-hidden="true"></div>}
-    <a class="skip-link visually-hidden" href="#main">跳到正文</a>
-    <Header />
+    <a class="skip-link visually-hidden" href="#main">{t('a11y.skipToMain')}</a>
+    <Header locale={routeLocale} />
     <main id="main">
       <slot />
     </main>
-    <Footer />
+    <Footer locale={routeLocale} />
   </body>
 </html>
 

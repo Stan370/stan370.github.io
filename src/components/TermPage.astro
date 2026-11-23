@@ -2,25 +2,34 @@
 import Base from '../layouts/Base.astro';
 import PostList from './PostList.astro';
 import WithSidebar from './WithSidebar.astro';
+import { getLocaleFromPath, localizePath, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
 import type { Post } from '../lib/posts';
 
 interface Props {
   kind: 'tags' | 'categories';
   name: string;
   posts: Post[];
+  locale?: Locale;
 }
 
 const { kind, name, posts } = Astro.props;
-const label = kind === 'tags' ? '标签' : '分类';
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
+const t = useTranslations(locale);
+const label = kind === 'tags' ? t('terms.tags') : t('terms.categories');
 const heading = kind === 'tags' ? `#${name}` : name;
 ---
 
-<Base title={`${label}：${name}`} description={`${label}「${name}」下的 ${posts.length} 篇文章。`}>
-  <WithSidebar>
+<Base
+  locale={locale}
+  title={t('terms.pageTitle', { label, name })}
+  description={t('terms.pageDescription', { label: label.toLowerCase(), name, count: posts.length })}
+>
+  <WithSidebar locale={locale}>
     <h1 class="page-title">{heading}</h1>
     <p class="page-lede">
-      {posts.length} 篇文章 · <a href={`/${kind}/`}>全部{label}</a>
+      {t('terms.count', { count: posts.length })} · <a href={localizePath(`/${kind}/`, locale)}>{t('terms.all', { label: label.toLowerCase() })}</a>
     </p>
-    <PostList posts={posts} summaries />
+    <PostList posts={posts} summaries locale={locale} />
   </WithSidebar>
 </Base>

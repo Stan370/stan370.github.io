@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import WithSidebar from '../components/WithSidebar.astro';
+import { getPosts } from '../lib/posts';
+import { getLocalizedNotes, noteHref, noteTitle } from '../lib/notes';
+import { useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const posts = await getPosts({ locale });
+const notes = await getLocalizedNotes(locale);
+---
+
+<Base
+  locale={locale}
+  title={t('archives.title')}
+  description={t('archives.description', { count: posts.length })}
+>
+  <WithSidebar locale={locale}>
+    <h1 class="page-title">{t('archives.title')}</h1>
+    <p class="page-lede">{t('archives.lede', { count: posts.length })}</p>
+    <PostList posts={posts} locale={locale} />
+
+    <h2 class="year" id="notes">{t('archives.notes')}</h2>
+    <ul class="term-list">
+      {
+        notes.map(({ entry }) => (
+          <li>
+            <a href={noteHref(entry, locale)}>{noteTitle(entry)}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </WithSidebar>
+</Base>

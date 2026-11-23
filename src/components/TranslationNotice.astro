@@ -1,0 +1,91 @@
+---
+import type { Locale } from '../i18n/ui';
+import type { TranslationMeta } from '../lib/content-i18n';
+import { getAlternateLocale, getLocaleMeta, switchLocalePath, useTranslations } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+  meta?: TranslationMeta;
+}
+
+const { locale, meta } = Astro.props;
+const t = useTranslations(locale);
+const altLocale = getAlternateLocale(locale);
+const altMeta = getLocaleMeta(altLocale);
+const altHref = switchLocalePath(Astro.url.pathname, altLocale);
+const isMixedNormalized = Boolean(meta?.isTranslated && meta?.translatedFrom === 'mixed');
+const show = Boolean(meta && (meta.isTranslated || meta.isFallback));
+---
+
+{
+  show && meta && (
+    <aside
+      class:list={['translation-notice', { fallback: meta.isFallback }]}
+      aria-label={meta.isTranslated ? t('translation.badgeAuto') : t('translation.readOriginal')}
+      data-pagefind-ignore
+    >
+      <p>
+        {meta.isTranslated && (
+          <span class="badge">
+            {meta.translationStatus === 'reviewed' || meta.translationStatus === 'human'
+              ? t('translation.badgeReviewed')
+              : t('translation.badgeAuto')}
+          </span>
+        )}
+        <span>
+          {meta.isTranslated
+            ? isMixedNormalized
+              ? t('translation.mixedNotice')
+              : t('translation.translatedNotice')
+            : t('translation.fallbackNotice')}
+        </span>
+        <a href={altHref} hreflang={altMeta.hreflang} lang={altMeta.htmlLang}>
+          {isMixedNormalized ? t('translation.readOther') : t('translation.readOriginal')} →
+        </a>
+      </p>
+    </aside>
+  )
+}
+
+<style>
+  .translation-notice {
+    margin: 0 0 1.8rem;
+    padding: 0.7rem 0.95rem;
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--code-bg) 65%, transparent);
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .translation-notice.fallback {
+    border-left-color: var(--muted);
+  }
+  .translation-notice p {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.6rem;
+  }
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: 4px;
+    padding: 0.05rem 0.4rem;
+  }
+  .translation-notice a {
+    color: var(--ink);
+    text-decoration-color: var(--rule);
+    white-space: nowrap;
+  }
+  .translation-notice a:hover {
+    color: var(--accent);
+    text-decoration-color: currentColor;
+  }
+</style>

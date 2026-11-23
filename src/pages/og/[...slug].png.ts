@@ -1,16 +1,25 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { formatDate, getPosts, type Post } from '../../lib/posts';
+import { formatDate, getLocalizedPosts } from '../../lib/posts';
 import { renderCard } from '../../lib/og';
 import { site } from '../../site.config';
 
 export const getStaticPaths = (async () => {
-  const posts = await getPosts({ includeHidden: true });
+  const zhPosts = await getLocalizedPosts({ includeHidden: true, locale: 'zh' });
+  const enPosts = await getLocalizedPosts({ includeHidden: true, locale: 'en' });
+
   return [
     { params: { slug: '_site' }, props: { title: site.title, meta: site.author } },
-    ...posts.map((post: Post) => ({
-      params: { slug: post.id },
-      props: { title: post.data.title, meta: `${site.author} · ${formatDate(post.data.date)}` },
+    { params: { slug: 'en/_site' }, props: { title: `${site.title} · English`, meta: site.author } },
+    ...zhPosts.map(({ entry, meta }) => ({
+      params: { slug: meta.baseId },
+      props: { title: entry.data.title, meta: `${site.author} · ${formatDate(entry.data.date)}` },
     })),
+    ...enPosts
+      .filter(({ meta }) => meta.isTranslated)
+      .map(({ entry, meta }) => ({
+        params: { slug: `en/${meta.baseId}` },
+        props: { title: entry.data.title, meta: `${site.author} · ${formatDate(entry.data.date)}` },
+      })),
   ];
 }) satisfies GetStaticPaths;
 

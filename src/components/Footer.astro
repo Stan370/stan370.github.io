@@ -1,19 +1,27 @@
 ---
 import { site } from '../site.config';
 import { getPosts } from '../lib/posts';
+import { getLocaleFromPath, localizePath } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
 
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
 const year = new Date().getFullYear();
-const since = (await getPosts()).at(-1)?.data.date.getUTCFullYear() ?? year;
+const since = (await getPosts({ locale })).at(-1)?.data.date.getUTCFullYear() ?? year;
+const rssHref = localizePath('/atom.xml', locale);
 ---
 
 <footer class="site-footer wrap">
   <span>© {since === year ? year : `${since}–${year}`} {site.author}</span>
   <span class="links">
-    <a href="/atom.xml">RSS</a>
+    <a href={rssHref}>RSS</a>
     {
-      site.social.map(({ label, url }) => (
+      site.social.map(({ label, labelEn, url }) => (
         <a href={url} rel="me">
-          {label}
+          {locale === 'en' ? labelEn : label}
         </a>
       ))
     }

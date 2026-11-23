@@ -1,9 +1,17 @@
 ---
 import { getActivity } from '../lib/activity';
 import { getPosts } from '../lib/posts';
+import { formatMonthLabel, getLocaleFromPath, getWeekdayLabels, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
 import { site } from '../site.config';
 
-const posts = await getPosts();
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
+const t = useTranslations(locale);
+const posts = await getPosts({ locale });
 const { days, total, source } = await getActivity(posts);
 
 // Columns are Sunday-aligned weeks; label a column when a new month starts in it.
@@ -17,23 +25,36 @@ const months = weeks.map((w) => {
   const m = Number(w[0].date.slice(5, 7));
   if (m === lastMonth) return '';
   lastMonth = m;
-  return `${m}月`;
+  return formatMonthLabel(m, locale);
 });
 months[0] = ''; // first column is usually a partial month
 
+const [mon, wed, fri] = getWeekdayLabels(locale);
 const postDays = days.filter((d) => d.posts.length).length;
 const label = (d: (typeof days)[number]) =>
-  [`${d.date}`, d.count ? `${d.count} 次提交` : '没有提交', ...d.posts.map((t) => `✎ ${t}`)].join(' · ');
+  [
+    `${d.date}`,
+    d.count
+      ? t(d.count === 1 ? 'commitMap.dayCommitSingular' : 'commitMap.dayCommits', { count: d.count })
+      : t('commitMap.noCommits'),
+    ...d.posts.map((title) => `✎ ${title}`),
+  ].join(' · ');
 const profile = `https://github.com/${site.githubUser}`;
 ---
 
 <section class="commit-map" aria-labelledby="commit-map-title">
   <header>
-    <h2 id="commit-map-title">过去一年</h2>
+    <h2 id="commit-map-title">{t('commitMap.title')}</h2>
     <p class="mono">
-      {source === 'github' ? <a href={profile}>{total} 次 GitHub 贡献</a> : <span>{total} 次提交</span>}
+      {
+        source === 'github' ? (
+          <a href={profile}>{t('commitMap.githubContributions', { total })}</a>
+        ) : (
+          <span>{t('commitMap.gitCommits', { total })}</span>
+        )
+      }
       <span aria-hidden="true"> · </span>
-      {postDays} 天发布了文章
+      {t('commitMap.postDays', { days: postDays })}
     </p>
   </header>
 
@@ -42,8 +63,10 @@ const profile = `https://github.com/${site.githubUser}`;
       <div class="months" aria-hidden="true">
         {months.map((m) => <span>{m}</span>)}
       </div>
-      <div class="weekdays mono" aria-hidden="true"><span></span><span>一</span><span></span><span>三</span><span></span><span>五</span><span></span></div>
-      <div class="cells" role="img" aria-label={`过去一年共 ${total} 次贡献，${postDays} 天发布了文章`}>
+      <div class="weekdays mono" aria-hidden="true">
+        <span></span><span>{mon}</span><span></span><span>{wed}</span><span></span><span>{fri}</span><span></span>
+      </div>
+      <div class="cells" role="img" aria-label={t('commitMap.ariaLabel', { total, days: postDays })}>
         {
           days.map((d) => (
             <span class:list={['cell', `l${d.level}`, { post: d.posts.length > 0 }]} title={label(d)} />
@@ -54,10 +77,10 @@ const profile = `https://github.com/${site.githubUser}`;
   </div>
 
   <footer class="legend mono" aria-hidden="true">
-    <span class="post-key"><span class="cell l0 post"></span>发布文章</span>
+    <span class="post-key"><span class="cell l0 post"></span>{t('commitMap.legendPost')}</span>
     <span class="scale">
-      少 <span class="cell l0"></span><span class="cell l1"></span><span class="cell l2"></span><span
-        class="cell l3"></span><span class="cell l4"></span> 多
+      {t('commitMap.legendLess')} <span class="cell l0"></span><span class="cell l1"></span><span
+        class="cell l2"></span><span class="cell l3"></span><span class="cell l4"></span> {t('commitMap.legendMore')}
     </span>
   </footer>
 </section>

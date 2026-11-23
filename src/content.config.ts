@@ -38,6 +38,10 @@ const posts = defineCollection({
     draft: z.boolean().optional(),
     // Some older posts used `updatedate:` instead of Hexo's `updated:`.
     updatedate: literalDate.optional(),
+    // Offline incremental translation pipeline metadata (present on *.en.md / *.zh.md sidecars).
+    sourceHash: z.string().optional(),
+    translatedFrom: z.enum(['zh', 'en', 'mixed']).optional(),
+    translationStatus: z.enum(['auto', 'reviewed', 'human']).optional(),
   }).transform(({ updatedate, ...data }) => ({ ...data, updated: data.updated ?? updatedate })),
 });
 
@@ -48,6 +52,9 @@ const notes = defineCollection({
     title: z.string().optional(),
     date: literalDate.optional(),
     lang: z.string().optional(),
+    sourceHash: z.string().optional(),
+    translatedFrom: z.enum(['zh', 'en', 'mixed']).optional(),
+    translationStatus: z.enum(['auto', 'reviewed', 'human']).optional(),
   }),
 });
 

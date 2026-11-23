@@ -4,12 +4,17 @@ import '../styles/prose.css';
 import Base from './Base.astro';
 import Toc from '../components/Toc.astro';
 import ProfileCard from '../components/ProfileCard.astro';
+import TranslationNotice from '../components/TranslationNotice.astro';
 import { categoryHref, formatDate, tagHref } from '../lib/posts';
+import type { TranslationMeta } from '../lib/content-i18n';
+import { getLocaleFromPath, getLocaleMeta, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/ui';
 
 interface Props {
   title: string;
   description: string;
-  lang: string;
+  locale?: Locale;
+  contentLang?: string;
   headings: MarkdownHeading[];
   date?: Date;
   updated?: Date;
@@ -20,28 +25,60 @@ interface Props {
   /** Optional cover from the old Hexo `img:` front matter. */
   cover?: string;
   math?: boolean;
+  noindex?: boolean;
+  emitHreflang?: boolean;
+  translationMeta?: TranslationMeta;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, lang, headings, date, updated, minutes, tags = [], categories = [], image, cover, math, jsonLd } =
-  Astro.props;
+const locale = Astro.props.locale ?? getLocaleFromPath(Astro.url.pathname);
+const localeMeta = getLocaleMeta(locale);
+const t = useTranslations(locale);
+
+const {
+  title,
+  description,
+  contentLang = localeMeta.htmlLang,
+  headings,
+  date,
+  updated,
+  minutes,
+  tags = [],
+  categories = [],
+  image,
+  cover,
+  math,
+  noindex = false,
+  emitHreflang = true,
+  translationMeta,
+  jsonLd,
+} = Astro.props;
 ---
 
 <Base
+  locale={locale}
   title={title}
   description={description}
-  lang={lang}
+  lang={localeMeta.htmlLang}
   type="article"
   image={image}
   published={date}
   modified={updated ?? date}
   tags={tags}
   jsonLd={jsonLd}
+  noindex={noindex}
+  emitHreflang={emitHreflang}
   progress
   math={math}
 >
   <div class="grid3">
-    <article class="main post" data-pagefind-body>
+    <article
+      class="main post"
+      lang={contentLang}
+      data-pagefind-body
+      data-img-expired={t('post.imgExpired')}
+      data-img-expired-alt={t('post.imgExpiredWithAlt')}
+    >
       <header class="post-header">
         <h1 data-pagefind-meta="title">{title}</h1>
         <p class="meta">
@@ -50,7 +87,7 @@ const { title, description, lang, headings, date, updated, minutes, tags = [], c
             categories.map((c) => (
               <>
                 <span aria-hidden="true">·</span>
-                <a href={categoryHref(c)}>{c}</a>
+                <a href={categoryHref(c, locale)}>{c}</a>
               </>
             ))
           }
@@ -58,12 +95,14 @@ const { title, description, lang, headings, date, updated, minutes, tags = [], c
             minutes && (
               <>
                 <span aria-hidden="true">·</span>
-                <span>{minutes} 分钟</span>
+                <span>{t('post.readingMinutes', { minutes })}</span>
               </>
             )
           }
         </p>
       </header>
+
+      <TranslationNotice locale={locale} meta={translationMeta} />
 
       {
         cover && (
@@ -73,7 +112,7 @@ const { title, description, lang, headings, date, updated, minutes, tags = [], c
         )
       }
 
-      <Toc headings={headings} variant="inline" />
+      <Toc headings={headings} variant="inline" locale={locale} />
 
       <div class="prose">
         <slot />
@@ -82,8 +121,8 @@ const { title, description, lang, headings, date, updated, minutes, tags = [], c
       {
         tags.length > 0 && (
           <p class="tags" data-pagefind-ignore>
-            {tags.map((t) => (
-              <a href={tagHref(t)}>#{t}</a>
+            {tags.map((tag) => (
+              <a href={tagHref(tag, locale)}>#{tag}</a>
             ))}
           </p>
         )
@@ -95,8 +134,8 @@ const { title, description, lang, headings, date, updated, minutes, tags = [], c
     </article>
 
     <aside class="aside" data-pagefind-ignore>
-      <ProfileCard />
-      <Toc headings={headings} variant="side" />
+      <ProfileCard locale={locale} />
+      <Toc headings={headings} variant="side" locale={locale} />
     </aside>
   </div>
 </Base>
@@ -104,10 +143,17 @@ const { title, description, lang, headings, date, updated, minutes, tags = [], c
 <script>
   // Old posts hotlink images from Notion/S3 links that have since expired.
   // Replace any image that fails with a quiet placeholder instead of a broken icon.
+  const article = document.querySelector<HTMLElement>('article.post');
+  const expiredLabel = article?.dataset.imgExpired || 'Image unavailable';
+  const expiredAltTpl = article?.dataset.imgExpiredAlt || 'Image unavailable: {alt}';
+
   function replace(img: HTMLImageElement) {
     const note = document.createElement('span');
     note.className = 'img-missing';
-    note.textContent = img.alt && !/^(untitled|image|img|alt text)/i.test(img.alt) ? `图片已失效：${img.alt}` : '图片已失效';
+    note.textContent =
+      img.alt && !/^(untitled|image|img|alt text)/i.test(img.alt)
+        ? expiredAltTpl.replace('{alt}', img.alt)
+        : expiredLabel;
     (img.closest('a') ?? img).replaceWith(note);
   }
   for (const img of document.querySelectorAll<HTMLImageElement>('.prose img, .cover img')) {
