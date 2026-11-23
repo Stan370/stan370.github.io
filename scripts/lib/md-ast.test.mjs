@@ -56,7 +56,13 @@ test('detectContentLanguage distinguishes zh, en, and mixed ignoring code fences
 
   const mixedDoc = `最近在学习 Rust memory safety 和 distributed consensus protocols, 发现 ownership model 非常适合 systems engineering.`;
   assert.equal(detectContentLanguage(mixedDoc).lang, 'mixed');
-  assert.deepEqual(resolveTargetLocales('mixed', 'auto'), ['en']);
+  assert.deepEqual(resolveTargetLocales('mixed', 'auto'), ['zh', 'en']);
+
+  const mixedParagraphs = `这是中文段落，记录最近在工程实践里的思考和复盘。\n\nHere is a full English paragraph embedded right inside the same blog post discussing system tradeoffs and personal growth.\n\n后面又切回了中文段落。`;
+  assert.equal(detectContentLanguage(mixedParagraphs, undefined, '为什么我要写日记').lang, 'mixed');
+
+  const titleBodyMismatch = `Lately I have been reflecting on how deeply our upbringing and culture shape our beliefs and habits over time.`;
+  assert.equal(detectContentLanguage(titleBodyMismatch, undefined, '我们是被怎么塑造的？').lang, 'mixed');
 });
 
 test('protectMarkdown and restoreMarkdown preserve code, math, HTML, and relative CJK image paths verbatim', () => {

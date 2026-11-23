@@ -22,6 +22,8 @@ export interface TranslationMeta {
   originalLang: 'zh-CN' | 'en';
   /** Translation provenance from frontmatter, if this is a sidecar. */
   translationStatus?: 'auto' | 'reviewed' | 'human';
+  /** Source language provenance (`zh` | `en` | `mixed`), if this is a sidecar. */
+  translatedFrom?: 'zh' | 'en' | 'mixed';
 }
 
 export interface ResolvedEntry<T> {
@@ -56,7 +58,10 @@ export function parseVariantId(id: string): VariantParts {
  *   and avoid duplicate-content penalties across `/` and `/en/`.
  */
 export function resolveEntriesForLocale<
-  T extends { id: string; data: { translationStatus?: 'auto' | 'reviewed' | 'human' } },
+  T extends {
+    id: string;
+    data: { translationStatus?: 'auto' | 'reviewed' | 'human'; translatedFrom?: 'zh' | 'en' | 'mixed' };
+  },
 >(
   entries: readonly T[],
   locale: Locale,
@@ -98,6 +103,7 @@ export function resolveEntriesForLocale<
         contentLang,
         originalLang,
         translationStatus: sidecar ? (chosen.data.translationStatus ?? 'auto') : undefined,
+        translatedFrom: sidecar ? chosen.data.translatedFrom : undefined,
       },
     });
   }

@@ -46,9 +46,15 @@ export function serializeMarkdown(data, body) {
 
 /**
  * Classify a Markdown document's prose language after stripping code, math, HTML, and URLs.
- * Returns `{ lang: 'zh' | 'en' | 'mixed', cjkCount, latinWords, cjkRatio }`.
+ * Detects three real-world states:
+ * - `'zh'`: predominantly Simplified/Traditional Chinese prose with Chinese (or technical) title
+ * - `'en'`: predominantly English prose with English title
+ * - `'mixed'`: bilingual prose (e.g. English paragraphs inside a Chinese post, mid-paragraph
+ *   language switches, or a Chinese title paired with an English body / vice versa)
+ *
+ * Returns `{ lang: 'zh' | 'en' | 'mixed', cjkCount, latinWords, cjkRatio, enParagraphs, zhParagraphs, titleMismatch }`.
  */
-export function detectContentLanguage(markdownBody, explicitLang) {
+export function detectContentLanguage(markdownBody, explicitLang, title = '') {
   const stripped = markdownBody
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/~~~[\s\S]*?~~~/g, ' ')
@@ -64,24 +70,87 @@ export function detectContentLanguage(markdownBody, explicitLang) {
 
   if (totalUnits === 0) {
     const fallback = explicitLang?.toLowerCase().startsWith('en') ? 'en' : 'zh';
-    return { lang: fallback, cjkCount, latinWords, cjkRatio: fallback === 'zh' ? 1 : 0 };
+    return {
+      lang: fallback,
+      cjkCount,
+      latinWords,
+      cjkRatio: fallback === 'zh' ? 1 : 0,
+      enParagraphs: 0,
+      zhParagraphs: 0,
+      titleMismatch: false,
+    };
   }
 
-  const cjkRatio = cjkCount / totalUnits;
-  let lang;
-  if (cjkRatio >= 0.68) lang = 'zh';
-  else if (cjkRatio <= 0.12) lang = 'en';
-  else lang = 'mixed';
+  // Paragraph-level prose check catches real mixed posts even when global CJK count is high
+  // (e.g., an English paragraph inside a Chinese essay, or Chinese sentences inside an English post).
+  const paragraphs = stripped
+    .replace(/\r\n/g, '\n')
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0 && !/^#{1,6}\s/.test(p));
 
-  return { lang, cjkCount, latinWords, cjkRatio: Number(cjkRatio.toFixed(3)) };
+  let enParagraphs = 0;
+  let zhParagraphs = 0;
+  let bilingualSentenceBlocks = 0;
+
+  for (const para of paragraphs) {
+    const pCjk = para.match(CJK_RE)?.length ?? 0;
+    const pLatin = para.match(LATIN_WORD_RE)?.length ?? 0;
+    const hasEnglishSentence = /[A-Za-z]+(?:\s+[A-Za-z'"’,-]+){7,}/.test(para);
+
+    if (pCjk === 0 && pLatin >= 10) {
+      enParagraphs++;
+    } else if (pCjk >= 10 && !hasEnglishSentence) {
+      zhParagraphs++;
+    } else if (pCjk >= 8 && hasEnglishSentence) {
+      bilingualSentenceBlocks++;
+    }
+  }
+
+  const titleStr = typeof title === 'string' ? title.trim() : '';
+  const titleCjk = titleStr.match(CJK_RE)?.length ?? 0;
+  const titleLatin = titleStr.match(LATIN_WORD_RE)?.length ?? 0;
+
+  const cjkRatio = cjkCount / totalUnits;
+  const bodyDominant = cjkRatio >= 0.5 ? 'zh' : 'en';
+  const titleMismatch =
+    (bodyDominant === 'en' && titleCjk >= 2) ||
+    (bodyDominant === 'zh' && titleCjk === 0 && titleLatin >= 2);
+
+  const hasSubstantialBoth =
+    (enParagraphs >= 1 && zhParagraphs >= 1) ||
+    bilingualSentenceBlocks >= 1 ||
+    (cjkRatio > 0.12 && cjkRatio < 0.72) ||
+    titleMismatch;
+
+  let lang;
+  if (hasSubstantialBoth) lang = 'mixed';
+  else if (cjkRatio >= 0.5) lang = 'zh';
+  else lang = 'en';
+
+  return {
+    lang,
+    cjkCount,
+    latinWords,
+    cjkRatio: Number(cjkRatio.toFixed(3)),
+    enParagraphs,
+    zhParagraphs,
+    titleMismatch,
+  };
 }
 
-/** Decide target sidecar locale(s) for a source document. */
+/**
+ * Decide target sidecar locale(s) for a source document:
+ * - Pure `zh` source -> generate `.en.md` (1 sidecar)
+ * - Pure `en` source -> generate `.zh.md` (1 sidecar)
+ * - `mixed` zh+en source -> generate BOTH `.zh.md` (clean Chinese for `/`) and `.en.md`
+ *   (clean English for `/en/`), keeping the original `.md` untouched as the single editing source.
+ */
 export function resolveTargetLocales(detectedLang, mode = 'auto') {
   if (mode === 'en') return detectedLang === 'en' ? [] : ['en'];
   if (mode === 'zh') return detectedLang === 'zh' ? [] : ['zh'];
-  // auto: zh & mixed produce `.en.md`; pure en produces `.zh.md`
   if (detectedLang === 'en') return ['zh'];
+  if (detectedLang === 'mixed') return ['zh', 'en'];
   return ['en'];
 }
 

@@ -125,7 +125,8 @@ async function translateFrontmatterFields(ai, model, fields, targetLocale) {
   if (!entries.length) return {};
 
   const targetName = targetLocale === 'en' ? 'idiomatic technical English' : 'natural, idiomatic Simplified Chinese';
-  const prompt = `Translate the following blog metadata fields into ${targetName}.
+  const prompt = `Translate or normalize the following blog metadata fields into pure ${targetName}.
+The source metadata may mix Chinese and English — make every field cleanly and naturally written in ${targetName}.
 Preserve technical product names, acronyms (Go, Rust, LLM, MCP, TUN, DNS, KMP, iOS, Git), and formatting.
 Input JSON:
 ${JSON.stringify(Object.fromEntries(entries), null, 2)}`;
@@ -159,12 +160,13 @@ ${JSON.stringify(Object.fromEntries(entries), null, 2)}`;
 async function translateChunk(ai, model, chunk, targetLocale, titleContext) {
   const targetName = targetLocale === 'en' ? 'idiomatic technical English' : 'natural, idiomatic Simplified Chinese';
   const systemInstruction = `You are a senior software engineer and bilingual technical translator.
-Translate the given Markdown excerpt into ${targetName}.
+Translate and normalize the given Markdown excerpt into pure ${targetName}.
 CRITICAL RULES:
-1. Preserve ALL placeholders like [[[CODE_BLOCK_0]]], [[[INLINE_CODE_3]]], [[[MATH_BLOCK_1]]], [[[INLINE_MATH_2]]], [[[HTML_TAG_4]]], [[[URL_5]]] VERBATIM without altering characters, brackets, numbers, or spacing around them.
-2. Preserve Markdown structure (headings #, lists, tables, blockquotes, bold/italic emphasis).
-3. Keep well-known programming terms, library names, CLI commands, and identifiers accurate and natural for engineers.
-4. Return ONLY the translated Markdown excerpt with no extra commentary or outer code fences.`;
+1. The source text may mix Chinese and English sentences or paragraphs. Normalize the ENTIRE excerpt seamlessly into ${targetName}: keep passages already in ${targetName} natural and faithful (lightly fixing obvious grammar glitches only if needed), and translate all passages from the other language cleanly.
+2. Preserve ALL placeholders like [[[CODE_BLOCK_0]]], [[[INLINE_CODE_3]]], [[[MATH_BLOCK_1]]], [[[INLINE_MATH_2]]], [[[HTML_TAG_4]]], [[[URL_5]]] VERBATIM without altering characters, brackets, numbers, or spacing around them.
+3. Preserve Markdown structure (headings #, lists, tables, blockquotes, bold/italic emphasis).
+4. Keep well-known programming terms, library names, CLI commands, and identifiers accurate and natural for engineers.
+5. Return ONLY the translated Markdown excerpt with no extra commentary or outer code fences.`;
 
   const userPrompt = `Article title: ${titleContext || 'Untitled'}
 ${chunk.sectionHeading ? `Current section: ${chunk.sectionHeading}\n` : ''}
@@ -225,7 +227,11 @@ async function main() {
     const raw = readFileSync(filePath, 'utf8');
     const sourceHash = computeSourceHash(raw);
     const { hasFrontmatter, data, body } = splitFrontmatter(raw);
-    const detection = detectContentLanguage(body, typeof data.lang === 'string' ? data.lang : undefined);
+    const detection = detectContentLanguage(
+      body,
+      typeof data.lang === 'string' ? data.lang : undefined,
+      typeof data.title === 'string' ? data.title : '',
+    );
     const targets = resolveTargetLocales(detection.lang, opts.to);
 
     for (const targetLocale of targets) {

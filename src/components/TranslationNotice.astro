@@ -13,6 +13,7 @@ const t = useTranslations(locale);
 const altLocale = getAlternateLocale(locale);
 const altMeta = getLocaleMeta(altLocale);
 const altHref = switchLocalePath(Astro.url.pathname, altLocale);
+const isMixedNormalized = Boolean(meta?.isTranslated && meta?.translatedFrom === 'mixed');
 const show = Boolean(meta && (meta.isTranslated || meta.isFallback));
 ---
 
@@ -31,9 +32,15 @@ const show = Boolean(meta && (meta.isTranslated || meta.isFallback));
               : t('translation.badgeAuto')}
           </span>
         )}
-        <span>{meta.isTranslated ? t('translation.translatedNotice') : t('translation.fallbackNotice')}</span>
+        <span>
+          {meta.isTranslated
+            ? isMixedNormalized
+              ? t('translation.mixedNotice')
+              : t('translation.translatedNotice')
+            : t('translation.fallbackNotice')}
+        </span>
         <a href={altHref} hreflang={altMeta.hreflang} lang={altMeta.htmlLang}>
-          {t('translation.readOriginal')} →
+          {isMixedNormalized ? t('translation.readOther') : t('translation.readOriginal')} →
         </a>
       </p>
     </aside>

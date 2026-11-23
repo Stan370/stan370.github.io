@@ -1,0 +1,79 @@
+name: Translate Markdown (Cloud)
+
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: 'Single source file path (optional, e.g. src/content/posts/DB.md)'
+        required: false
+        default: ''
+      collection:
+        description: 'Collection to translate when file is empty'
+        type: choice
+        options:
+          - posts
+          - notes
+          - all
+        default: posts
+      to:
+        description: 'Target locale (auto translates zh->en, en->zh, mixed->both)'
+        type: choice
+        options:
+          - auto
+          - en
+          - zh
+        default: auto
+      limit:
+        description: 'Max files per run (avoid huge single PRs)'
+        required: false
+        default: '5'
+      force:
+        description: 'Re-translate even if sourceHash matches'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run incremental AST translation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          args=(--to "${{ inputs.to }}" --collection "${{ inputs.collection }}" --limit "${{ inputs.limit }}")
+          if [ -n "${{ inputs.file }}" ]; then
+            args+=(--file "${{ inputs.file }}")
+          fi
+          if [ "${{ inputs.force }}" = "true" ]; then
+            args+=(--force)
+          fi
+          node scripts/translate.mjs "${args[@]}"
+
+      - name: Verify build & tests
+        run: |
+          npm test
+          npm run build
+
+      - name: Commit generated translations
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/content/
+          if git diff --cached --quiet; then
+            echo "No new or updated translations to commit."
+            exit 0
+          fi
+          git commit -m "chore(i18n): add incremental markdown translations"
+          git push
